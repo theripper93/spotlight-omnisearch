@@ -12,3 +12,15 @@ Hooks.on("init", () => {
 Hooks.on("ready", () => {
     new Spotlight().render(true);
 });
+
+Hooks.on("init", () => {
+    game.keybindings.register(MODULE_ID, "toggleSpotlight", {
+        name: `${MODULE_ID}.hotkeys.toggleSpotlight.name`,
+        editable: [{ key: "Space", modifiers: ["Shift"]}],
+        restricted: true,
+        precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+        onDown: () => {
+            new Spotlight().render(true);
+        },
+    });
+});

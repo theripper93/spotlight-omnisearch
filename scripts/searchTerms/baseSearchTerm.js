@@ -1,8 +1,9 @@
 import {MODULE_ID} from "../main";
 
 export class BaseSearchTerm {
-    constructor ({name, query, keywords = [], type, data, img, icon, onClick = null}) {
+    constructor ({name,description, query, keywords = [], type, data, img, icon, onClick = null}) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
+        this.description = description ?? "";
         this.query = query;
         this.keywords = keywords;
         this.type = type;

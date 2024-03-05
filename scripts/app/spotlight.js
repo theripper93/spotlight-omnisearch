@@ -1,12 +1,14 @@
 import { MODULE_ID } from "../main.js";
-import {SPECIAL_SEARCHES} from "../searchTerms/special.js";
+import { SPECIAL_SEARCHES } from "../searchTerms/special.js";
 
-import { INDEX, buildIndex } from "../searchTerms/buildTermIndex.js";
+import { INDEX, FILE_INDEX, buildIndex } from "../searchTerms/buildTermIndex.js";
+import { getSetting } from "../settings.js";
 
 export class Spotlight extends Application {
     constructor() {
         super();
         buildIndex();
+        this._onSearch = debounce(this._onSearch, 167);
     }
 
     static get APP_ID() {
@@ -28,20 +30,41 @@ export class Spotlight extends Application {
             resizable: false,
             minimizable: false,
             width: 600,
+            top: window.innerHeight / 4,
             title: game.i18n.localize(`${MODULE_ID}.${this.APP_ID}.title`),
         });
     }
 
-    async getData() {
-        const data = {};
-        return { data };
-    }
+    async getData() {}
 
     activateListeners(html) {
         super.activateListeners(html);
         html = html[0] ?? html;
         this._html = html;
         html.querySelector("input").addEventListener("input", this._onSearch.bind(this));
+        //if enter is pressed on the search input, click on the first result
+        html.querySelector("input").addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                html.querySelector(".search-item")?.click();
+            }
+            //if escape is pressed, close the spotlight
+            if (event.key === "Escape") {
+                this.close();
+            }
+            //if shift + space is pressed, close the spotlight
+            if (event.key === " " && event.shiftKey) {
+                this.close();
+            }
+        });
+        //timeout for janky core behavior
+        setTimeout(() => {
+            //enable the input
+            html.querySelector("input").disabled = false;
+            //focus the input
+            html.querySelector("input").focus();
+        }, 50);
+        if (getSetting("darkMode")) html.closest("#spotlight").classList.add("dark");
     }
 
     setPosition(...args) {
@@ -51,7 +74,12 @@ export class Spotlight extends Application {
         const top = windowApp.getBoundingClientRect().top;
         const searchHeight = 100;
         const maxHeight = window.innerHeight - top - searchHeight;
+        const prev = this._html.querySelector("section").style.maxHeight;
         this._html.querySelector("section").style.maxHeight = `${maxHeight}px`;
+        if (prev !== this._html.querySelector("section").style.maxHeight) {
+            windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3);
+            this.setPosition({ height: "auto" });
+        }
     }
 
     _onSearch(event) {
@@ -81,6 +109,17 @@ export class Spotlight extends Application {
             }
         });
 
+        //match file index
+        FILE_INDEX.forEach((search) => {
+            search.query = query;
+            if (search.match(query)) {
+                results.push(new SearchItem(search));
+            }
+        });
+
+        //cap max results to 50
+        results.splice(50);
+
         //set the list to the results
         const list = this._html.querySelector("#search-result");
         list.innerHTML = "";
@@ -97,30 +136,106 @@ export class Spotlight extends Application {
 class SearchItem {
     constructor(searchTerm) {
         this.name = searchTerm.name;
+        this.description = searchTerm.description;
         this.type = searchTerm.type;
         this.data = searchTerm.data;
         this.img = searchTerm.img;
+        if (!getSetting("showImages")) this.img = null;
         this.icon = Array.isArray(searchTerm.icon) ? searchTerm.icon : [searchTerm.icon];
         this.element = document.createElement("li");
         this.element.classList.add("search-item", ...this.type.split(" "));
+        if (this.icon.length > 1) {
+            this.element.classList.add("multi-icons");
+        }
         this.searchTerm = searchTerm;
         this.render();
     }
 
     async render() {
         const icons = this.icon.map((icon) => `<i class="${icon}"></i>`).join("");
-        this.element.innerHTML = `${this.img && `<img src="${this.img}" alt="${this.name}">`} ${icons} <span>${this.name}</span>`;
+        this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
+        const actions = this.getActions();
+        if (actions) this.element.querySelector(".search-entry-name").insertAdjacentElement("afterend", actions);
         this.element.addEventListener("click", (e) => {
             this.searchTerm.onClick?.(e);
         });
         this.setDraggable();
     }
 
+    getActions() {
+        const actions = [];
+        if (this.type == "Macro") {
+            actions.push({
+                name: `${MODULE_ID}.actions.execute`,
+                icon: '<i class="fas fa-terminal"></i>',
+                callback: async () => {
+                    (await fromUuid(this.data.uuid)).execute();
+                },
+            });
+        } else if (this.type == "Scene") {
+            actions.push(
+                {
+                    name: `${MODULE_ID}.actions.view`,
+                    icon: '<i class="fas fa-eye"></i>',
+                    callback: async () => {
+                        (await fromUuid(this.data.uuid)).view();
+                    },
+                },
+                {
+                    name: `${MODULE_ID}.actions.activate`,
+                    icon: '<i class="fas fa-play"></i>',
+                    callback: async () => {
+                        (await fromUuid(this.data.uuid)).activate();
+                    },
+                },
+            );
+        }
+
+        if (!actions.length) return null;
+        const actionsContainer = document.createElement("div");
+        actionsContainer.classList.add("search-item-actions");
+        actions.forEach((action) => {
+            const button = document.createElement("button");
+            button.innerHTML = action.icon + " " + game.i18n.localize(action.name);
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                action.callback();
+            });
+            actionsContainer.appendChild(button);
+        });
+        return actionsContainer;
+    }
+
+    setDragging() {
+        setTimeout(() => {
+            document.querySelector("#spotlight").classList.add("dragging");
+        }, 1);
+    }
+
+    endDragging() {
+        document.querySelector("#spotlight").classList.remove("dragging");
+    }
+
     setDraggable() {
         if (this.data.uuid) {
             this.element.setAttribute("draggable", true);
             this.element.addEventListener("dragstart", (event) => {
+                this.setDragging();
                 event.dataTransfer.setData("text/plain", JSON.stringify({ type: this.data.documentName, uuid: this.data.uuid }));
+            });
+            this.element.addEventListener("dragend", () => {
+                this.endDragging();
+            });
+        }
+        if (this.type === "file" && this.data.dropData) {
+            this.element.setAttribute("draggable", true);
+            this.element.addEventListener("dragstart", (event) => {
+                this.setDragging();
+                event.dataTransfer.setData("text/plain", JSON.stringify(this.data.dropData));
+            });
+            this.element.addEventListener("dragend", () => {
+                this.endDragging();
             });
         }
     }

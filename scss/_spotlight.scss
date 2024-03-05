@@ -3,6 +3,27 @@
     border-radius: 10px;
     overflow: hidden;
     font-family: "Roboto", sans-serif;
+    transition: opacity 0.2s ease-in-out;
+
+    &.dragging {
+        pointer-events: none;
+        opacity: 0.1;
+    }
+
+    &.dark {
+        .window-content {
+            background: rgb(0 0 0 / 18%);
+            color: var(--color-text-light-3);
+        }
+
+        input{
+            color: var(--color-text-light-3);
+        }
+
+        button{
+            color: var(--color-text-light-3);
+        }
+    }
 
     .window-header {
         position: absolute;
@@ -20,8 +41,18 @@
     .window-content {
         margin: 0;
         padding: 0;
-        background: #ffffffc2;
+        background: rgba(255, 255, 255, 0.736);
         backdrop-filter: blur(5px);
+    }
+
+    &.inverted {
+        main {
+            flex-direction: column-reverse;
+        }
+
+        .window-header {
+            bottom: 0;
+        }
     }
 
 
@@ -94,11 +125,55 @@
                         object-fit: contain;
                     }
 
-                    span {
-                        flex: 1;
+                    .search-item-actions {
+                        padding: 0.2em 0;
+                        display: flex;
+                        gap: 0.2rem;
+
+                        button {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: auto;
+                            background: #0000001a;
+                            transition: all 0.2s ease-in-out;
+                            border: none;
+                            line-height: inherit;
+                            padding: 0.2em 0.2em;
+                            font-weight: bold;
+
+                            i {
+                                order: -1;
+                                margin: 0;
+                                width: 1.5rem;
+                            }
+
+                            &:focus,
+                            &:hover {
+                                box-shadow: none;
+                                background: #00000029;
+                            }
+                        }
                     }
 
-                    &.compendium {
+                    .search-info {
+                        flex: 1;
+
+                        p {
+                            font-size: 1rem;
+                            opacity: 0.7;
+                            margin: 0;
+                        }
+                    }
+
+                    i {
+                        width: 1.2rem;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    &.multi-icons {
                         i {
                             order: 999;
                         }

@@ -1,7 +1,41 @@
 {
     "spotlight-omnisearch": {
-        "settings": {},
+        "settings": {
+            "darkMode": {
+                "name": "Dark Mode",
+                "hint": "Use a dark theme for the Spotlight Omnisearch"
+            },
+            "showImages": {
+                "name": "Show Images",
+                "hint": "Display images in search results. Images will increase loading times for the results and may result in stuttering depending on the number of results and the size of the images."
+            },
+            "searchFiles": {
+                "name": "Search Files",
+                "hint": "Include file search results"
+            },
+            "searchSettings": {
+                "name": "Search Settings",
+                "hint": "Include game settings in search results"
+            },
+            "searchCompendium": {
+                "name": "Search Compendium",
+                "hint": "Include compendium search results"
+            },
+            "searchSidebar": {
+                "name": "Search Sidebar",
+                "hint": "Include sidebar tab search results"
+            },
+            "searchUtils": {
+                "name": "Search Utilities",
+                "hint": "Include utility search results"
+            }
+        },
         "app": {},
-        "flags": {}
+        "flags": {},
+        "actions": {
+            "execute": "Execute",
+            "activate": "Activate",
+            "view": "View"
+        }
     }
 }
