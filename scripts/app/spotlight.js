@@ -5,10 +5,11 @@ import { INDEX, FILE_INDEX, buildIndex } from "../searchTerms/buildTermIndex.js"
 import { getSetting } from "../settings.js";
 
 export class Spotlight extends Application {
-    constructor() {
+    constructor({ first } = {}) {
         super();
+        this.first = first;
         buildIndex().then((r) => {
-            if(r) this._onSearch();
+            if (r) this._onSearch();
         });
         this._onSearch = debounce(this._onSearch, 167);
     }
@@ -31,13 +32,15 @@ export class Spotlight extends Application {
             popOut: true,
             resizable: false,
             minimizable: false,
-            width: 600,
+            width: 700,
             top: window.innerHeight / 4,
             title: game.i18n.localize(`${MODULE_ID}.${this.APP_ID}.title`),
         });
     }
 
-    async getData() {}
+    async getData() {
+        return { first: this.first };
+    }
 
     activateListeners(html) {
         super.activateListeners(html);

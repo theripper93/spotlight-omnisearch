@@ -1,7 +1,7 @@
 import {Spotlight} from "./app/spotlight.js";
 import {initConfig} from "./config.js";
 import {INDEX} from "./searchTerms/buildTermIndex.js";
-import { registerSettings } from "./settings.js";
+import { getSetting, registerSettings, setSetting } from "./settings.js";
 
 export const MODULE_ID = "spotlight-omnisearch";
 
@@ -16,7 +16,10 @@ Hooks.on("init", () => {
 });
 
 Hooks.on("ready", () => {
-    new Spotlight().render(true);
+    if (getSetting("firstTime")) {
+        new Spotlight({first: true}).render(true);
+        setSetting("firstTime", false);
+    }
 });
 
 Hooks.on("init", () => {

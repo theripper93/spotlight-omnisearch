@@ -58,6 +58,12 @@ export function registerSettings() {
             default: true,
             type: Boolean,
         },
+        "firstTime": {
+            scope: "client",
+            config: false,
+            default: true,
+            type: Boolean,
+        },
 
     };
 
