@@ -20,7 +20,12 @@ Hooks.on("init", () => {
         restricted: true,
         precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
         onDown: () => {
-            new Spotlight().render(true);
+            const current = Object.values(ui.windows).find(w => w instanceof Spotlight);
+            if (current) {
+                current.close();
+            } else {
+                new Spotlight().render(true);
+            }
         },
     });
 });
