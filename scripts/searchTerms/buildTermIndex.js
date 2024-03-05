@@ -21,6 +21,7 @@ async function buildCompendiumIndex() {
     const packs = Array.from(game.packs);
     const index = [];
     for (const pack of packs) {
+        if(!game.user.isGM && pack.private) continue;
         const packIndex = Array.from(await pack.getIndex());
         packIndex.forEach((entry) => {
             index.push(
@@ -55,6 +56,7 @@ async function buildCollections() {
         if (exclude.includes(collection.documentName)) continue;
         const documents = Array.from(collection);
         documents.forEach((document) => {
+            if (!document.isOwner) return;
             const keywords = [];
             let description = "";
             if (collection.documentName === "ChatMessage") {
@@ -85,6 +87,7 @@ async function buildCollections() {
 }
 
 async function buildSettings() {
+    if(!game.user.isGM) return;
     const index = [];
     game.settings.settings.forEach((setting) => {
         if (!setting.name) return;
@@ -148,6 +151,7 @@ async function buildSettingsTab() {
 }
 
 async function buildFiles() {
+    if(!game.user.isGM) return;
     //wait 5 seconds for the file index to be built
     await new Promise((resolve) => setTimeout(resolve, 5000));
     const fileCache = canvas.deepSearchCache?._fileIndexCache;
