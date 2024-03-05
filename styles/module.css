@@ -1,0 +1,48 @@
+#spotlight {
+  --spotlight-height: 50px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+#spotlight .window-header {
+  position: absolute;
+  height: var(--spotlight-height);
+  width: var(--spotlight-height);
+  opacity: 0;
+  z-index: 1;
+}
+#spotlight .window-header h4,
+#spotlight .window-header a {
+  display: none;
+}
+#spotlight .window-content {
+  margin: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.7607843137);
+  backdrop-filter: blur(5px);
+}
+#spotlight main {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+#spotlight main header {
+  height: var(--spotlight-height);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem;
+}
+#spotlight main header i {
+  font-size: 1.5rem;
+}
+#spotlight main header input[type=search] {
+  font-size: 1.8rem;
+  height: 65%;
+  flex: 1;
+  border: none;
+  background: none;
+}
+#spotlight main header input[type=search]:focus, #spotlight main header input[type=search]:hover {
+  box-shadow: none;
+}/*# sourceMappingURL=module.css.map */
