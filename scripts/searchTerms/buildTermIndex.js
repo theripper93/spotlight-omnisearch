@@ -54,7 +54,7 @@ async function buildCollections() {
 
     const index = [];
 
-    const exclude = ["Combat", "Setting"];
+    const exclude = ["Combat", "Setting", "FogExploration"];
 
     for (const collection of collections) {
         if (exclude.includes(collection.documentName)) continue;
@@ -135,7 +135,9 @@ async function buildSettingsTab() {
         //the button innerhtml is formatted as follows <i class="fas fa-cogs"></i>  Configure Settings
         //extract the text and the i class
         const buttonLabel = button.innerText.trim();
-        const icon = button.querySelector("i").className;
+        const i = button.querySelector("i");
+        if(!i) return;
+        const icon = i.className;
         if (!buttonLabel) return;
         index.push(
             new BaseSearchTerm({
