@@ -1,8 +1,8 @@
 {
   "title": "Spotlight Omnisearch",
-  "description": "desc",
+  "description": "A powerful search tool that allows you to search for anything in your game, including documents, compendiums, files, settings and more.",
   "id": "spotlight-omnisearch",
-  "version": "1.0",
+  "version": "0.1",
   "authors": [
     {
       "name": "theripper93",
@@ -55,9 +55,8 @@
     "styles/module.css"
   ],
   "packs": [],
-  "url": "https://github.com/theripper93/spotlight-omnisearch",
-  "manifest": "https://github.com/theripper93/spotlight-omnisearch/releases/latest/download/module.json",
-  "download": "",
+  "url": "https://www.patreon.com/theripper93",
+  "manifest": "https://foundryvtt.s3.us-west-2.amazonaws.com/modules/spotlight-omnisearch/module.json",
   "relationships": {
     "requires": [
     ]
