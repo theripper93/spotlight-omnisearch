@@ -2,6 +2,7 @@
     --spotlight-height: 50px;
     border-radius: 10px;
     overflow: hidden;
+    font-family: "Roboto", sans-serif;
 
     .window-header {
         position: absolute;
@@ -55,5 +56,62 @@
             }
         }
 
+        section {
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 40vh;
+
+            &.no-results {
+                display: none;
+            }
+
+            #search-result {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 0.2rem;
+
+                li {
+                    font-size: 1.5rem;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 1rem;
+                    transition: background 0.2s ease-in-out;
+                    padding: 0.3rem 0.5rem;
+                    border-radius: 5px;
+
+                    &:hover {
+                        background: #00000033;
+                    }
+
+                    img {
+                        width: 32px;
+                        height: 32px;
+                        border: none;
+                        object-fit: contain;
+                    }
+
+                    span {
+                        flex: 1;
+                    }
+
+                    &.compendium {
+                        i {
+                            order: 999;
+                        }
+                    }
+
+                    &.calc {
+                        border: 2px solid var(--color-border-dark-4);
+                        background: #00000029;
+                        padding: 1rem;
+                        border-radius: 10px;
+                    }
+                }
+            }
+        }
     }
 }

@@ -9,10 +9,20 @@ export class BaseSearchTerm {
         this.data = data;
         this.img = img;
         this.icon = icon;
-        this._onClick = onClick;
+        this._onClick = onClick.bind(this);
+    }
+
+    onClick(...args) {
+        if (this._onClick) {
+            this._onClick(...args);
+        }
+    }
+
+    match(query) {
+        return this.name.toLowerCase().includes(query) || this.keywords.some((keyword) => keyword.includes(query));
     }
 
     get name() {
-        return this._name();
+        return this._name(this);
     }
 }

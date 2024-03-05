@@ -2,6 +2,7 @@
   --spotlight-height: 50px;
   border-radius: 10px;
   overflow: hidden;
+  font-family: "Roboto", sans-serif;
 }
 #spotlight .window-header {
   position: absolute;
@@ -45,4 +46,51 @@
 }
 #spotlight main header input[type=search]:focus, #spotlight main header input[type=search]:hover {
   box-shadow: none;
+}
+#spotlight main section {
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 40vh;
+}
+#spotlight main section.no-results {
+  display: none;
+}
+#spotlight main section #search-result {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+#spotlight main section #search-result li {
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  transition: background 0.2s ease-in-out;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+}
+#spotlight main section #search-result li:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+#spotlight main section #search-result li img {
+  width: 32px;
+  height: 32px;
+  border: none;
+  object-fit: contain;
+}
+#spotlight main section #search-result li span {
+  flex: 1;
+}
+#spotlight main section #search-result li.compendium i {
+  order: 999;
+}
+#spotlight main section #search-result li.calc {
+  border: 2px solid var(--color-border-dark-4);
+  background: rgba(0, 0, 0, 0.1607843137);
+  padding: 1rem;
+  border-radius: 10px;
 }/*# sourceMappingURL=module.css.map */
