@@ -7,7 +7,9 @@ import { getSetting } from "../settings.js";
 export class Spotlight extends Application {
     constructor() {
         super();
-        buildIndex();
+        buildIndex().then((r) => {
+            if(r) this._onSearch();
+        });
         this._onSearch = debounce(this._onSearch, 167);
     }
 
@@ -96,8 +98,8 @@ export class Spotlight extends Application {
         }
     }
 
-    _onSearch(event) {
-        const query = event.target.value.toLowerCase().trim();
+    _onSearch() {
+        const query = this._html.querySelector("input").value.toLowerCase().trim();
         const section = this._html.querySelector("section");
         section.classList.toggle("no-results", !query);
         if (!query) {

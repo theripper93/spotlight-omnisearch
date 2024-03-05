@@ -10,11 +10,15 @@ let indexBuilt = false;
 export async function buildIndex() {
     if (indexBuilt) return;
     indexBuilt = true;
-    if(getSetting("searchFiles")) buildFiles();
+    if(getSetting("searchFiles")) await buildFiles();
     if(getSetting("searchSettings")) await buildSettings();
     if(getSetting("searchUtils")) await buildSettingsTab();
     if(getSetting("searchSidebar")) await buildCollections();
     if (getSetting("searchCompendium")) await buildCompendiumIndex();
+    const promises = [];
+    Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
+    await Promise.all(promises);
+    return INDEX;
 }
 
 async function buildCompendiumIndex() {
