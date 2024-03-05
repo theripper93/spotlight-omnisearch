@@ -58,11 +58,11 @@
   "url": "https://www.patreon.com/theripper93",
   "manifest": "https://foundryvtt.s3.us-west-2.amazonaws.com/modules/spotlight-omnisearch/module.json",
   "relationships": {
-    "requires": [
-    ]
+    "requires": []
   },
   "compatibility": {
     "minimum": "11",
     "verified": "11"
-  }
+  },
+  "protected": false
 }
