@@ -1,7 +1,7 @@
 {
-  "title": "module-name",
+  "title": "Spotlight Omnisearch",
   "description": "desc",
-  "id": "module-id",
+  "id": "spotlight-omnisearch",
   "version": "1.0",
   "authors": [
     {
@@ -55,8 +55,8 @@
     "styles/module.css"
   ],
   "packs": [],
-  "url": "https://github.com/theripper93/module-id",
-  "manifest": "https://github.com/theripper93/module-id/releases/latest/download/module.json",
+  "url": "https://github.com/theripper93/spotlight-omnisearch",
+  "manifest": "https://github.com/theripper93/spotlight-omnisearch/releases/latest/download/module.json",
   "download": "",
   "relationships": {
     "requires": [
