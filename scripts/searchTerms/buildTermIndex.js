@@ -9,6 +9,7 @@ let indexBuilt = false;
 
 export async function buildIndex() {
     if (indexBuilt) return;
+    indexBuilt = true;
     if(getSetting("searchFiles")) buildFiles();
     if(getSetting("searchSettings")) await buildSettings();
     if(getSetting("searchUtils")) await buildSettingsTab();

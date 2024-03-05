@@ -4,6 +4,17 @@
     overflow: hidden;
     font-family: "Roboto", sans-serif;
     transition: opacity 0.2s ease-in-out;
+    border: 1px solid grey;
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.392);
+        border: none;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+        border: none;
+    }
 
     &.dragging {
         pointer-events: none;
@@ -11,16 +22,21 @@
     }
 
     &.dark {
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-text-light-3);
+        }
+
         .window-content {
             background: rgb(0 0 0 / 18%);
             color: var(--color-text-light-3);
         }
 
-        input{
+        input {
             color: var(--color-text-light-3);
         }
 
-        button{
+        button {
             color: var(--color-text-light-3);
         }
     }
@@ -48,6 +64,11 @@
     &.inverted {
         main {
             flex-direction: column-reverse;
+
+            header {
+                border-bottom: none;
+                border-top: 1px solid grey;
+            }
         }
 
         .window-header {
@@ -61,6 +82,12 @@
         display: flex;
         flex-direction: column;
 
+        &:has(.no-results) {
+            header {
+                border: none;
+            }
+        }
+
         header {
             height: var(--spotlight-height);
             display: flex;
@@ -68,6 +95,7 @@
             align-items: center;
             width: 100%;
             padding: 0 1rem;
+            border-bottom: 1px solid grey;
 
             i {
                 font-size: 1.5rem;

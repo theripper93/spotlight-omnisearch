@@ -46,7 +46,21 @@ export class Spotlight extends Application {
         html.querySelector("input").addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
                 event.preventDefault();
-                html.querySelector(".search-item")?.click();
+                const isShift = event.shiftKey;
+                const isAlt = event.altKey;
+                const firstItem = html.querySelector(".search-item");
+                if (!firstItem) return;
+                if (isShift) {
+                    //find the first action button
+                    const actionButton = firstItem.querySelector(".search-item-actions button");
+                    if (actionButton) return actionButton.click();
+                }
+                if (isAlt) {
+                    //find the second action button
+                    const actionButton = firstItem.querySelectorAll(".search-item-actions button")[1];
+                    if (actionButton) return actionButton.click();
+                }
+                firstItem?.click();
             }
             //if escape is pressed, close the spotlight
             if (event.key === "Escape") {
