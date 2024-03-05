@@ -1,4 +1,4 @@
-import {BaseSearchTerm} from "./baseSearchTerm";
+import { BaseSearchTerm } from "./baseSearchTerm";
 import { getSetting } from "../settings";
 
 export const INDEX = [];
@@ -7,13 +7,18 @@ export let FILE_INDEX = [];
 
 let indexBuilt = false;
 
-export async function buildIndex() {
+export async function buildIndex(force = false) {
+    if (force) {
+        indexBuilt = false;
+        INDEX.length = 0;
+        FILE_INDEX.length = 0;
+    }
     if (indexBuilt) return;
     indexBuilt = true;
-    if(getSetting("searchFiles")) await buildFiles();
-    if(getSetting("searchSettings")) await buildSettings();
-    if(getSetting("searchUtils")) await buildSettingsTab();
-    if(getSetting("searchSidebar")) await buildCollections();
+    if (getSetting("searchFiles")) buildFiles();
+    if (getSetting("searchSettings")) await buildSettings();
+    if (getSetting("searchUtils")) await buildSettingsTab();
+    if (getSetting("searchSidebar")) await buildCollections();
     if (getSetting("searchCompendium")) await buildCompendiumIndex();
     const promises = [];
     Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
@@ -22,15 +27,17 @@ export async function buildIndex() {
 }
 
 async function buildCompendiumIndex() {
-    const packs = Array.from(game.packs);
+    const packs = Array.from(game.packs).filter((p) => game.user.isGM || !p.private);
     const index = [];
+    await Promise.all(packs.map(p => p.getIndex()));
     for (const pack of packs) {
-        if(!game.user.isGM && pack.private) continue;
+        const packPackageName = pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title;
         const packIndex = Array.from(await pack.getIndex());
         packIndex.forEach((entry) => {
             index.push(
                 new BaseSearchTerm({
                     name: entry.name,
+                    description: pack.title + " - " + packPackageName,
                     keywords: [],
                     type: pack.documentName + " compendium",
                     data: { ...entry, documentName: pack.documentName },
@@ -54,7 +61,7 @@ async function buildCollections() {
 
     const index = [];
 
-    const exclude = ["Combat", "Setting", "FogExploration"];
+    const exclude = ["Combat", "Setting", "FogExploration", "ChatMessage"];
 
     for (const collection of collections) {
         if (exclude.includes(collection.documentName)) continue;
@@ -67,6 +74,7 @@ async function buildCollections() {
                 keywords.push(document.content.toLowerCase() + document.flavor?.toLowerCase() ?? "");
                 description = document.content;
             }
+            if (document.folder) description = getFoldersRecursive(document).reverse().join(" > ");
             index.push(
                 new BaseSearchTerm({
                     name: document.name ?? document.speaker?.alias ?? document.content,
@@ -91,10 +99,10 @@ async function buildCollections() {
 }
 
 async function buildSettings() {
-    if(!game.user.isGM) return;
+    if (!game.user.isGM) return;
     const index = [];
     game.settings.settings.forEach((setting) => {
-        if (!setting.name) return;
+        if (!setting.name || !setting.config) return;
         index.push(
             new BaseSearchTerm({
                 name: game.i18n.localize(setting.name),
@@ -136,7 +144,7 @@ async function buildSettingsTab() {
         //extract the text and the i class
         const buttonLabel = button.innerText.trim();
         const i = button.querySelector("i");
-        if(!i) return;
+        if (!i) return;
         const icon = i.className;
         if (!buttonLabel) return;
         index.push(
@@ -157,8 +165,7 @@ async function buildSettingsTab() {
 }
 
 async function buildFiles() {
-    if(!game.user.isGM) return;
-    //wait 5 seconds for the file index to be built
+    if (!game.user.isGM) return;
     await new Promise((resolve) => setTimeout(resolve, 5000));
     const fileCache = canvas.deepSearchCache?._fileIndexCache;
     if (!fileCache) return;
@@ -210,4 +217,11 @@ async function buildFiles() {
         });
     }
     FILE_INDEX = index;
+}
+
+
+function getFoldersRecursive(document, folders = []) {
+    if (document.folder) folders.push(document.folder.name);
+    else return folders;
+    return getFoldersRecursive(document.folder, folders);
 }

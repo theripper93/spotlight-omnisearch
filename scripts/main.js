@@ -1,6 +1,6 @@
 import {Spotlight} from "./app/spotlight.js";
 import {initConfig} from "./config.js";
-import {INDEX} from "./searchTerms/buildTermIndex.js";
+import {INDEX, buildIndex} from "./searchTerms/buildTermIndex.js";
 import { getSetting, registerSettings, setSetting } from "./settings.js";
 
 export const MODULE_ID = "spotlight-omnisearch";
@@ -12,6 +12,7 @@ Hooks.on("init", () => {
         app: Spotlight,
         INDEX: INDEX,
         SearchTerm: BaseSearchTerm,
+        buildIndex: buildIndex,
     }
 });
 

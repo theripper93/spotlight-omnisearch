@@ -4,12 +4,18 @@ import { SPECIAL_SEARCHES } from "../searchTerms/special.js";
 import { INDEX, FILE_INDEX, buildIndex } from "../searchTerms/buildTermIndex.js";
 import { getSetting } from "../settings.js";
 
+let indexingDone = false;
+
 export class Spotlight extends Application {
     constructor({ first } = {}) {
         super();
         this.first = first;
         buildIndex().then((r) => {
-            if (r) this._onSearch();
+            if (r) {
+                this._onSearch();
+                this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
+                indexingDone = true;
+            }
         });
         this._onSearch = debounce(this._onSearch, 167);
     }
@@ -84,6 +90,12 @@ export class Spotlight extends Application {
             html.querySelector("input").focus();
         }, 50);
         if (getSetting("darkMode")) html.closest("#spotlight").classList.add("dark");
+
+        if (!indexingDone) {
+            const searchIcon = html.querySelector(".fa-search");
+            //replace with these classes <i class="fa-light fa-spinner-scale fa-spin"></i>
+            searchIcon.classList = "fa-light fa-spinner fa-spin";
+        }
     }
 
     setPosition(...args) {
@@ -101,8 +113,27 @@ export class Spotlight extends Application {
         }
     }
 
+    _getFilters(query) {
+        const filters = [];
+        while (query.includes("!")) {
+            const filter = query.match(/^!(\w+)/g);
+            if (filter) {
+                filters.push(filter[0].replace("!", "").toLowerCase());
+                query = query.replace(filter[0], "").trim();
+            } else {
+                break;
+            }
+        }
+        return { filters, query };
+    }
+
     _onSearch() {
-        const query = this._html.querySelector("input").value.toLowerCase().trim();
+        let query = this._html.querySelector("input").value.toLowerCase().trim();
+        //check the query for filtered searches such as !keyword
+        const filtersData = this._getFilters(query);
+        const filters = filtersData.filters;
+        query = filtersData.query;
+        const hasFilters = filters.length > 0;
         const section = this._html.querySelector("section");
         section.classList.toggle("no-results", !query);
         if (!query) {
@@ -120,21 +151,24 @@ export class Spotlight extends Application {
         });
 
         //match index
-
-        INDEX.forEach((search) => {
+        for (let i = 0; i < INDEX.length; i++) {
+            const search = INDEX[i];
             search.query = query;
+            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
             if (search.match(query)) {
                 results.push(new SearchItem(search));
             }
-        });
+        }
 
         //match file index
-        FILE_INDEX.forEach((search) => {
+        for (let i = 0; i < FILE_INDEX.length; i++) {
+            const search = FILE_INDEX[i];
             search.query = query;
+            if (hasFilters && !filters.some((filter) => search.type.toLowerCase().includes(filter))) continue;
             if (search.match(query)) {
                 results.push(new SearchItem(search));
             }
-        });
+        }
 
         //cap max results to 50
         results.splice(50);
