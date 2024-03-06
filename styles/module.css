@@ -6,6 +6,9 @@
   transition: opacity 0.2s ease-in-out;
   border: 1px solid grey;
 }
+#spotlight.force-opacity {
+  opacity: 1 !important;
+}
 #spotlight .key {
   flex: none;
   padding: 0 4px;
@@ -34,8 +37,11 @@
   background: var(--color-text-light-3);
 }
 #spotlight.dark .window-content {
-  background: rgba(0, 0, 0, 0.18);
   color: var(--color-text-light-3);
+}
+#spotlight.dark .window-content::before {
+  background: rgba(0, 0, 0, 0.4);
+  filter: none;
 }
 #spotlight.dark input {
   color: var(--color-text-light-3);
@@ -57,8 +63,19 @@
 #spotlight .window-content {
   margin: 0;
   padding: 0;
-  background: rgba(255, 255, 255, 0.736);
-  backdrop-filter: blur(5px);
+  background: transparent;
+}
+#spotlight .window-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  filter: brightness(3);
+  backdrop-filter: blur(10px);
+  z-index: -1;
 }
 #spotlight.inverted main {
   flex-direction: column-reverse;

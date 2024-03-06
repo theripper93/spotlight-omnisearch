@@ -6,6 +6,10 @@
     transition: opacity 0.2s ease-in-out;
     border: 1px solid grey;
 
+    &.force-opacity{
+        opacity: 1 !important;
+    }
+
     .key {
         flex: none;
         padding: 0 4px;
@@ -41,8 +45,12 @@
         }
 
         .window-content {
-            background: rgb(0 0 0 / 18%);
             color: var(--color-text-light-3);
+
+            &::before {
+                background: rgb(0 0 0 / 40%);
+                filter: none;
+            }
         }
 
         input {
@@ -70,8 +78,19 @@
     .window-content {
         margin: 0;
         padding: 0;
-        background: rgba(255, 255, 255, 0.736);
-        backdrop-filter: blur(5px);
+        background: transparent;
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgb(255 255 255 / 40%);
+            filter: brightness(3.0);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
     }
 
     &.inverted {

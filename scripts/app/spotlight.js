@@ -97,6 +97,11 @@ export class Spotlight extends Application {
         }, 50);
         if (getSetting("darkMode")) html.closest("#spotlight").classList.add("dark");
 
+        html.closest("#spotlight").classList.add("force-opacity");
+        setTimeout(() => {
+            html.closest("#spotlight").classList.remove("force-opacity");
+        }, 300);
+
         if (!indexingDone) {
             const searchIcon = html.querySelector(".fa-search");
             //replace with these classes <i class="fa-light fa-spinner-scale fa-spin"></i>
