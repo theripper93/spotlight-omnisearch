@@ -14,7 +14,7 @@ export class Spotlight extends Application {
             if (r) {
                 this._onSearch();
                 indexingDone = true;
-                this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
+                if(this._html) this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
             }
         });
         this._onSearch = debounce(this._onSearch, 167);
