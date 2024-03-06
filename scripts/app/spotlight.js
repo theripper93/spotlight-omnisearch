@@ -255,7 +255,7 @@ class SearchItem {
             button.addEventListener("click", (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                action.callback();
+                action.callback(e);
             });
             actionsContainer.appendChild(button);
         });
