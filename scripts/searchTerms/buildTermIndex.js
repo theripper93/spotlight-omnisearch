@@ -19,6 +19,7 @@ export async function buildIndex(force = false) {
     if (getSetting("searchSettings")) await buildSettings();
     if (getSetting("searchUtils")) await buildSettingsTab();
     if (getSetting("searchSidebar")) await buildCollections();
+    await buildModuleIntegration();
     if (getSetting("searchCompendium")) await buildCompendiumIndex();
     const promises = [];
     Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
@@ -29,7 +30,7 @@ export async function buildIndex(force = false) {
 async function buildCompendiumIndex() {
     const packs = Array.from(game.packs).filter((p) => game.user.isGM || !p.private);
     const index = [];
-    await Promise.all(packs.map(p => p.getIndex()));
+    await Promise.all(packs.map((p) => p.getIndex()));
     for (const pack of packs) {
         const packPackageName = pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title;
         const packIndex = Array.from(await pack.getIndex());
@@ -219,9 +220,31 @@ async function buildFiles() {
     FILE_INDEX = index;
 }
 
-
 function getFoldersRecursive(document, folders = []) {
     if (document.folder) folders.push(document.folder.name);
     else return folders;
     return getFoldersRecursive(document.folder, folders);
+}
+
+async function buildModuleIntegration() {
+    //dfreds
+    if (game.dfreds) {
+        const allEffects = game.dfreds.effects.all;
+        for (const effect of allEffects) {
+            INDEX.push(
+                new BaseSearchTerm({
+                    name: effect.name,
+                    description: effect.description,
+                    keywords: [],
+                    type: "dfreds",
+                    data: { ...effect },
+                    img: effect.img,
+                    icon: ["fas fa-hand-sparkles", "fas fa-bolt"],
+                    onClick: async function () {
+                        game.dfreds.effectInterface.toggleEffect(effect.name);
+                    },
+                }),
+            );
+        }
+    }
 }

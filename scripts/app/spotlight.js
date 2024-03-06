@@ -150,12 +150,14 @@ export class Spotlight extends Application {
             }
         });
 
+        const splitQuery = query.split(" ").map((q) => q.trim()).filter((q) => q);
+
         //match index
         for (let i = 0; i < INDEX.length; i++) {
             const search = INDEX[i];
             search.query = query;
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
-            if (search.match(query)) {
+            if (splitQuery.every((q) => search.match(q))) {
                 results.push(new SearchItem(search));
             }
         }
@@ -165,7 +167,7 @@ export class Spotlight extends Application {
             const search = FILE_INDEX[i];
             search.query = query;
             if (hasFilters && !filters.some((filter) => search.type.toLowerCase().includes(filter))) continue;
-            if (search.match(query)) {
+            if (splitQuery.every((q) => search.match(q))) {
                 results.push(new SearchItem(search));
             }
         }

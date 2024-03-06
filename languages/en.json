@@ -36,6 +36,18 @@
             "execute": "Execute",
             "activate": "Activate",
             "view": "View"
+        },
+        "notifications": {
+            "calc-clipboard": "Result copied to clipboard",
+            "note": "Note saved in 'Omnisearch Notes' journal"
+        },
+        "special": {
+            "note": {
+                "name": "Quick Note"
+            },
+            "roll": {
+                "name": "Quick Roll"
+            }
         }
     }
 }

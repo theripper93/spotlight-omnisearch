@@ -1,4 +1,5 @@
-import { BaseSearchTerm } from "./baseSearchTerm";
+import {BaseSearchTerm} from "./baseSearchTerm";
+import { MODULE_ID } from "../main";
 
 export const SPECIAL_SEARCHES = [];
 
@@ -10,6 +11,7 @@ export class SpecialSearchTerm extends BaseSearchTerm {
 }
 
 const NOTE_MATCHING = ["note", "notes", "!note", "!notes", "note:", "notes:", "!n", "n:"];
+const ROLL_MATCHING = ["roll", "!roll", "roll:", "!r", "r:", "r "];
 
 SPECIAL_SEARCHES.push(
     //Calculator
@@ -39,11 +41,12 @@ SPECIAL_SEARCHES.push(
         },
         onClick: function (search) {
             navigator.clipboard.writeText(this.name);
+            ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.calc-clipboard`));
         },
     }),
     //notes
     new SpecialSearchTerm({
-        name: "Note",
+        name: () => game.i18n.localize(`${MODULE_ID}.special.note.name`),
         description: (search) => {
             const noteText = search.query.replace(/(note|notes|!note|!notes|note:|notes:|!n|n:)/i, "").trim();
             return noteText;
@@ -80,6 +83,25 @@ SPECIAL_SEARCHES.push(
             page.update({
                 "text.content": `${currentContent} <h3>${nowTime}:</h3><p>${noteText}</p>`,
             });
+            ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.note`));
+        },
+    }),
+    //roll
+    new SpecialSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.roll.name`),
+        description: (search) => {
+            const rollText = search.query.replace(/(roll|!roll|roll:|!r|r:|r )/i, "").trim();
+            return rollText;
+        },
+        type: "special-app",
+        data: {},
+        img: "",
+        icon: "fas fa-dice-d20",
+        match: (query) => {
+            return ROLL_MATCHING.some((keyword) => query.startsWith(keyword));
+        },
+        onClick: async function (search) {
+            new Roll(this.description).toMessage();
         },
     }),
 );
