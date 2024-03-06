@@ -166,9 +166,13 @@
 #spotlight main section #search-result li.multi-icons i {
   order: 999;
 }
-#spotlight main section #search-result li.calc {
+#spotlight main section #search-result li.special-app {
   border: 2px solid var(--color-border-dark-4);
   background: rgba(0, 0, 0, 0.1607843137);
   padding: 1rem;
   border-radius: 10px;
+}
+#spotlight main section #search-result li.special-app > i {
+  font-size: 3rem;
+  width: 2rem;
 }/*# sourceMappingURL=module.css.map */

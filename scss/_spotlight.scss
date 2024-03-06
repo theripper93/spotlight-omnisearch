@@ -207,11 +207,15 @@
                         }
                     }
 
-                    &.calc {
+                    &.special-app {
                         border: 2px solid var(--color-border-dark-4);
                         background: #00000029;
                         padding: 1rem;
                         border-radius: 10px;
+                        > i{
+                            font-size: 3rem;
+                            width: 2rem;
+                        }
                     }
                 }
             }

@@ -61,7 +61,7 @@ async function buildCollections() {
 
     const index = [];
 
-    const exclude = ["Combat", "Setting", "FogExploration", "ChatMessage"];
+    const exclude = ["Combat", "Setting", "FogExploration", "ChatMessage", "Folder"];
 
     for (const collection of collections) {
         if (exclude.includes(collection.documentName)) continue;

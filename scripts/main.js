@@ -1,7 +1,8 @@
 import {Spotlight} from "./app/spotlight.js";
 import {initConfig} from "./config.js";
+import {BaseSearchTerm} from "./searchTerms/baseSearchTerm.js";
 import {INDEX, buildIndex} from "./searchTerms/buildTermIndex.js";
-import { getSetting, registerSettings, setSetting } from "./settings.js";
+import {getSetting, registerSettings, setSetting} from "./settings.js";
 
 export const MODULE_ID = "spotlight-omnisearch";
 

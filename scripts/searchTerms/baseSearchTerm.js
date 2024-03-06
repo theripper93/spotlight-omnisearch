@@ -1,9 +1,8 @@
-import {MODULE_ID} from "../main";
-
 export class BaseSearchTerm {
-    constructor ({name,description, query, keywords = [], actions = [], dragData, type, data, img, icon, onClick = null}) {
+    constructor({ name, description, query, keywords = [], actions = [], dragData, type, data, img, icon, onClick = null }) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
-        this.description = description ?? "";
+        description = description ?? "";
+        this._description = typeof description === "function" ? description.bind(this) : () => description;
         this.actions = actions;
         this.query = query;
         this.dragData = dragData;
@@ -27,5 +26,9 @@ export class BaseSearchTerm {
 
     get name() {
         return this._name(this);
+    }
+
+    get description() {
+        return this._description(this);
     }
 }
