@@ -138,7 +138,7 @@ SPECIAL_SEARCHES.push(
                     label += `<hr><strong style="font-size: larger;">${hours ? `${hours}:` : ""}${minutes ? `${minutes}:` : ""}${seconds ? `${seconds}` : ""}</strong>`;
                 }
             } else {
-                if (current !== undefined) {
+                if (current !== undefined && game.user.isGM) {
                     const setting = getSetting("appData");
                     delete setting.timer;
                     setSetting("appData", setting);
@@ -160,6 +160,7 @@ SPECIAL_SEARCHES.push(
             return TIMER_MATCHING.some((keyword) => query.startsWith(keyword));
         },
         onClick: async function (search) {
+            if(!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.timer-gm`));
             const noteText = this.query.replace(/(timer|timer:|time|time:|t:|t )/i, "").trim();
             const { hours, minutes, seconds } = parseTime(noteText);
             const totalSeconds = hours * 3600 + minutes * 60 + seconds;

@@ -2,14 +2,17 @@ import { MODULE_ID } from "../main.js";
 import { SPECIAL_SEARCHES } from "../searchTerms/special.js";
 
 import { INDEX, FILE_INDEX, buildIndex } from "../searchTerms/buildTermIndex.js";
-import { getSetting } from "../settings.js";
+import { getSetting, setSetting } from "../settings.js";
 import { BaseSearchTerm } from "../searchTerms/baseSearchTerm.js";
 
 let indexingDone = false;
 
+let SPOTLIGHT_WIDTH = 700;
+
 export class Spotlight extends Application {
     constructor({ first } = {}) {
         super();
+        SPOTLIGHT_WIDTH = getSetting("spotlightWidth") || 700;
         this.first = first;
         this.ACTOR_ITEMS_INDEX = [];
         ui.spotlightOmnisearch?.close();
@@ -22,6 +25,7 @@ export class Spotlight extends Application {
             }
         });
         this._onSearch = debounce(this._onSearch, 167);
+        this.updateStoredPosition = debounce(this.updateStoredPosition, 167);
         document.addEventListener("click", Spotlight.onClickAway);
         this.indexActorItems();
     }
@@ -44,7 +48,7 @@ export class Spotlight extends Application {
             popOut: true,
             resizable: false,
             minimizable: false,
-            width: 700,
+            width: SPOTLIGHT_WIDTH,
             top: window.innerHeight / 4,
             title: game.i18n.localize(`${MODULE_ID}.${this.APP_ID}.title`),
         });
@@ -90,7 +94,7 @@ export class Spotlight extends Application {
     async getData() {
         const appData = getSetting("appData");
         const timer = appData.timer;
-        if (timer && Date.now() > timer) {
+        if (game.user.isGM && timer && Date.now() > timer) {
             delete appData.timer;
             await setSetting("appData", appData);
         }
@@ -147,6 +151,13 @@ export class Spotlight extends Application {
             //replace with these classes <i class="fa-light fa-spinner-scale fa-spin"></i>
             searchIcon.classList = "fa-light fa-spinner fa-spin";
         }
+        const storedPosition = getSetting("spotlightPosition");
+        if (storedPosition) {
+            //check if the stored position is within the window
+            if (!(storedPosition.left + SPOTLIGHT_WIDTH > window.innerWidth || storedPosition.top > window.innerHeight || storedPosition.top < 0 || storedPosition.left < 0)) {
+                this.setPosition({left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH});
+            }
+        }
         this._onSearch();
     }
 
@@ -163,6 +174,11 @@ export class Spotlight extends Application {
             windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3);
             this.setPosition({ height: "auto" });
         }
+        this.updateStoredPosition();
+    }
+
+    updateStoredPosition() {
+        setSetting("spotlightPosition", {left: this.position.left, top: this.position.top});
     }
 
     _getFilters(query) {

@@ -14,6 +14,10 @@
                 "name": "Click to Dismiss",
                 "hint": "Click outside the Spotlight Omnisearch to dismiss it"
             },
+            "spotlightWidth": {
+                "name": "Spotlight Width",
+                "hint": "Set the width of the Spotlight Omnisearch in pixels"
+            },
             "showImages": {
                 "name": "Show Images",
                 "hint": "Display images in search results. Images will increase loading times for the results and may result in stuttering depending on the number of results and the size of the images."
@@ -57,7 +61,8 @@
         },
         "notifications": {
             "calc-clipboard": "Result copied to clipboard",
-            "note": "Note saved in 'Omnisearch Notes' journal"
+            "note": "Note saved in 'Omnisearch Notes' journal",
+            "timer-gm": "Only the GM can start a timer"
         },
         "special": {
             "note": {
