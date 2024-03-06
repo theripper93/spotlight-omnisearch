@@ -73,7 +73,7 @@ export class Spotlight extends Application {
                     //find the first action button
                     const actionButton = firstItem.querySelector(".search-item-actions button");
                     if (actionButton) actionButton.click();
-                }else if (isAlt) {
+                } else if (isAlt) {
                     //find the second action button
                     const actionButton = firstItem.querySelectorAll(".search-item-actions button")[1];
                     if (actionButton) actionButton.click();
@@ -233,8 +233,8 @@ class SearchItem {
     }
 
     getActions() {
-        const actions = this.actions ?? [];
-        if (this.type == "Macro") {
+        const actions = [...this.actions] ?? [];
+        if (this.type.includes("Macro")) {
             actions.push({
                 name: `${MODULE_ID}.actions.execute`,
                 icon: '<i class="fas fa-terminal"></i>',
@@ -259,6 +259,35 @@ class SearchItem {
                     },
                 },
             );
+        } else if (this.type.includes("RollTable")) {
+            actions.push({
+                name: `${MODULE_ID}.actions.roll-table`,
+                icon: '<i class="fas fa-dice-d20"></i>',
+                callback: async () => {
+                    (await fromUuid(this.data.uuid)).draw();
+                },
+            });
+        } else if (this.type.includes("Playlist")) {
+            const playlist = fromUuidSync(this.data.uuid);
+            if (playlist) {
+                if (playlist.playing) {
+                    actions.push({
+                        name: `${MODULE_ID}.actions.stop-playlist`,
+                        icon: '<i class="fas fa-stop"></i>',
+                        callback: async () => {
+                            playlist.stopAll();
+                        },
+                    });
+                } else {
+                    actions.push({
+                        name: `${MODULE_ID}.actions.play-playlist`,
+                        icon: '<i class="fas fa-play"></i>',
+                        callback: async () => {
+                            playlist.playAll();
+                        },
+                    });
+                }
+            }
         }
 
         if (!actions.length) return null;

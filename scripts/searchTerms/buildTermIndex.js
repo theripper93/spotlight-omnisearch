@@ -29,7 +29,8 @@ export async function buildIndex(force = false) {
 }
 
 async function buildCompendiumIndex() {
-    const packs = Array.from(game.packs).filter((p) => game.user.isGM || !p.private);
+    const allowedCompendiums = getSetting("compendiumConfig");
+    const packs = Array.from(game.packs).filter((p) => (game.user.isGM || !p.private) && allowedCompendiums[p.metadata.id] !== false);
     const index = [];
     await Promise.all(packs.map((p) => p.getIndex()));
     for (const pack of packs) {
@@ -44,7 +45,7 @@ async function buildCompendiumIndex() {
                     type: pack.documentName + " compendium",
                     data: { ...entry, documentName: pack.documentName },
                     img: entry.img,
-                    icon: ["fas fa-book", CONFIG[pack.documentName].sidebarIcon],
+                    icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
                     onClick: async function () {
                         const entity = await fromUuid(entry.uuid);
                         entity.sheet.render(true);
@@ -101,10 +102,10 @@ async function buildCollections() {
 }
 
 async function buildSettings() {
-    if (!game.user.isGM) return;
     const index = [];
     game.settings.settings.forEach((setting) => {
         if (!setting.name || !setting.config) return;
+        if (!game.user.isGM && setting.scope === "world") return;
         index.push(
             new BaseSearchTerm({
                 name: game.i18n.localize(setting.name),
@@ -128,6 +129,41 @@ async function buildSettings() {
                                 settingFG.scrollIntoView({ behavior: "smooth" });
                             }, 100);
                             settingFG.style.backgroundColor = "#0000ff29";
+                        }
+                    });
+                },
+            }),
+        );
+    });
+    game.keybindings.actions.forEach((binding, key) => {
+        if (!game.user.isGM && binding.restricted) return;
+        const name = game.i18n.localize(binding.name);
+        let description = "";
+        const bindings = game.keybindings.bindings.get(key);
+        bindings.forEach((b) => {
+            description += `<span class="key">${KeybindingsConfig._humanizeBinding(b)}</span>`;
+        });
+        if (binding.hint) description += game.i18n.localize(binding.hint);
+        index.push(
+            new BaseSearchTerm({
+                name: name,
+                description: description,
+                keywords: [],
+                type: "keybinding",
+                data: { ...binding },
+                img: null,
+                icon: ["fas fa-keyboard"],
+                onClick: async function () {
+                    new KeybindingsConfig().render(true);
+                    Hooks.once("renderKeybindingsConfig", (app, html) => {
+                        html = html[0];
+                        const tab = html.querySelector(`.tab[data-tab="${binding.namespace}"]`);
+                        const bindingFG = tab.querySelector(`[data-action-id="${key}"]`);
+                        if (bindingFG) {
+                            setTimeout(() => {
+                                bindingFG.scrollIntoView({ behavior: "smooth" });
+                            }, 100);
+                            bindingFG.style.backgroundColor = "#0000ff29";
                         }
                     });
                 },

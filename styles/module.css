@@ -6,6 +6,18 @@
   transition: opacity 0.2s ease-in-out;
   border: 1px solid grey;
 }
+#spotlight .key {
+  flex: none;
+  padding: 0 4px;
+  min-width: 24px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--color-border-light-2);
+  border-radius: 5px;
+  box-shadow: 1px 1px #444;
+  text-align: center;
+  margin-right: 0.5rem;
+  padding: 0.2rem 0.5rem;
+}
 #spotlight ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.392);
   border: none;

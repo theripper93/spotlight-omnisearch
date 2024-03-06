@@ -1,6 +1,11 @@
 {
     "spotlight-omnisearch": {
         "settings": {
+            "compendiumConfig": {
+                "name": "Compendium Configuration",
+                "hint": "Configure which compendiums to include in the search results",
+                "label": "Configure Compendiums"
+            },
             "darkMode": {
                 "name": "Dark Mode",
                 "hint": "Use a dark theme for the Spotlight Omnisearch"
@@ -11,7 +16,7 @@
             },
             "searchFiles": {
                 "name": "Search Files",
-                "hint": "Include file search results"
+                "hint": "Include file search results (Requires File Index from the Dig Down module)"
             },
             "searchSettings": {
                 "name": "Search Settings",
@@ -30,12 +35,20 @@
                 "hint": "Include utility search results"
             }
         },
+        "hotkeys": {
+            "toggleSpotlight": {
+                "name": "Toggle Spotlight Omnisearch"
+            }
+        },
         "app": {},
         "flags": {},
         "actions": {
             "execute": "Execute",
             "activate": "Activate",
-            "view": "View"
+            "view": "View",
+            "roll-table": "Roll Table",
+            "play-playlist": "Play Playlist",
+            "stop-playlist": "Stop Playlist"
         },
         "notifications": {
             "calc-clipboard": "Result copied to clipboard",

@@ -1,0 +1,17 @@
+<form action="submit" style="display: flex; flex-direction: column;">
+    <div class="compendium-grid" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));flex: 1;">
+
+        {{#each data as |compendium|}}
+
+        <div class="form-group">
+            <input type="checkbox" name="{{compendium.id}}" {{#if compendium.checked}}checked{{/if}}>
+            <label for="{{compendium.id}}">{{compendium.name}} ({{compendium.package}})</label>
+        </div>
+
+        {{/each}}
+    </div>
+
+    <footer>
+        <button type="submit">{{localize 'Save'}}</button>
+    </footer>
+</form>
