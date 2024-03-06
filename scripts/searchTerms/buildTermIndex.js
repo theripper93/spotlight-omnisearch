@@ -204,7 +204,7 @@ async function buildFiles() {
                     name: decodeURIComponent(fileName),
                     keywords: [file],
                     type: "file",
-                    data: { dropData },
+                    dragData: dropData,
                     img: null,
                     icon: [icon],
                     onClick: async function () {

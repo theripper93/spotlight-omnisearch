@@ -193,6 +193,8 @@ class SearchItem {
         this.type = searchTerm.type;
         this.data = searchTerm.data;
         this.img = searchTerm.img;
+        this.dragData = searchTerm.dragData;
+        this.actions = searchTerm.actions;
         if (!getSetting("showImages")) this.img = null;
         this.icon = Array.isArray(searchTerm.icon) ? searchTerm.icon : [searchTerm.icon];
         this.element = document.createElement("li");
@@ -216,7 +218,7 @@ class SearchItem {
     }
 
     getActions() {
-        const actions = this.data.actions ?? [];
+        const actions = this.actions ?? [];
         if (this.type == "Macro") {
             actions.push({
                 name: `${MODULE_ID}.actions.execute`,
@@ -281,11 +283,11 @@ class SearchItem {
                 this.endDragging();
             });
         }
-        if (this.data.dropData) {
+        if (this.dragData) {
             this.element.setAttribute("draggable", true);
             this.element.addEventListener("dragstart", (event) => {
                 this.setDragging();
-                event.dataTransfer.setData("text/plain", JSON.stringify(this.data.dropData));
+                event.dataTransfer.setData("text/plain", JSON.stringify(this.dragData));
             });
             this.element.addEventListener("dragend", () => {
                 this.endDragging();
