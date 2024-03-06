@@ -3,6 +3,7 @@ import { SPECIAL_SEARCHES } from "../searchTerms/special.js";
 
 import { INDEX, FILE_INDEX, buildIndex } from "../searchTerms/buildTermIndex.js";
 import { getSetting } from "../settings.js";
+import { BaseSearchTerm } from "../searchTerms/baseSearchTerm.js";
 
 let indexingDone = false;
 
@@ -10,6 +11,7 @@ export class Spotlight extends Application {
     constructor({ first } = {}) {
         super();
         this.first = first;
+        this.ACTOR_ITEMS_INDEX = [];
         ui.spotlightOmnisearch?.close();
         ui.spotlightOmnisearch = this;
         buildIndex().then((r) => {
@@ -21,6 +23,7 @@ export class Spotlight extends Application {
         });
         this._onSearch = debounce(this._onSearch, 167);
         document.addEventListener("click", Spotlight.onClickAway);
+        this.indexActorItems();
     }
 
     static get APP_ID() {
@@ -53,7 +56,44 @@ export class Spotlight extends Application {
         ui.spotlightOmnisearch?.close();
     }
 
+    indexActorItems() {
+        const actors = canvas?.tokens?.controlled.map((token) => token.actor) ?? [];
+        if (_token && !actors.includes(_token.actor)) actors.push(_token.actor);
+        if (!actors.includes(game.user.character)) actors.push(game.user.character);
+        for (const actor of actors) {
+            if (!actor) continue;
+            const items = actor.items.map((item) => {
+                const actions = [];
+                if (item.use) {
+                    actions.push({
+                        name: `${MODULE_ID}.actions.use-item`,
+                        icon: '<i class="fas fa-hand-paper"></i>',
+                        callback: async () => {
+                            item.use();
+                        },
+                    });
+                }
+                return new BaseSearchTerm({
+                    name: item.name,
+                    type: "Item owned",
+                    description: actor.name,
+                    img: item.img,
+                    icon: ["fas fa-user-circle", "fas fa-suitcase"],
+                    data: { uuid: item.uuid, documentName: "Item" },
+                    actions: actions,
+                });
+            });
+            this.ACTOR_ITEMS_INDEX.push(...items);
+        }
+    }
+
     async getData() {
+        const appData = getSetting("appData");
+        const timer = appData.timer;
+        if (timer && Date.now() > timer) {
+            delete appData.timer;
+            await setSetting("appData", appData);
+        }
         return { first: this.first };
     }
 
@@ -107,6 +147,7 @@ export class Spotlight extends Application {
             //replace with these classes <i class="fa-light fa-spinner-scale fa-spin"></i>
             searchIcon.classList = "fa-light fa-spinner fa-spin";
         }
+        this._onSearch();
     }
 
     setPosition(...args) {
@@ -146,25 +187,54 @@ export class Spotlight extends Application {
         query = filtersData.query;
         const hasFilters = filters.length > 0;
         const section = this._html.querySelector("section");
-        section.classList.toggle("no-results", !query);
-        if (!query) {
+        const isActiveTimer = !!getSetting("appData").timer;
+        section.classList.toggle("no-results", !query && !isActiveTimer);
+        if (!query && !isActiveTimer) {
             this._html.querySelector("#search-result").innerHTML = "";
             this.setPosition({ height: "auto" });
             return;
         }
         const results = [];
+
+        const completeSearch = () => {
+            const list = this._html.querySelector("#search-result");
+            list.innerHTML = "";
+            results.forEach((result) => {
+                list.appendChild(result.element);
+            });
+            if (!results.length) {
+                section.classList.add("no-results");
+            }
+            this.setPosition({ height: "auto" });
+        };
         //match special searches
         SPECIAL_SEARCHES.forEach((search) => {
             search.query = query;
+            if (isActiveTimer && search.type.includes("timer")) {
+                results.push(new SearchItem(search));
+                return;
+            }
             if (search.match(query)) {
                 results.push(new SearchItem(search));
             }
         });
 
+        if (!query && isActiveTimer) return completeSearch();
+
         const splitQuery = query
             .split(" ")
             .map((q) => q.trim())
             .filter((q) => q);
+
+        //match actor items
+        for (let i = 0; i < this.ACTOR_ITEMS_INDEX.length; i++) {
+            const search = this.ACTOR_ITEMS_INDEX[i];
+            search.query = query;
+            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
+            if (splitQuery.every((q) => search.match(q))) {
+                results.push(new SearchItem(search));
+            }
+        }
 
         //match index
         for (let i = 0; i < INDEX.length; i++) {
@@ -190,15 +260,13 @@ export class Spotlight extends Application {
         results.splice(50);
 
         //set the list to the results
-        const list = this._html.querySelector("#search-result");
-        list.innerHTML = "";
-        results.forEach((result) => {
-            list.appendChild(result.element);
-        });
-        if (!results.length) {
-            section.classList.add("no-results");
-        }
-        this.setPosition({ height: "auto" });
+        completeSearch();
+    }
+
+    setDraggingState(toggle) {
+        setTimeout(() => {
+            this._html.closest("#spotlight").classList.toggle("dragging", toggle);
+        }, 1);
     }
 
     async close(...args) {
@@ -225,16 +293,36 @@ class SearchItem {
         }
         this.searchTerm = searchTerm;
         this.render();
+        this.addElementListeners();
     }
 
-    async render() {
+    addElementListeners() {
+        this.element.addEventListener("click", (e) => {
+            this.searchTerm.onClick?.(e);
+        });
+        this.setDraggable();
+
+        if (!!getSetting("appData").timer && this.type.includes("timer")) {
+            let interval;
+            interval = setInterval(() => {
+                //if the element is removed from the dom, clear the interval
+                if (!document.body.contains(this.element)) {
+                    console.log("clearing interval");
+                    clearInterval(interval);
+                    return;
+                }
+
+                this.name = this.searchTerm.name;
+                this.render();
+            }, 1000);
+        }
+    }
+
+    render() {
         const icons = this.icon.map((icon) => `<i class="${icon}"></i>`).join("");
         this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
         const actions = this.getActions();
         if (actions) this.element.querySelector(".search-entry-name").insertAdjacentElement("afterend", actions);
-        this.element.addEventListener("click", (e) => {
-            this.searchTerm.onClick?.(e);
-        });
         const settingToggle = this.element.querySelector(".s-toggle-setting");
         if (settingToggle) {
             settingToggle.addEventListener("click", (e) => {
@@ -246,7 +334,6 @@ class SearchItem {
                 settingToggle.classList.add(`fa-toggle-${!state ? "on" : "off"}`);
             });
         }
-        this.setDraggable();
     }
 
     getActions() {

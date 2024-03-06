@@ -52,7 +52,8 @@
             "view": "View",
             "roll-table": "Roll Table",
             "play-playlist": "Play Playlist",
-            "stop-playlist": "Stop Playlist"
+            "stop-playlist": "Stop Playlist",
+            "use-item": "Use Item"
         },
         "notifications": {
             "calc-clipboard": "Result copied to clipboard",
@@ -75,6 +76,10 @@
                     "! to filter search results by type (!item, !actor)",
                     "Special commands: help, note, roll, or type a Math expression to calculate"
                 ]
+            },
+            "timer": {
+                "name": "Timer",
+                "timeLeft": "Time Left"
             }
         }
     }

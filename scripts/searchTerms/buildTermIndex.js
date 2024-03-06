@@ -104,7 +104,6 @@ async function buildCollections() {
 async function buildSettings() {
     const index = [];
     const processSetting = (setting, isMenu) => {
-        console.log(setting);
         if (!setting.name || (!setting.config && !isMenu) || setting.config === false) return;
         if (!game.user.isGM && setting.scope === "world") return;
         let toggle = "";
@@ -118,7 +117,7 @@ async function buildSettings() {
         if (setting.namespace === game.system.id) settingNamespace = game.system.title;
         else if (setting.namespace === "core") settingNamespace = game.i18n.localize("Core");
         else settingNamespace = game.modules.get(setting.namespace)?.title;
-        if(settingNamespace) settingNamespace = `<strong>${settingNamespace}</strong> - `
+        if (settingNamespace) settingNamespace = `<strong>${settingNamespace}</strong> - `;
 
         index.push(
             new BaseSearchTerm({

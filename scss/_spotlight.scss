@@ -38,9 +38,17 @@
         opacity: 0.1;
     }
 
+    hr{
+        border-color: var(--color-border-dark-4);
+    }
+
     &.dark {
 
         border: 1px solid #2d2d2d;
+
+        hr{
+            border-color: var(--color-border-light-4);
+        }
 
         ::-webkit-scrollbar-thumb {
             background: var(--color-text-light-4);

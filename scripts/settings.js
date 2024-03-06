@@ -72,6 +72,12 @@ export function registerSettings() {
             default: true,
             type: Boolean,
         },
+        "appData": {
+            scope: "world",
+            config: false,
+            default: {},
+            type: Object,
+        },
 
     };
 

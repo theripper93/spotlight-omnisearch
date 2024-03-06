@@ -33,8 +33,14 @@
   pointer-events: none;
   opacity: 0.1;
 }
+#spotlight hr {
+  border-color: var(--color-border-dark-4);
+}
 #spotlight.dark {
   border: 1px solid #2d2d2d;
+}
+#spotlight.dark hr {
+  border-color: var(--color-border-light-4);
 }
 #spotlight.dark ::-webkit-scrollbar-thumb {
   background: var(--color-text-light-4);
