@@ -10,14 +10,17 @@ export class Spotlight extends Application {
     constructor({ first } = {}) {
         super();
         this.first = first;
+        ui.spotlightOmnisearch?.close();
+        ui.spotlightOmnisearch = this;
         buildIndex().then((r) => {
             if (r) {
                 this._onSearch();
                 indexingDone = true;
-                if(this._html) this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
+                if (this._html) this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
             }
         });
         this._onSearch = debounce(this._onSearch, 167);
+        document.addEventListener("click", Spotlight.onClickAway);
     }
 
     static get APP_ID() {
@@ -44,6 +47,11 @@ export class Spotlight extends Application {
         });
     }
 
+    static onClickAway(event) {
+        if (event.target.closest("#spotlight")) return;
+        ui.spotlightOmnisearch?.close();
+    }
+
     async getData() {
         return { first: this.first };
     }
@@ -64,21 +72,18 @@ export class Spotlight extends Application {
                 if (isShift) {
                     //find the first action button
                     const actionButton = firstItem.querySelector(".search-item-actions button");
-                    if (actionButton) return actionButton.click();
-                }
-                if (isAlt) {
+                    if (actionButton) actionButton.click();
+                }else if (isAlt) {
                     //find the second action button
                     const actionButton = firstItem.querySelectorAll(".search-item-actions button")[1];
-                    if (actionButton) return actionButton.click();
+                    if (actionButton) actionButton.click();
+                } else {
+                    firstItem?.click();
                 }
-                firstItem?.click();
+                this.close();
             }
             //if escape is pressed, close the spotlight
             if (event.key === "Escape") {
-                this.close();
-            }
-            //if shift + space is pressed, close the spotlight
-            if (event.key === " " && event.shiftKey) {
                 this.close();
             }
         });
@@ -150,7 +155,10 @@ export class Spotlight extends Application {
             }
         });
 
-        const splitQuery = query.split(" ").map((q) => q.trim()).filter((q) => q);
+        const splitQuery = query
+            .split(" ")
+            .map((q) => q.trim())
+            .filter((q) => q);
 
         //match index
         for (let i = 0; i < INDEX.length; i++) {
@@ -185,6 +193,11 @@ export class Spotlight extends Application {
             section.classList.add("no-results");
         }
         this.setPosition({ height: "auto" });
+    }
+
+    async close(...args) {
+        document.removeEventListener("click", Spotlight.onClickAway);
+        return super.close(...args);
     }
 }
 

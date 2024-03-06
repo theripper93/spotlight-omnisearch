@@ -60,11 +60,12 @@ SPECIAL_SEARCHES.push(
         },
         onClick: async function (search) {
             const noteText = this.description;
-            if(!noteText) return;
-            let journal = game.journal.getName("Omnisearch Notes");
+            if (!noteText) return;
+            const journalName = `Omnisearch Notes [${game.user.name}]`
+            let journal = game.journal.getName(journalName);
             if (!journal) {
                 journal = await JournalEntry.create({
-                    name: "Omnisearch Notes",
+                    name: journalName,
                 });
             }
             const todayDate = new Date().toLocaleDateString();
@@ -104,4 +105,21 @@ SPECIAL_SEARCHES.push(
             new Roll(this.description).toMessage();
         },
     }),
+        //help
+        new SpecialSearchTerm({
+            name: () => game.i18n.localize(`${MODULE_ID}.special.help.name`),
+            description: (search) => {
+                const listElements = game.i18n.translations["spotlight-omnisearch"].special.help.list;
+                return `<ul>${listElements.map((element) => `<li style="pointer-events:none">${element}</li>`).join("")}</ul>`;                
+            },
+            type: "special-app",
+            data: {},
+            img: "",
+            icon: "fas fa-question",
+            match: (query) => {
+                return query.includes("help") || query.startsWith("?");
+            },
+            onClick: async function (search) {
+            },
+        }),
 );

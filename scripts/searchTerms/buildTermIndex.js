@@ -20,6 +20,7 @@ export async function buildIndex(force = false) {
     if (getSetting("searchUtils")) await buildSettingsTab();
     if (getSetting("searchSidebar")) await buildCollections();
     await buildModuleIntegration();
+    await buildStatusEffects();
     if (getSetting("searchCompendium")) await buildCompendiumIndex();
     const promises = [];
     Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
@@ -224,6 +225,27 @@ function getFoldersRecursive(document, folders = []) {
     if (document.folder) folders.push(document.folder.name);
     else return folders;
     return getFoldersRecursive(document.folder, folders);
+}
+
+async function buildStatusEffects() {
+    const effects = CONFIG.statusEffects;
+    for (const effect of effects) {
+        INDEX.push(
+            new BaseSearchTerm({
+                name: effect.name,
+                keywords: [],
+                type: "statusEffect",
+                data: { ...effect },
+                img: effect.icon,
+                icon: ["fas fa-earth-europe", "fas fa-bolt"],
+                onClick: async function () {
+                    canvas.tokens.controlled.forEach((token) => {
+                        token.toggleEffect(effect);
+                    });
+                },
+            }),
+        );
+    }
 }
 
 async function buildModuleIntegration() {

@@ -175,4 +175,13 @@
 #spotlight main section #search-result li.special-app > i {
   font-size: 3rem;
   width: 2rem;
+}
+#spotlight main section #search-result li.special-app ul {
+  margin: 0;
+  padding: 0;
+}
+#spotlight main section #search-result li.special-app ul li {
+  font-size: smaller;
+  border-bottom: 1px solid;
+  border-radius: 0;
 }/*# sourceMappingURL=module.css.map */

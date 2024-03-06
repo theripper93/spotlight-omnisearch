@@ -47,6 +47,17 @@
             },
             "roll": {
                 "name": "Quick Roll"
+            },
+            "help": {
+                "name": "Help",
+                "list": [
+                    "Shift + Space to open the Spotlight Omnisearch",
+                    "Escape or Click outside to close the Spotlight Omnisearch",
+                    "Press Enter to confirm first result",
+                    "Shift / Alt + Enter to execute the first or second actions of the first result",
+                    "! to filter search results by type (!item, !actor)",
+                    "Special commands: help, note, roll, or type a Math expression to calculate"
+                ]
             }
         }
     }
