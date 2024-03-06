@@ -13,8 +13,8 @@ export class Spotlight extends Application {
         buildIndex().then((r) => {
             if (r) {
                 this._onSearch();
-                this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
                 indexingDone = true;
+                this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
             }
         });
         this._onSearch = debounce(this._onSearch, 167);
@@ -216,7 +216,7 @@ class SearchItem {
     }
 
     getActions() {
-        const actions = [];
+        const actions = this.data.actions ?? [];
         if (this.type == "Macro") {
             actions.push({
                 name: `${MODULE_ID}.actions.execute`,
@@ -281,7 +281,7 @@ class SearchItem {
                 this.endDragging();
             });
         }
-        if (this.type === "file" && this.data.dropData) {
+        if (this.data.dropData) {
             this.element.setAttribute("draggable", true);
             this.element.addEventListener("dragstart", (event) => {
                 this.setDragging();
