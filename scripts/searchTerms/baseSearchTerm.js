@@ -1,4 +1,22 @@
+
+
 export class BaseSearchTerm {
+
+    /**
+     * Create a base search term.
+     * @param {Object} options - The options for the base search term.
+     * @param {string|function} options.name - The name of the search term. If a function is provided, it will be bound to the instance. The name will be used also to match the search term.
+     * @param {string|function} options.description - The description of the search term. If a function is provided, it will be bound to the instance.
+     * @param {Array.<string>} [options.keywords=[]] - The keywords for the search term. The keywords will be used to match the search term but are hidden from the user.
+     * @param {Array.<Object>} [options.actions=[]] - The actions for the search term.
+     * @param {Object} options.dragData - The drag data for the search term. If provided, it will be supplied to the drag handler.
+     * @param {string} options.type - The type of the search term. This can be anything but is used in !search commands to filter the results.
+     * @param {Object} options.data - The data for the search term. Arbitrary data that can be used by the search term.
+     * @param {string} options.img - The image for the search term.
+     * @param {string|Array.<string>} options.icon - The icon for the search term. Needs to be a valid font-awesome icon.
+     * @param {function} [options.onClick=null] - The click handler for the search term. If provided, it will be bound to the instance.
+     */
+
     constructor({ name, description, query, keywords = [], actions = [], dragData, type, data, img, icon, onClick = null }) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
         description = description ?? "";
