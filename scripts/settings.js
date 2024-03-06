@@ -18,6 +18,14 @@ export function registerSettings() {
             default: false,
             type: Boolean,
         },
+        saveLastSearch: {
+            name: `${MODULE_ID}.settings.saveLastSearch.name`,
+            hint: `${MODULE_ID}.settings.saveLastSearch.hint`,
+            scope: "client",
+            config: true,
+            default: false,
+            type: Boolean,
+        },
         spotlightWidth: {
             name: `${MODULE_ID}.settings.spotlightWidth.name`,
             hint: `${MODULE_ID}.settings.spotlightWidth.hint`,

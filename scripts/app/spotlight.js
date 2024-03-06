@@ -9,6 +9,8 @@ let indexingDone = false;
 
 let SPOTLIGHT_WIDTH = 700;
 
+let LAST_SEARCH = "";
+
 export class Spotlight extends Application {
     constructor({ first } = {}) {
         super();
@@ -93,12 +95,14 @@ export class Spotlight extends Application {
 
     async getData() {
         const appData = getSetting("appData");
+        const saveLastSearch = getSetting("saveLastSearch");
+        if (!saveLastSearch) LAST_SEARCH = "";
         const timer = appData.timer;
         if (game.user.isGM && timer && Date.now() > timer) {
             delete appData.timer;
             await setSetting("appData", appData);
         }
-        return { first: this.first };
+        return { first: this.first, lastSearch: LAST_SEARCH };
     }
 
     activateListeners(html) {
@@ -155,7 +159,7 @@ export class Spotlight extends Application {
         if (storedPosition) {
             //check if the stored position is within the window
             if (!(storedPosition.left + SPOTLIGHT_WIDTH > window.innerWidth || storedPosition.top > window.innerHeight || storedPosition.top < 0 || storedPosition.left < 0)) {
-                this.setPosition({left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH});
+                this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
         this._onSearch();
@@ -178,7 +182,7 @@ export class Spotlight extends Application {
     }
 
     updateStoredPosition() {
-        setSetting("spotlightPosition", {left: this.position.left, top: this.position.top});
+        setSetting("spotlightPosition", { left: this.position.left, top: this.position.top });
     }
 
     _getFilters(query) {
@@ -196,7 +200,9 @@ export class Spotlight extends Application {
     }
 
     _onSearch() {
+        if(this.closing) return;
         let query = this._html.querySelector("input").value.toLowerCase().trim();
+        LAST_SEARCH = query;
         //check the query for filtered searches such as !keyword
         const filtersData = this._getFilters(query);
         const filters = filtersData.filters;
@@ -286,6 +292,7 @@ export class Spotlight extends Application {
     }
 
     async close(...args) {
+        ui.spotlightOmnisearch = null;
         document.removeEventListener("click", Spotlight.onClickAway);
         return super.close(...args);
     }

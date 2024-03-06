@@ -14,6 +14,10 @@
                 "name": "Click to Dismiss",
                 "hint": "Click outside the Spotlight Omnisearch to dismiss it"
             },
+            "saveLastSearch": {
+                "name": "Save Last Search",
+                "hint": "Save the last search query and results for the next time the Spotlight Omnisearch is opened"
+            },
             "spotlightWidth": {
                 "name": "Spotlight Width",
                 "hint": "Set the width of the Spotlight Omnisearch in pixels"
@@ -79,7 +83,7 @@
                     "Press Enter to confirm first result",
                     "Shift / Alt + Enter to execute the first or second actions of the first result",
                     "! to filter search results by type (!item, !actor)",
-                    "Special commands: help, note, roll, or type a Math expression to calculate"
+                    "Special commands: help, note, roll, timer, or type a Math expression to calculate"
                 ]
             },
             "timer": {
