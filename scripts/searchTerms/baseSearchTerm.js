@@ -17,7 +17,7 @@ export class BaseSearchTerm {
      * @param {function} [options.onClick=null] - The click handler for the search term. If provided, it will be bound to the instance.
      */
 
-    constructor({ name, description, query, keywords = [], actions = [], dragData, type, data, img, icon, onClick = null, onDragStart = null, onDragEnd = null}) {
+    constructor ({name, description, query, keywords = [], actions = [], dragData, type, data = {}, img, icon, onClick = null, onDragStart = null, onDragEnd = null}) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
         description = description ?? "";
         this._description = typeof description === "function" ? description.bind(this) : () => description;

@@ -160,7 +160,7 @@ SPECIAL_SEARCHES.push(
             return TIMER_MATCHING.some((keyword) => query.startsWith(keyword));
         },
         onClick: async function (search) {
-            if(!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.timer-gm`));
+            if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.timer-gm`));
             const noteText = this.query.replace(/(timer|timer:|time|time:|t:|t )/i, "").trim();
             const { hours, minutes, seconds } = parseTime(noteText);
             const totalSeconds = hours * 3600 + minutes * 60 + seconds;
@@ -212,3 +212,262 @@ function parseTime(input) {
 
     return { hours, minutes, seconds };
 }
+
+const lightEffects = [
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.torch`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/sundries/lights/torch-black.webp",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        alpha: 0.5,
+                        angle: 360,
+                        bright: 20,
+                        coloration: 1,
+                        dim: 40,
+                        luminosity: 0.5,
+                        saturation: 0,
+                        contrast: 0,
+                        shadows: 0,
+                        animation: {
+                            speed: 5,
+                            intensity: 5,
+                            reverse: false,
+                            type: "torch",
+                        },
+                        darkness: {
+                            min: 0,
+                            max: 1,
+                        },
+                        color: "#fea50b",
+                        attenuation: 0.5,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+    //candle
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.candle`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/sundries/lights/candle-lit-yellow.webp",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        alpha: 0.5,
+                        angle: 360,
+                        bright: 5,
+                        coloration: 1,
+                        dim: 10,
+                        luminosity: 0.5,
+                        saturation: 0,
+                        contrast: 0,
+                        shadows: 0,
+                        animation: {
+                            speed: 5,
+                            intensity: 5,
+                            reverse: false,
+                            type: "torch",
+                        },
+                        darkness: {
+                            min: 0,
+                            max: 1,
+                        },
+                        color: "#fea50b",
+                        attenuation: 0.5,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+    //lantern
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.lantern`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/sundries/lights/lantern-iron-yellow.webp",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        alpha: 0.5,
+                        angle: 360,
+                        bright: 30,
+                        coloration: 1,
+                        dim: 60,
+                        luminosity: 0.5,
+                        saturation: 0,
+                        contrast: 0,
+                        shadows: 0,
+                        animation: {
+                            speed: 5,
+                            intensity: 5,
+                            reverse: false,
+                            type: "torch",
+                        },
+                        darkness: {
+                            min: 0,
+                            max: 1,
+                        },
+                        color: "#fea50b",
+                        attenuation: 0.5,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+    //lantern shut
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.lantern-shut`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/sundries/lights/lantern-steel.webp",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        alpha: 0.5,
+                        angle: 360,
+                        bright: 0,
+                        coloration: 1,
+                        dim: 5,
+                        luminosity: 0.5,
+                        saturation: 0,
+                        contrast: 0,
+                        shadows: 0,
+                        animation: {
+                            speed: 5,
+                            intensity: 5,
+                            reverse: false,
+                            type: "torch",
+                        },
+                        darkness: {
+                            min: 0,
+                            max: 1,
+                        },
+                        color: "#fea50b",
+                        attenuation: 0.5,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+    //magical
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.magical`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/magic/light/explosion-star-glow-blue.webp",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        alpha: 0.5,
+                        angle: 360,
+                        bright: 20,
+                        coloration: 1,
+                        dim: 20,
+                        luminosity: 0.5,
+                        saturation: 0,
+                        contrast: 0,
+                        shadows: 0,
+                        animation: {
+                            speed: 2,
+                            intensity: 5,
+                            reverse: false,
+                            type: "torch",
+                        },
+                        darkness: {
+                            min: 0,
+                            max: 1,
+                        },
+                        color: "#b3f0ff",
+                        attenuation: 0.5,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+    //flashlight
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.flashlight`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/magic/light/orb-lightbulb-gray.webp",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        alpha: 0.5,
+                        angle: 90,
+                        bright: 20,
+                        coloration: 1,
+                        dim: 20,
+                        luminosity: 0.5,
+                        saturation: 0,
+                        contrast: 0,
+                        shadows: 0,
+                        animation: {
+                            speed: 2,
+                            intensity: 2,
+                            reverse: false,
+                            type: null,
+                        },
+                        darkness: {
+                            min: 0,
+                            max: 1,
+                        },
+                        color: "#ffffff",
+                        attenuation: 0.5,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+
+    //off
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.light.off`),
+        description: () => game.i18n.localize(`${MODULE_ID}.special.light.info`),
+        img: "icons/svg/light-off.svg",
+        icon: ["fas fa-fire-flame", "fas fa-sun"],
+        type: "light",
+        onClick: async function (search) {
+            const updates = canvas.tokens.controlled.map((token) => {
+                return {
+                    _id: token.document.id,
+                    light: {
+                        bright: 0,
+                        dim: 0,
+                    },
+                };
+            });
+            canvas.scene.updateEmbeddedDocuments("Token", updates);
+        },
+    }),
+];
+
+SPECIAL_SEARCHES.push(...lightEffects);

@@ -89,6 +89,16 @@
             "timer": {
                 "name": "Timer",
                 "timeLeft": "Time Left"
+            },
+            "light": {
+                "torch": "Torch",
+                "lantern": "Lantern",
+                "lantern-shut": "Lantern (Covered)",
+                "off": "Remove Light",
+                "candle": "Candle",
+                "magical": "Magical Light",
+                "flashlight": "Flashlight",
+                "info": "Apply light to selected tokens"
             }
         }
     }

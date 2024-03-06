@@ -200,7 +200,7 @@ export class Spotlight extends Application {
     }
 
     _onSearch() {
-        if(this.closing) return;
+        if (this.closing) return;
         let query = this._html.querySelector("input").value.toLowerCase().trim();
         LAST_SEARCH = query;
         //check the query for filtered searches such as !keyword
