@@ -70,7 +70,7 @@ export class CompendiumConfig extends FormApplication {
             name: game.i18n.localize(`${MODULE_ID}.settings.${this.SETTING_KEY}.name`),
             label: game.i18n.localize(`${MODULE_ID}.settings.${this.SETTING_KEY}.label`),
             hint: game.i18n.localize(`${MODULE_ID}.settings.${this.SETTING_KEY}.hint`),
-            icon: "fas fa-cogs",
+            icon: "fas fa-atlas",
             type: this,
             restricted: true,
             scope: "world",

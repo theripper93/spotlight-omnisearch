@@ -33,21 +33,32 @@
   pointer-events: none;
   opacity: 0.1;
 }
+#spotlight.dark {
+  border: 1px solid #2d2d2d;
+}
 #spotlight.dark ::-webkit-scrollbar-thumb {
-  background: var(--color-text-light-3);
+  background: var(--color-text-light-4);
 }
 #spotlight.dark .window-content {
-  color: var(--color-text-light-3);
+  color: var(--color-text-light-4);
 }
 #spotlight.dark .window-content::before {
   background: rgba(0, 0, 0, 0.4);
   filter: none;
 }
 #spotlight.dark input {
-  color: var(--color-text-light-3);
+  color: var(--color-text-light-4);
 }
-#spotlight.dark button {
-  color: var(--color-text-light-3);
+#spotlight.dark main section #search-result li .search-item-actions button {
+  color: var(--color-text-light-4);
+  background: rgba(255, 255, 255, 0.1019607843);
+}
+#spotlight.dark main section #search-result li .search-item-actions button:focus, #spotlight.dark main section #search-result li .search-item-actions button:hover {
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.1607843137);
+}
+#spotlight.dark main section #search-result li:hover {
+  background: rgba(255, 255, 255, 0.1607843137);
 }
 #spotlight .window-header {
   position: absolute;

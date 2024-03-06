@@ -6,7 +6,7 @@
     transition: opacity 0.2s ease-in-out;
     border: 1px solid grey;
 
-    &.force-opacity{
+    &.force-opacity {
         opacity: 1 !important;
     }
 
@@ -40,12 +40,14 @@
 
     &.dark {
 
+        border: 1px solid #2d2d2d;
+
         ::-webkit-scrollbar-thumb {
-            background: var(--color-text-light-3);
+            background: var(--color-text-light-4);
         }
 
         .window-content {
-            color: var(--color-text-light-3);
+            color: var(--color-text-light-4);
 
             &::before {
                 background: rgb(0 0 0 / 40%);
@@ -54,11 +56,21 @@
         }
 
         input {
-            color: var(--color-text-light-3);
+            color: var(--color-text-light-4);
         }
 
-        button {
-            color: var(--color-text-light-3);
+        main section #search-result li .search-item-actions button {
+            color: var(--color-text-light-4);
+            background: #ffffff1a;
+            &:focus,
+            &:hover {
+                box-shadow: none;
+                background: #ffffff29;
+            }
+        }
+
+        main section #search-result li:hover {
+            background: #ffffff29;
         }
     }
 
@@ -79,6 +91,7 @@
         margin: 0;
         padding: 0;
         background: transparent;
+
         &::before {
             content: "";
             position: absolute;

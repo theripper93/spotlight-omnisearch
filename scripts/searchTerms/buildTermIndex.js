@@ -103,25 +103,38 @@ async function buildCollections() {
 
 async function buildSettings() {
     const index = [];
-    game.settings.settings.forEach((setting) => {
-        if (!setting.name || !setting.config) return;
+    const processSetting = (setting, isMenu) => {
+        console.log(setting);
+        if (!setting.name || (!setting.config && !isMenu) || setting.config === false) return;
         if (!game.user.isGM && setting.scope === "world") return;
         let toggle = "";
         if (setting.type === Boolean) {
             const state = game.settings.get(setting.namespace, setting.key);
             toggle = `<i class="s-toggle-setting fad fa-toggle-${state ? "on" : "off"}" data-namespace="${setting.namespace}" data-key="${setting.key}"></i>`;
         }
+        const icon = setting.icon ?? "fas fa-cogs";
+
+        let settingNamespace = "";
+        if (setting.namespace === game.system.id) settingNamespace = game.system.title;
+        else if (setting.namespace === "core") settingNamespace = game.i18n.localize("Core");
+        else settingNamespace = game.modules.get(setting.namespace)?.title;
+        if(settingNamespace) settingNamespace = `<strong>${settingNamespace}</strong> - `
+
         index.push(
             new BaseSearchTerm({
                 name: game.i18n.localize(setting.name) + toggle,
-                description: game.i18n.localize(setting.hint),
+                description: settingNamespace + game.i18n.localize(setting.hint),
                 query: setting.key,
                 keywords: [`${setting.key}${setting.namespace}`],
                 type: "setting",
                 data: { ...setting },
                 img: null,
-                icon: ["fas fa-cogs"],
+                icon: [icon],
                 onClick: async function () {
+                    if (isMenu) {
+                        new setting.type().render(true);
+                        return;
+                    }
                     game.settings.sheet.render(true);
                     Hooks.once("renderSettingsConfig", (app, html) => {
                         html = html[0];
@@ -139,7 +152,9 @@ async function buildSettings() {
                 },
             }),
         );
-    });
+    };
+    game.settings.menus.forEach((s) => processSetting(s, true));
+    game.settings.settings.forEach(processSetting);
     game.keybindings.actions.forEach((binding, key) => {
         if (!game.user.isGM && binding.restricted) return;
         const name = game.i18n.localize(binding.name);

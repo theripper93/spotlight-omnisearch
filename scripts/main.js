@@ -15,7 +15,7 @@ Hooks.on("init", () => {
         app: Spotlight,
         INDEX: INDEX,
         SearchTerm: BaseSearchTerm,
-        buildIndex: buildIndex,
+        rebuildIndex: () => buildIndex(true),
     }
 });
 

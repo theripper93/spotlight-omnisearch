@@ -323,35 +323,37 @@ class SearchItem {
         return actionsContainer;
     }
 
-    setDragging() {
+    setDragging(event) {
+        this.searchTerm.onDragStart?.(event);
         setTimeout(() => {
             document.querySelector("#spotlight").classList.add("dragging");
         }, 1);
     }
 
-    endDragging() {
+    endDragging(event) {
         document.querySelector("#spotlight").classList.remove("dragging");
+        this.searchTerm.onDragEnd?.(event);
     }
 
     setDraggable() {
         if (this.data.uuid) {
             this.element.setAttribute("draggable", true);
             this.element.addEventListener("dragstart", (event) => {
-                this.setDragging();
+                this.setDragging(event);
                 event.dataTransfer.setData("text/plain", JSON.stringify({ type: this.data.documentName, uuid: this.data.uuid }));
             });
-            this.element.addEventListener("dragend", () => {
-                this.endDragging();
+            this.element.addEventListener("dragend", (event) => {
+                this.endDragging(event);
             });
         }
         if (this.dragData) {
             this.element.setAttribute("draggable", true);
             this.element.addEventListener("dragstart", (event) => {
-                this.setDragging();
+                this.setDragging(event);
                 event.dataTransfer.setData("text/plain", JSON.stringify(this.dragData));
             });
-            this.element.addEventListener("dragend", () => {
-                this.endDragging();
+            this.element.addEventListener("dragend", (event) => {
+                this.endDragging(event);
             });
         }
     }
