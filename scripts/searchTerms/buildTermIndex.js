@@ -106,9 +106,14 @@ async function buildSettings() {
     game.settings.settings.forEach((setting) => {
         if (!setting.name || !setting.config) return;
         if (!game.user.isGM && setting.scope === "world") return;
+        let toggle = "";
+        if (setting.type === Boolean) {
+            const state = game.settings.get(setting.namespace, setting.key);
+            toggle = `<i class="s-toggle-setting fad fa-toggle-${state ? "on" : "off"}" data-namespace="${setting.namespace}" data-key="${setting.key}"></i>`;
+        }
         index.push(
             new BaseSearchTerm({
-                name: game.i18n.localize(setting.name),
+                name: game.i18n.localize(setting.name) + toggle,
                 description: game.i18n.localize(setting.hint),
                 query: setting.key,
                 keywords: [`${setting.key}${setting.namespace}`],

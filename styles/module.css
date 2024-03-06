@@ -164,6 +164,16 @@
 #spotlight main section #search-result li .search-info {
   flex: 1;
 }
+#spotlight main section #search-result li .search-info:has(.s-toggle-setting) span {
+  display: flex;
+}
+#spotlight main section #search-result li .search-info:has(.s-toggle-setting) i {
+  display: inline;
+  margin-left: auto;
+  margin-right: 0.3rem;
+  cursor: pointer;
+  transition: color 0.5s ease-in-out;
+}
 #spotlight main section #search-result li .search-info p {
   font-size: 1rem;
   opacity: 0.7;

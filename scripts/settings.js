@@ -10,6 +10,14 @@ export function registerSettings() {
             default: false,
             type: Boolean,
         },
+        "clickToDismiss": {
+            name: `${MODULE_ID}.settings.clickToDismiss.name`,
+            hint: `${MODULE_ID}.settings.clickToDismiss.hint`,
+            scope: "client",
+            config: true,
+            default: false,
+            type: Boolean,
+        },
         "showImages": {
             name: `${MODULE_ID}.settings.showImages.name`,
             hint: `${MODULE_ID}.settings.showImages.hint`,

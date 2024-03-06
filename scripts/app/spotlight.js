@@ -48,6 +48,7 @@ export class Spotlight extends Application {
     }
 
     static onClickAway(event) {
+        if (!getSetting("clickToDismiss")) return;
         if (event.target.closest("#spotlight")) return;
         ui.spotlightOmnisearch?.close();
     }
@@ -229,6 +230,17 @@ class SearchItem {
         this.element.addEventListener("click", (e) => {
             this.searchTerm.onClick?.(e);
         });
+        const settingToggle = this.element.querySelector(".s-toggle-setting");
+        if (settingToggle) {
+            settingToggle.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const state = game.settings.get(settingToggle.dataset.namespace, settingToggle.dataset.key);
+                game.settings.set(settingToggle.dataset.namespace, settingToggle.dataset.key, !state);
+                settingToggle.classList.remove("fa-toggle-on", "fa-toggle-off");
+                settingToggle.classList.add(`fa-toggle-${!state ? "on" : "off"}`);
+            });
+        }
         this.setDraggable();
     }
 
