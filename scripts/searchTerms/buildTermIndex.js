@@ -109,7 +109,7 @@ async function buildCollections() {
                 keywords.push(document.content.toLowerCase() + document.flavor?.toLowerCase() ?? "");
                 description = document.content;
             }
-            if (document.folder) description = getFoldersRecursive(document).reverse().join(" > ");
+            if (document.folder) description = "<i style='display: inline; opacity: 0.3;' class='fas fa-folder'></i> " + getFoldersRecursive(document).join(" / ");
             const actions = [];
             if (collection.documentName === "JournalEntry") {
                 document.pages.forEach((page) => {
