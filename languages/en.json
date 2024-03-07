@@ -6,6 +6,10 @@
                 "hint": "Configure which compendiums to include in the search results",
                 "label": "Configure Compendiums"
             },
+            "gmOnly": {
+                "name": "GM Only",
+                "hint": "Only the GM can open the Spotlight Omnisearch"
+            },
             "darkMode": {
                 "name": "Dark Mode",
                 "hint": "Use a dark theme for the Spotlight Omnisearch"

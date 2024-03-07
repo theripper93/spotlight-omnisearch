@@ -22,6 +22,7 @@ Hooks.on("init", () => {
 Hooks.on("ready", () => {
     if (getSetting("firstTime")) {
         setTimeout(() => {
+            if (!game.user.isGM && getSetting("gmOnly")) return;
             new Spotlight({first: true}).render(true);
         }, 1000);
         setSetting("firstTime", false);
@@ -35,6 +36,7 @@ Hooks.on("init", () => {
         restricted: false,
         precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
         onDown: (e) => {
+            if (!game.user.isGM && getSetting("gmOnly")) return;
             const current = Object.values(ui.windows).find(w => w instanceof Spotlight);
             if (current) {
                 current.close();

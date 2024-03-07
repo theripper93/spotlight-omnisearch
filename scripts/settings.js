@@ -2,6 +2,14 @@ import { MODULE_ID } from "./main.js";
 
 export function registerSettings() {
     const settings = {
+        gmOnly: {
+            name: `${MODULE_ID}.settings.gmOnly.name`,
+            hint: `${MODULE_ID}.settings.gmOnly.hint`,
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        },
         darkMode: {
             name: `${MODULE_ID}.settings.darkMode.name`,
             hint: `${MODULE_ID}.settings.darkMode.hint`,
