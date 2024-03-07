@@ -9,6 +9,7 @@ export function registerSettings() {
             config: true,
             default: false,
             type: Boolean,
+            onChange: (value) => ui.spotlightOmnisearch?._html.closest("#spotlight").classList.toggle("dark", value),
         },
         clickToDismiss: {
             name: `${MODULE_ID}.settings.clickToDismiss.name`,
