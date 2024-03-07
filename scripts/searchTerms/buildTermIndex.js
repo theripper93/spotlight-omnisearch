@@ -2,6 +2,7 @@ import { BaseSearchTerm } from "./baseSearchTerm";
 import { getSetting } from "../settings";
 
 export const INDEX = [];
+export const FILTERS = [];
 
 export let FILE_INDEX = [];
 
@@ -15,7 +16,6 @@ export async function buildIndex(force = false) {
     }
     if (indexBuilt) return;
     indexBuilt = true;
-    if (getSetting("searchFiles")) buildFiles();
     if (getSetting("searchSettings")) await buildSettings();
     if (getSetting("searchUtils")) await buildSettingsTab();
     if (getSetting("searchSidebar")) await buildCollections();
@@ -25,6 +25,22 @@ export async function buildIndex(force = false) {
     const promises = [];
     Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
     await Promise.all(promises);
+
+    const filters = new Set();
+
+    INDEX.forEach((term) => {
+        filters.add(term.type);
+    });
+
+    let filtersArray = [];
+    Array.from(filters).forEach((filter) => {
+        filtersArray.push(...filter.split(" ").map((f) => f.toLowerCase()));
+    });
+    filtersArray.sort((a, b) => a.localeCompare(b));
+    //remove duplicates
+    filtersArray = Array.from(new Set(filtersArray));
+    FILTERS.push(...filtersArray);
+    if (getSetting("searchFiles")) buildFiles();
     return INDEX;
 }
 
@@ -36,6 +52,22 @@ async function buildCompendiumIndex() {
     for (const pack of packs) {
         const packPackageName = pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title;
         const packIndex = Array.from(await pack.getIndex());
+
+        index.push(
+            new BaseSearchTerm({
+                name: pack.title,
+                description: packPackageName,
+                img: pack.banner,
+                keywords: [],
+                type: "compendium",
+                data: { ...pack.metadata },
+                icon: [CONFIG[pack.documentName].sidebarIcon, "fas fa-atlas"],
+                onClick: async function () {
+                    pack.render(true);
+                },
+            }),
+        );
+
         packIndex.forEach((entry) => {
             index.push(
                 new BaseSearchTerm({
@@ -93,10 +125,10 @@ async function buildCollections() {
                     const pageActions = [];
                     const tocKeywords = [];
                     Object.values(page.toc).forEach((toc) => {
-                        tocKeywords.push(toc.text);
+                        tocKeywords.push(toc.text.toLowerCase());
                         pageActions.push({
                             name: toc.text,
-                            icon: `<i class="fa-solid fa-file-lines"></i>`,
+                            icon: `<i class="fa-solid fa-hashtag"></i>`,
                             callback: async function () {
                                 const entity = await fromUuid(document.uuid);
                                 entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
@@ -110,7 +142,7 @@ async function buildCollections() {
                             actions: pageActions,
                             keywords: tocKeywords,
                             description: description,
-                            type: collection.documentName,
+                            type: "JournalEntryPage",
                             data: { ...document, documentName: collection.documentName, uuid: document.uuid },
                             img: document.img,
                             icon: ["fas fa-earth-europe", "fas fa-file-lines"],

@@ -1,7 +1,7 @@
 import { MODULE_ID } from "../main.js";
 import { SPECIAL_SEARCHES } from "../searchTerms/special.js";
 
-import { INDEX, FILE_INDEX, buildIndex } from "../searchTerms/buildTermIndex.js";
+import { INDEX, FILE_INDEX, buildIndex, FILTERS } from "../searchTerms/buildTermIndex.js";
 import { getSetting, setSetting } from "../settings.js";
 import { BaseSearchTerm } from "../searchTerms/baseSearchTerm.js";
 
@@ -9,7 +9,7 @@ let indexingDone = false;
 
 let SPOTLIGHT_WIDTH = 700;
 
-let LAST_SEARCH = "";
+let LAST_SEARCH = { query: "", filters: [] };
 
 export class Spotlight extends Application {
     constructor({ first } = {}) {
@@ -23,6 +23,12 @@ export class Spotlight extends Application {
             if (r) {
                 this._onSearch();
                 indexingDone = true;
+                const help = SPECIAL_SEARCHES.find((search) => search.type.includes("help"));
+                const currentDesc = help.description;
+                const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${filter}">${filter}</span>`).join("");
+                help._description = () => {
+                    return `${currentDesc} <div class="filters-help">${filterSpans}</div>`;
+                }
                 if (this._html) this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
             }
         });
@@ -87,6 +93,9 @@ export class Spotlight extends Application {
                     icon: ["fas fa-user-circle", "fas fa-suitcase"],
                     data: { uuid: item.uuid, documentName: "Item" },
                     actions: actions,
+                    onClick: async () => {
+                        item.sheet.render(true);
+                    },
                 });
             });
             this.ACTOR_ITEMS_INDEX.push(...items);
@@ -96,19 +105,33 @@ export class Spotlight extends Application {
     async getData() {
         const appData = getSetting("appData");
         const saveLastSearch = getSetting("saveLastSearch");
-        if (!saveLastSearch) LAST_SEARCH = "";
+        if (!saveLastSearch) LAST_SEARCH = { query: "", filters: [] };
         const timer = appData.timer;
         if (game.user.isGM && timer && Date.now() > timer) {
             delete appData.timer;
             await setSetting("appData", appData);
         }
-        return { first: this.first, lastSearch: LAST_SEARCH };
+        return { first: this.first, lastSearch: LAST_SEARCH.query };
     }
 
     activateListeners(html) {
         super.activateListeners(html);
         html = html[0] ?? html;
         this._html = html;
+        const filtersContainer = html.querySelector(".filters-container");
+        LAST_SEARCH.filters.forEach((filter) => {
+            const filterElement = document.createElement("span");
+            filterElement.innerText = filter;
+            filterElement.classList.add("filter");
+            filterElement.dataset.filter = filter;
+            filterElement.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                filterElement.remove();
+                this._onSearch();
+            });
+            filtersContainer.appendChild(filterElement);
+        });
         html.querySelector("input").addEventListener("input", this._onSearch.bind(this));
         //if enter is pressed on the search input, click on the first result
         html.querySelector("input").addEventListener("keydown", (event) => {
@@ -116,7 +139,7 @@ export class Spotlight extends Application {
                 event.preventDefault();
                 const isShift = event.shiftKey;
                 const isAlt = event.altKey;
-                const firstItem = html.querySelector(".search-item");
+                const firstItem = html.querySelector(".search-item:not(.type-header)");
                 if (!firstItem) return;
                 if (isShift) {
                     //find the first action button
@@ -134,6 +157,13 @@ export class Spotlight extends Application {
             //if escape is pressed, close the spotlight
             if (event.key === "Escape") {
                 this.close();
+            }
+            //if backspace is pressed and the input is empty, remove the last filter
+            if (event.key === "Backspace" && !html.querySelector("input").value) {
+                const filters = html.querySelectorAll(".filters-container .filter");
+                const lastFilter = filters[filters.length - 1];
+                if (lastFilter) lastFilter.remove();
+                this._onSearch();
             }
         });
         //timeout for janky core behavior
@@ -162,7 +192,7 @@ export class Spotlight extends Application {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
-        if(this.first) html.querySelector("input").value = "?";
+        if (this.first) html.querySelector("input").value = "?";
         this._onSearch();
     }
 
@@ -202,13 +232,42 @@ export class Spotlight extends Application {
 
     _onSearch() {
         if (this.closing) return;
-        let query = this._html.querySelector("input").value.toLowerCase().trim();
-        LAST_SEARCH = query;
+        let query = this._html.querySelector("input").value.toLowerCase();
+        const endsWithSpace = query.endsWith(" ");
+        query = query.trim();
         //check the query for filtered searches such as !keyword
         const filtersData = this._getFilters(query);
         const filters = filtersData.filters;
         query = filtersData.query;
-        const hasFilters = filters.length > 0;
+        let hasFilters = filters.length > 0;
+        if (hasFilters && endsWithSpace) {
+            const filtersContainer = this._html.querySelector(".filters-container");
+            //filtersContainer.innerHTML = "";
+            filters.forEach((filter) => {
+                const filterElement = document.createElement("span");
+                filterElement.innerText = filter;
+                filterElement.classList.add("filter");
+                filterElement.dataset.filter = filter;
+                filterElement.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    filterElement.remove();
+                    this._onSearch();
+                });
+
+                filtersContainer.appendChild(filterElement);
+                this._html.querySelector("input").value = this._html.querySelector("input").value.replace(`!${filter}`, "").trim();
+            });
+        }
+        const spanFilters = this._html.querySelectorAll(".filters-container .filter");
+        spanFilters.forEach((spanFilter) => {
+            filters.push(spanFilter.dataset.filter);
+        });
+        hasFilters = filters.length > 0;
+        LAST_SEARCH = {
+            query,
+            filters,
+        }
         const section = this._html.querySelector("section");
         const isActiveTimer = !!getSetting("appData").timer;
         section.classList.toggle("no-results", !query && !isActiveTimer);
@@ -220,11 +279,31 @@ export class Spotlight extends Application {
         const results = [];
 
         const completeSearch = () => {
+            //sort by type
+            const types = {};
+            results.forEach((result) => {
+                if (!types[result.type]) types[result.type] = [];
+                types[result.type].push(result);
+            });
+
             const list = this._html.querySelector("#search-result");
             list.innerHTML = "";
-            results.forEach((result) => {
+            for (const [type, typeResults] of Object.entries(types)) {
+                const typeHeader = document.createElement("li");
+                typeHeader.innerText = type
+                    .replaceAll("-", " ")
+                    .replaceAll(" ", " - ")
+                    .replace(/([a-z])([A-Z])/g, "$1 $2");
+                
+                typeHeader.classList.add("type-header");
+                if (!type.includes("special-app")) list.appendChild(typeHeader);
+                typeResults.forEach((result) => {
+                    list.appendChild(result.element);
+                });
+            }
+            /*results.forEach((result) => {
                 list.appendChild(result.element);
-            });
+            });*/
             if (!results.length) {
                 section.classList.add("no-results");
             }
@@ -251,7 +330,7 @@ export class Spotlight extends Application {
 
         //match actor items
         for (let i = 0; i < this.ACTOR_ITEMS_INDEX.length; i++) {
-            if(results.length > 50) break;
+            if (results.length > 50) break;
             const search = this.ACTOR_ITEMS_INDEX[i];
             search.query = query;
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
@@ -262,7 +341,7 @@ export class Spotlight extends Application {
 
         //match index
         for (let i = 0; i < INDEX.length; i++) {
-            if(results.length > 50) break;
+            if (results.length > 50) break;
             const search = INDEX[i];
             search.query = query;
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
@@ -273,7 +352,7 @@ export class Spotlight extends Application {
 
         //match file index
         for (let i = 0; i < FILE_INDEX.length; i++) {
-            if(results.length > 50) break;
+            if (results.length > 50) break;
             const search = FILE_INDEX[i];
             search.query = query;
             if (hasFilters && !filters.some((filter) => search.type.toLowerCase().includes(filter))) continue;

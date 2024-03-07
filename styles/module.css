@@ -1,10 +1,33 @@
 #spotlight {
   --spotlight-height: 50px;
+  --spotlight-text-color: var(--color-text-dark-primary);
+  --spotlight-background: rgb(255 255 255 / 40%);
+  --spotlight-border: grey;
+  --spotlight-button-bg: #0000001a;
+  --spotlight-button-hover: #00000029;
+  --spotlight-li-hover: #00000033;
+  --spotlight-border-hr: var(--color-border-dark-4);
+  --spotlight-scrollbar: var(--color-text-dark-4);
+  --spotlight-filter-bg: var(--spotlight-button-bg);
+  --spotlight-filter-border: var(--spotlight-border);
   border-radius: 10px;
   overflow: hidden;
   font-family: "Roboto", sans-serif;
   transition: opacity 0.2s ease-in-out;
-  border: 1px solid grey;
+  border: 1px solid var(--spotlight-border);
+}
+#spotlight.dark {
+  --spotlight-text-color: var(--color-text-light-4);
+  --spotlight-background: rgb(0 0 0 / 40%);
+  --spotlight-border: #2d2d2d;
+  --spotlight-button-bg: #ffffff1a;
+  --spotlight-button-hover: #ffffff29;
+  --spotlight-li-hover: #ffffff29;
+  --spotlight-border-hr: var(--color-border-light-4);
+  --spotlight-scrollbar: var(--color-text-light-4);
+}
+#spotlight.dark .window-content::before {
+  filter: none;
 }
 #spotlight.force-opacity {
   opacity: 1 !important;
@@ -22,7 +45,7 @@
   padding: 0.2rem 0.5rem;
 }
 #spotlight ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.392);
+  background: var(--spotlight-scrollbar);
   border: none;
 }
 #spotlight ::-webkit-scrollbar-track {
@@ -34,37 +57,7 @@
   opacity: 0.1;
 }
 #spotlight hr {
-  border-color: var(--color-border-dark-4);
-}
-#spotlight.dark {
-  border: 1px solid #2d2d2d;
-}
-#spotlight.dark hr {
-  border-color: var(--color-border-light-4);
-}
-#spotlight.dark ::-webkit-scrollbar-thumb {
-  background: var(--color-text-light-4);
-}
-#spotlight.dark .window-content {
-  color: var(--color-text-light-4);
-}
-#spotlight.dark .window-content::before {
-  background: rgba(0, 0, 0, 0.4);
-  filter: none;
-}
-#spotlight.dark input {
-  color: var(--color-text-light-4);
-}
-#spotlight.dark main section #search-result li .search-item-actions button {
-  color: var(--color-text-light-4);
-  background: rgba(255, 255, 255, 0.1019607843);
-}
-#spotlight.dark main section #search-result li .search-item-actions button:focus, #spotlight.dark main section #search-result li .search-item-actions button:hover {
-  box-shadow: none;
-  background: rgba(255, 255, 255, 0.1607843137);
-}
-#spotlight.dark main section #search-result li:hover {
-  background: rgba(255, 255, 255, 0.1607843137);
+  border-color: var(--spotlight-border-hr);
 }
 #spotlight .window-header {
   position: absolute;
@@ -81,6 +74,7 @@
   margin: 0;
   padding: 0;
   background: transparent;
+  color: var(--spotlight-text-color);
 }
 #spotlight .window-content::before {
   content: "";
@@ -89,7 +83,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--spotlight-background);
   filter: brightness(3);
   backdrop-filter: blur(10px);
   z-index: -1;
@@ -99,7 +93,7 @@
 }
 #spotlight.inverted main header {
   border-bottom: none;
-  border-top: 1px solid grey;
+  border-top: 1px solid var(--spotlight-border);
 }
 #spotlight.inverted .window-header {
   bottom: 0;
@@ -112,6 +106,27 @@
 #spotlight main:has(.no-results) header {
   border: none;
 }
+#spotlight main .filters-help {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+#spotlight main .filters-help .filter {
+  pointer-events: none;
+}
+#spotlight main .filter {
+  font-size: 1.2rem;
+  padding: 0 0.3rem;
+  border: 1px solid var(--spotlight-filter-border);
+  background: var(--spotlight-filter-bg);
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
 #spotlight main header {
   height: var(--spotlight-height);
   display: flex;
@@ -119,7 +134,13 @@
   align-items: center;
   width: 100%;
   padding: 0 1rem;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid var(--spotlight-border);
+}
+#spotlight main header .filters-container {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  height: 65%;
 }
 #spotlight main header i {
   font-size: 1.5rem;
@@ -130,6 +151,7 @@
   flex: 1;
   border: none;
   background: none;
+  color: var(--spotlight-text-color);
 }
 #spotlight main header input[type=search]:focus, #spotlight main header input[type=search]:hover {
   box-shadow: none;
@@ -160,6 +182,15 @@
   padding: 0.3rem 0.5rem;
   border-radius: 5px;
 }
+#spotlight main section #search-result li.type-header {
+  font-size: x-small;
+  pointer-events: none;
+  font-weight: bold;
+  padding: 0;
+  border-bottom: 1px solid;
+  border-radius: 0;
+  text-transform: uppercase;
+}
 #spotlight main section #search-result li:hover {
   background: rgba(0, 0, 0, 0.2);
 }
@@ -167,7 +198,7 @@
   width: 32px;
   height: 32px;
   border: none;
-  object-fit: contain;
+  object-fit: cover;
 }
 #spotlight main section #search-result li .search-item-actions {
   padding: 0.2em 0;
@@ -180,7 +211,7 @@
   justify-content: center;
   align-items: center;
   width: auto;
-  background: rgba(0, 0, 0, 0.1019607843);
+  background: var(--spotlight-button-bg);
   transition: all 0.2s ease-in-out;
   border: none;
   line-height: inherit;
@@ -194,7 +225,7 @@
 }
 #spotlight main section #search-result li .search-item-actions button:focus, #spotlight main section #search-result li .search-item-actions button:hover {
   box-shadow: none;
-  background: rgba(0, 0, 0, 0.1607843137);
+  background: var(--spotlight-button-hover);
 }
 #spotlight main section #search-result li .search-info {
   flex: 1;
@@ -225,7 +256,7 @@
 }
 #spotlight main section #search-result li.special-app {
   border: 2px solid var(--color-border-dark-4);
-  background: rgba(0, 0, 0, 0.1607843137);
+  background: var(--spotlight-button-hover);
   padding: 1rem;
   border-radius: 10px;
 }
@@ -241,4 +272,7 @@
   font-size: smaller;
   border-bottom: 1px solid;
   border-radius: 0;
+}
+#spotlight main section #search-result li.special-app ul li:last-child {
+  border-bottom: none;
 }/*# sourceMappingURL=module.css.map */

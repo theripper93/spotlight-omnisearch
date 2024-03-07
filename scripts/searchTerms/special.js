@@ -114,7 +114,7 @@ SPECIAL_SEARCHES.push(
             const listElements = game.i18n.translations["spotlight-omnisearch"].special.help.list;
             return `<ul>${listElements.map((element) => `<li style="pointer-events:none">${element}</li>`).join("")}</ul>`;
         },
-        type: "special-app",
+        type: "special-app help",
         data: {},
         img: "",
         icon: "fad fa-question",
