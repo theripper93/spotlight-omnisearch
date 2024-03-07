@@ -250,6 +250,7 @@ export class Spotlight extends Application {
 
         //match actor items
         for (let i = 0; i < this.ACTOR_ITEMS_INDEX.length; i++) {
+            if(results.length > 50) break;
             const search = this.ACTOR_ITEMS_INDEX[i];
             search.query = query;
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
@@ -260,6 +261,7 @@ export class Spotlight extends Application {
 
         //match index
         for (let i = 0; i < INDEX.length; i++) {
+            if(results.length > 50) break;
             const search = INDEX[i];
             search.query = query;
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
@@ -270,6 +272,7 @@ export class Spotlight extends Application {
 
         //match file index
         for (let i = 0; i < FILE_INDEX.length; i++) {
+            if(results.length > 50) break;
             const search = FILE_INDEX[i];
             search.query = query;
             if (hasFilters && !filters.some((filter) => search.type.toLowerCase().includes(filter))) continue;
@@ -277,9 +280,6 @@ export class Spotlight extends Application {
                 results.push(new SearchItem(search));
             }
         }
-
-        //cap max results to 50
-        results.splice(50);
 
         //set the list to the results
         completeSearch();
@@ -330,7 +330,6 @@ class SearchItem {
             interval = setInterval(() => {
                 //if the element is removed from the dom, clear the interval
                 if (!document.body.contains(this.element)) {
-                    console.log("clearing interval");
                     clearInterval(interval);
                     return;
                 }
