@@ -211,10 +211,6 @@ export class Spotlight extends Application {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
-        if (positionType === "mouse") {
-            const mousePos = CONFIG.SpotlightOmniseach.mouse;
-            this.setPosition({ left: mousePos.x, top: mousePos.y, width: SPOTLIGHT_WIDTH });
-        }
         if (this.first) html.querySelector("input").value = "?";
         this._onSearch();
     }
@@ -293,8 +289,8 @@ export class Spotlight extends Application {
         }
         const section = this._html.querySelector("section");
         const isActiveTimer = !!getSetting("appData").timer;
-        section.classList.toggle("no-results", !query && !isActiveTimer);
-        if (!query && !isActiveTimer) {
+        section.classList.toggle("no-results", !query && !isActiveTimer && !hasFilters);
+        if (!query && !isActiveTimer && !hasFilters) {
             this._html.querySelector("#search-result").innerHTML = "";
             this.setPosition({ height: "auto" });
             return;
@@ -335,6 +331,7 @@ export class Spotlight extends Application {
         //match special searches
         SPECIAL_SEARCHES.forEach((search) => {
             search.query = query;
+            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) return;
             if (isActiveTimer && search.type.includes("timer")) {
                 results.push(new SearchItem(search));
                 return;

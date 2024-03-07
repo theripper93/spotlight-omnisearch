@@ -37,7 +37,6 @@ export function registerSettings() {
             choices: {
                 default: `${MODULE_ID}.settings.position.choices.default`,
                 save: `${MODULE_ID}.settings.position.choices.save`,
-                mouse: `${MODULE_ID}.settings.position.choices.mouse`,
             },
         },
         spotlightWidth: {

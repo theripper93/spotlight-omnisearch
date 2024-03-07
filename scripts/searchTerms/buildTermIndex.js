@@ -16,10 +16,10 @@ export async function buildIndex(force = false) {
     }
     if (indexBuilt) return;
     indexBuilt = true;
+    await buildModuleIntegration();
     if (getSetting("searchSettings")) await buildSettings();
     if (getSetting("searchUtils")) await buildSettingsTab();
     if (getSetting("searchSidebar")) await buildCollections();
-    await buildModuleIntegration();
     await buildStatusEffects();
     if (getSetting("searchCompendium")) await buildCompendiumIndex();
     const promises = [];
@@ -105,6 +105,7 @@ async function buildCollections() {
             if (!document.isOwner) return;
             const keywords = [];
             let description = "";
+            let extraType = "";
             if (document.folder) description = "<i style='display: inline; opacity: 0.3;' class='fas fa-folder'></i> " + getFoldersRecursive(document).join(" / ");
             const actions = [];
             if (collection.documentName === "JournalEntry") {
@@ -150,13 +151,20 @@ async function buildCollections() {
                     );
                 });
             }
+            if (collection.documentName === "Actor") {
+                const itemPileType = document.flags["item-piles"]?.data?.type;
+                if (itemPileType) {
+                    keywords.push(itemPileType);
+                    extraType += ` ${itemPileType}`;
+                }
+            }
             index.push(
                 new BaseSearchTerm({
                     name: document.name ?? document.speaker?.alias ?? document.content,
                     description: description,
                     keywords: keywords,
                     actions: actions,
-                    type: collection.documentName,
+                    type: collection.documentName + extraType,
                     data: { ...document, documentName: collection.documentName, uuid: document.uuid },
                     img: document.img,
                     icon: ["fas fa-earth-europe", CONFIG[collection.documentName].sidebarIcon],
@@ -396,5 +404,32 @@ async function buildModuleIntegration() {
                 }),
             );
         }
+    }
+
+    if (game.itempiles) {
+        const users = Array.from(game.users).filter((u) => u !== game.user);
+        const actions = users.map((u) => {
+            return {
+                name: u.name,
+                icon: `<i class="fas fa-handshake"></i>`,
+                callback: async function () {
+                    game.itempiles.API.requestTrade(u);
+                },
+            };
+        });
+        INDEX.push(
+            new BaseSearchTerm({
+                name: game.i18n.localize("ITEM-PILES.ContextMenu.RequestTrade"),
+                actions: actions,
+                keywords: [],
+                type: "item-piles",
+                data: {},
+                img: null,
+                icon: ["fas fa-boxes"],
+                onClick: async function () {
+                    game.itempiles.toggle();
+                },
+            }),
+        );
     }
 }

@@ -1,7 +1,4 @@
-
-
 export class BaseSearchTerm {
-
     /**
      * Create a base search term.
      * @param {Object} options - The options for the base search term.
@@ -17,7 +14,7 @@ export class BaseSearchTerm {
      * @param {function} [options.onClick=null] - The click handler for the search term. If provided, it will be bound to the instance.
      */
 
-    constructor ({name, description, query, keywords = [], actions = [], dragData, type, data = {}, img, icon, onClick = null, onDragStart = null, onDragEnd = null}) {
+    constructor({ name, description, query, keywords = [], actions = [], dragData, type, data = {}, img, icon, onClick = null, onDragStart = null, onDragEnd = null }) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
         description = description ?? "";
         this._description = typeof description === "function" ? description.bind(this) : () => description;
@@ -29,9 +26,9 @@ export class BaseSearchTerm {
         this.data = data;
         this.img = img;
         this.icon = icon;
-        if(onClick) this._onClick = onClick.bind(this);
-        if(onDragEnd) this._onDragEnd = onDragEnd.bind(this);
-        if(onDragStart) this._onDragStart = onDragStart.bind(this);
+        if (onClick) this._onClick = onClick.bind(this);
+        if (onDragEnd) this._onDragEnd = onDragEnd.bind(this);
+        if (onDragStart) this._onDragStart = onDragStart.bind(this);
     }
 
     onClick(...args) {
