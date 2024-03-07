@@ -4,20 +4,13 @@ import { getSetting, setSetting } from "../settings";
 
 export const SPECIAL_SEARCHES = [];
 
-export class SpecialSearchTerm extends BaseSearchTerm {
-    constructor(...args) {
-        super(...args);
-        this.match = args[0].match.bind(this);
-    }
-}
-
 const NOTE_MATCHING = ["note", "notes", "note:", "notes:", "n:", "n "];
 const ROLL_MATCHING = ["roll", "!roll", "roll:", "r:", "r "];
 const TIMER_MATCHING = ["timer", "timer:", "time", "time:", "t:", "t "];
 
 SPECIAL_SEARCHES.push(
     //Calculator
-    new SpecialSearchTerm({
+    new BaseSearchTerm({
         name: function (search) {
             try {
                 return eval(search.query);
@@ -47,7 +40,7 @@ SPECIAL_SEARCHES.push(
         },
     }),
     //notes
-    new SpecialSearchTerm({
+    new BaseSearchTerm({
         name: () => game.i18n.localize(`${MODULE_ID}.special.note.name`),
         description: (search) => {
             const noteText = search.query.replace(/(note|notes|!note|!notes|note:|notes:|!n|n:)/i, "").trim();
@@ -90,7 +83,7 @@ SPECIAL_SEARCHES.push(
         },
     }),
     //roll
-    new SpecialSearchTerm({
+    new BaseSearchTerm({
         name: () => game.i18n.localize(`${MODULE_ID}.special.roll.name`),
         description: (search) => {
             const rollText = search.query.replace(/(roll|!roll|roll:|!r|r:|r )/i, "").trim();
@@ -108,7 +101,7 @@ SPECIAL_SEARCHES.push(
         },
     }),
     //help
-    new SpecialSearchTerm({
+    new BaseSearchTerm({
         name: () => game.i18n.localize(`${MODULE_ID}.special.help.name`),
         description: (search) => {
             const listElements = game.i18n.translations["spotlight-omnisearch"].special.help.list;
@@ -124,7 +117,7 @@ SPECIAL_SEARCHES.push(
         onClick: async function (search) {},
     }),
     //timer
-    new SpecialSearchTerm({
+    new BaseSearchTerm({
         name: () => {
             let label = game.i18n.localize(`${MODULE_ID}.special.timer.name`);
             const current = getSetting("appData").timer;

@@ -388,13 +388,14 @@ async function buildModuleIntegration() {
     //dfreds
     if (game.dfreds) {
         const allEffects = game.dfreds.effects.all;
+        const moduleName = game.modules.get("dfreds-convenient-effects").title;
         for (const effect of allEffects) {
             INDEX.push(
                 new BaseSearchTerm({
                     name: effect.name,
                     description: effect.description,
                     keywords: [],
-                    type: "dfreds",
+                    type: moduleName,
                     data: { ...effect },
                     img: effect.img,
                     icon: ["fas fa-hand-sparkles", "fas fa-bolt"],
