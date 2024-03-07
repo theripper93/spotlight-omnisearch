@@ -53,7 +53,13 @@ export class BaseSearchTerm {
     }
 
     match(query) {
-        return this.name.toLowerCase().includes(query) || this.keywords.some((keyword) => keyword.includes(query));
+        try {
+            return this.name.toLowerCase().includes(query) || this.keywords.some((keyword) => keyword.includes(query));
+        } catch (error) {
+            console.error(`Error matching search term:`, this);
+            console.error(error);
+            return false;
+        }
     }
 
     get name() {

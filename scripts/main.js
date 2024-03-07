@@ -34,7 +34,7 @@ Hooks.on("init", () => {
         editable: [{ key: "Space", modifiers: ["Shift"]}],
         restricted: false,
         precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
-        onDown: () => {
+        onDown: (e) => {
             const current = Object.values(ui.windows).find(w => w instanceof Spotlight);
             if (current) {
                 current.close();

@@ -191,7 +191,7 @@
   border-radius: 0;
   text-transform: uppercase;
 }
-#spotlight main section #search-result li:hover {
+#spotlight main section #search-result li:hover, #spotlight main section #search-result li.selected {
   background: rgba(0, 0, 0, 0.2);
 }
 #spotlight main section #search-result li img {

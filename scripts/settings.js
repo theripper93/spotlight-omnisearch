@@ -27,6 +27,19 @@ export function registerSettings() {
             default: false,
             type: Boolean,
         },
+        position: {
+            name: `${MODULE_ID}.settings.position.name`,
+            hint: `${MODULE_ID}.settings.position.hint`,
+            scope: "client",
+            config: true,
+            default: "save",
+            type: String,
+            choices: {
+                default: `${MODULE_ID}.settings.position.choices.default`,
+                save: `${MODULE_ID}.settings.position.choices.save`,
+                mouse: `${MODULE_ID}.settings.position.choices.mouse`,
+            },
+        },
         spotlightWidth: {
             name: `${MODULE_ID}.settings.spotlightWidth.name`,
             hint: `${MODULE_ID}.settings.spotlightWidth.hint`,

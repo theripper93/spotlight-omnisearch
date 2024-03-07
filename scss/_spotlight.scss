@@ -228,7 +228,8 @@
                         text-transform: uppercase;
                     }
 
-                    &:hover {
+                    &:hover,
+                    &.selected {
                         background: #00000033;
                     }
 

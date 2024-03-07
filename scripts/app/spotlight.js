@@ -139,7 +139,8 @@ export class Spotlight extends Application {
                 event.preventDefault();
                 const isShift = event.shiftKey;
                 const isAlt = event.altKey;
-                const firstItem = html.querySelector(".search-item:not(.type-header)");
+                const selected = html.querySelector(".search-item:not(.type-header).selected");
+                const firstItem = selected ?? html.querySelector(".search-item:not(.type-header)");
                 if (!firstItem) return;
                 if (isShift) {
                     //find the first action button
@@ -165,6 +166,23 @@ export class Spotlight extends Application {
                 if (lastFilter) lastFilter.remove();
                 this._onSearch();
             }
+            //if arrow up or down is pressed, move the selection
+            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                const selected = html.querySelector(".search-item.selected");
+                if (!selected) {
+                    const first = html.querySelector(".search-item:not(.type-header)");
+                    if (first) first.classList.add("selected");
+                    return;
+                }
+                let next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                if(next && next.classList.contains("type-header")) next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                if (next) {
+                    selected.classList.remove("selected");
+                    next.classList.add("selected");
+                    //scroll to the selected element
+                    next.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                }
+            }
         });
         //timeout for janky core behavior
         setTimeout(() => {
@@ -185,12 +203,17 @@ export class Spotlight extends Application {
             //replace with these classes <i class="fa-light fa-spinner-scale fa-spin"></i>
             searchIcon.classList = "fa-light fa-spinner fa-spin";
         }
+        const positionType = getSetting("position");
         const storedPosition = getSetting("spotlightPosition");
-        if (storedPosition) {
+        if (storedPosition && positionType === "save") {
             //check if the stored position is within the window
             if (!(storedPosition.left + SPOTLIGHT_WIDTH > window.innerWidth || storedPosition.top > window.innerHeight || storedPosition.top < 0 || storedPosition.left < 0)) {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
+        }
+        if (positionType === "mouse") {
+            const mousePos = CONFIG.SpotlightOmniseach.mouse;
+            this.setPosition({ left: mousePos.x, top: mousePos.y, width: SPOTLIGHT_WIDTH });
         }
         if (this.first) html.querySelector("input").value = "?";
         this._onSearch();

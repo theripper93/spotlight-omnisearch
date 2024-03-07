@@ -18,6 +18,15 @@
                 "name": "Save Last Search",
                 "hint": "Save the last search query and results for the next time the Spotlight Omnisearch is opened"
             },
+            "position": {
+                "name": "Position",
+                "hint": "Set the position of the Spotlight Omnisearch on the screen",
+                "choices": {
+                    "default": "Default (Center)",
+                    "save": "Save last position",
+                    "mouse": "Open at mouse position"
+                }
+            },
             "spotlightWidth": {
                 "name": "Spotlight Width",
                 "hint": "Set the width of the Spotlight Omnisearch in pixels"
