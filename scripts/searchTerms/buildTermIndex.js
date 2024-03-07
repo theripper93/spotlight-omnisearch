@@ -105,10 +105,6 @@ async function buildCollections() {
             if (!document.isOwner) return;
             const keywords = [];
             let description = "";
-            if (collection.documentName === "ChatMessage") {
-                keywords.push(document.content.toLowerCase() + document.flavor?.toLowerCase() ?? "");
-                description = document.content;
-            }
             if (document.folder) description = "<i style='display: inline; opacity: 0.3;' class='fas fa-folder'></i> " + getFoldersRecursive(document).join(" / ");
             const actions = [];
             if (collection.documentName === "JournalEntry") {
