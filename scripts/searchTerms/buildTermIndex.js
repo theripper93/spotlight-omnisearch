@@ -78,11 +78,56 @@ async function buildCollections() {
                 description = document.content;
             }
             if (document.folder) description = getFoldersRecursive(document).reverse().join(" > ");
+            const actions = [];
+            if (collection.documentName === "JournalEntry") {
+                document.pages.forEach((page) => {
+                    actions.push({
+                        name: page.name,
+                        icon: `<i class="fa-solid fa-file-lines"></i>`,
+                        callback: async function () {
+                            const entity = await fromUuid(document.uuid);
+                            entity.sheet.render(true, { pageId: page.id, anchor: null });
+                        },
+                    });
+
+                    const pageActions = [];
+                    const tocKeywords = [];
+                    Object.values(page.toc).forEach((toc) => {
+                        tocKeywords.push(toc.text);
+                        pageActions.push({
+                            name: toc.text,
+                            icon: `<i class="fa-solid fa-file-lines"></i>`,
+                            callback: async function () {
+                                const entity = await fromUuid(document.uuid);
+                                entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
+                            },
+                        });
+                    });
+
+                    index.push(
+                        new BaseSearchTerm({
+                            name: page.name + ` (${document.name})`,
+                            actions: pageActions,
+                            keywords: tocKeywords,
+                            description: description,
+                            type: collection.documentName,
+                            data: { ...document, documentName: collection.documentName, uuid: document.uuid },
+                            img: document.img,
+                            icon: ["fas fa-earth-europe", "fas fa-file-lines"],
+                            onClick: async function () {
+                                const entity = await fromUuid(document.uuid);
+                                entity.sheet.render(true, { pageId: page.id, anchor: null });
+                            },
+                        }),
+                    );
+                });
+            }
             index.push(
                 new BaseSearchTerm({
                     name: document.name ?? document.speaker?.alias ?? document.content,
                     description: description,
                     keywords: keywords,
+                    actions: actions,
                     type: collection.documentName,
                     data: { ...document, documentName: collection.documentName, uuid: document.uuid },
                     img: document.img,

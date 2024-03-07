@@ -162,6 +162,7 @@ export class Spotlight extends Application {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
+        if(this.first) html.querySelector("input").value = "?";
         this._onSearch();
     }
 

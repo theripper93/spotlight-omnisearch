@@ -21,7 +21,9 @@ Hooks.on("init", () => {
 
 Hooks.on("ready", () => {
     if (getSetting("firstTime")) {
-        new Spotlight({first: true}).render(true);
+        setTimeout(() => {
+            new Spotlight({first: true}).render(true);
+        }, 1000);
         setSetting("firstTime", false);
     }
 });

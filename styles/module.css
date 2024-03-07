@@ -172,6 +172,7 @@
 #spotlight main section #search-result li .search-item-actions {
   padding: 0.2em 0;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.2rem;
 }
 #spotlight main section #search-result li .search-item-actions button {
