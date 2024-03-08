@@ -36,23 +36,13 @@ Hooks.on("init", () => {
         restricted: false,
         precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
         onDown: (e) => {
-            toggleSpotlight();
+            if (!game.user.isGM && getSetting("gmOnly")) return;
+            const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+            if (current) {
+                current.close();
+            } else {
+                new Spotlight().render(true);
+            }
         },
     });
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === " " && e.ctrlKey) {
-            toggleSpotlight();
-        }
-    });
 });
-
-function toggleSpotlight() {
-    if (!game.user.isGM && getSetting("gmOnly")) return;
-    const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
-    if (current) {
-        current.close();
-    } else {
-        new Spotlight().render(true);
-    }
-}
