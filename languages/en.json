@@ -129,6 +129,20 @@
             "counter": {
                 "name": "Counter",
                 "local-keyword": "counter"
+            },
+            "kill": {
+                "name": "Kill",
+                "description": "Kill the selected token(s)"
+            },
+            "heal": {
+                "name": "Heal"
+            },
+            "damage": {
+                "name": "Damage"
+            },
+            "restore": {
+                "name": "Restore",
+                "description": "Restore the selected token(s) to full health"
             }
         }
     }

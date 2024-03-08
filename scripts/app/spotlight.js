@@ -205,6 +205,7 @@ export class Spotlight extends Application {
     }
 
     _onKeyDown(event) {
+        const html = this._html;
         const inputTime = Date.now();
         const inputDelta = inputTime - LAST_INPUT_TIME;
         LAST_INPUT_TIME = inputTime;
@@ -361,13 +362,9 @@ export class Spotlight extends Application {
                 typeHeader.classList.add("type-header");
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
                 sortedTypeResults.forEach((result) => {
-                    console.log(result);
                     list.appendChild(result.element);
                 });
             }
-            /*results.forEach((result) => {
-                list.appendChild(result.element);
-            });*/
             if (!results.length) {
                 section.classList.add("no-results");
             }

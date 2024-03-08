@@ -1,6 +1,7 @@
 import { BaseSearchTerm } from "./baseSearchTerm";
 import { getSetting } from "../settings";
 import { initSpecialSearches } from "./special";
+import { MODULE_ID } from "../main";
 
 export const INDEX = [];
 export const FILTERS = [];
@@ -480,7 +481,6 @@ async function buildWeatherEffects() {
         const isFxMaster = CONFIG.fxmaster && key.includes("fxmaster");
         if (isFxMaster) {
             const FXMKEY = key.replace("fxmaster.", "");
-            console.log(FXMKEY);
             const FXMEffect = CONFIG.fxmaster.particleEffects[FXMKEY];
             INDEX.push(
                 new BaseSearchTerm({

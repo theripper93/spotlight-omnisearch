@@ -61,7 +61,6 @@ export class CompendiumConfig extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        console.log(formData);
         return game.settings.set(MODULE_ID, this.SETTING_KEY, formData);
     }
 

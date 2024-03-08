@@ -686,4 +686,127 @@ export async function initSpecialSearches() {
     ];
 
     SPECIAL_SEARCHES.push(...lightEffects);
+
+    if (game.modules.get("splatter")?.active) {
+        const getSplatterData = (actor) => {
+            const maxHpPath = game.settings.get("splatter", "maxHp");
+            const currentHpPath = game.settings.get("splatter", "currentHp");
+            const isWoundSystem = game.settings.get("splatter", "useWounds");
+            const currentHPValue = foundry.utils.getProperty(actor.system, currentHpPath);
+            const maxHPValue = foundry.utils.getProperty(actor.system, maxHpPath);
+            const finalPath = `system.${currentHpPath}`;
+
+            return {
+                heal: (amount) => {
+                    const newHp = isWoundSystem ? currentHPValue - amount : currentHPValue + amount;
+                    actor.update({ [finalPath]: newHp });
+                },
+                damage: (amount) => {
+                    const newHp = isWoundSystem ? currentHPValue + amount : currentHPValue - amount;
+                    actor.update({ [finalPath]: newHp });
+                },
+                kill: () => {
+                    isWoundSystem ? actor.update({ [finalPath]: maxHPValue }) : actor.update({ [finalPath]: 0 });
+                },
+                restore: () => {
+                    isWoundSystem ? actor.update({ [finalPath]: 0 }) : actor.update({ [finalPath]: maxHPValue });
+                },
+            };
+        };
+
+        //add the kill, restore, damage and heal terms
+
+        SPECIAL_SEARCHES.push(
+            //kill
+            new BaseSearchTerm({
+                name: game.i18n.localize(`${MODULE_ID}.special.kill.name`),
+                description: game.i18n.localize(`${MODULE_ID}.special.kill.description`),
+                keywords: [],
+                type: "special-app",
+                data: {},
+                img: null,
+                icon: ["fas fa-skull-crossbones"],
+                onClick: async function () {
+                    const actors = canvas.tokens.controlled.map((t) => t.actor);
+                    actors.forEach((actor) => {
+                        const splatterData = getSplatterData(actor);
+                        splatterData.kill();
+                    });
+                },
+            }),
+            //restore
+            new BaseSearchTerm({
+                name: game.i18n.localize(`${MODULE_ID}.special.restore.name`),
+                description: game.i18n.localize(`${MODULE_ID}.special.restore.description`),
+                keywords: [],
+                type: "special-app",
+                data: {},
+                img: null,
+                icon: ["fas fa-heart"],
+                onClick: async function () {
+                    const actors = canvas.tokens.controlled.map((t) => t.actor);
+                    actors.forEach((actor) => {
+                        const splatterData = getSplatterData(actor);
+                        splatterData.restore();
+                    });
+                },
+            }),
+            //damage
+            new BaseSearchTerm({
+                name: game.i18n.localize(`${MODULE_ID}.special.damage.name`),
+                description: (search) => {
+                    let query = search.query;
+                    const numericPartWithSign = query.match(/-?\d+/);
+                    const damageValue = numericPartWithSign ? parseInt(numericPartWithSign[0]) : 0;
+                    return damageValue;
+                },
+                keywords: [],
+                type: "special-app",
+                data: {},
+                img: null,
+                icon: ["fas fa-sword"],
+                match: function (query) {
+                    //remove numbers from the query
+                    query = query.replace(/-?\d+/g, "").trim();
+                    return this.name.toLowerCase().includes(query);
+                },
+                onClick: async function (event, search) {
+                    const actors = canvas.tokens.controlled.map((t) => t.actor);
+                    const val = parseInt(search.query.match(/-?\d+/)?.[0] ?? 0);
+                    actors.forEach((actor) => {
+                        const splatterData = getSplatterData(actor);
+                        splatterData.damage(val);
+                    });
+                },
+            }),
+            //heal
+            new BaseSearchTerm({
+                name: game.i18n.localize(`${MODULE_ID}.special.heal.name`),
+                description: (search) => {
+                    let query = search.query;
+                    const numericPartWithSign = query.match(/-?\d+/);
+                    const healValue = numericPartWithSign ? parseInt(numericPartWithSign[0]) : 0;
+                    return healValue;
+                },
+                keywords: [],
+                type: "special-app",
+                data: {},
+                img: null,
+                icon: ["fas fa-plus"],
+                match: function (query) {
+                    //remove numbers from the query
+                    query = query.replace(/-?\d+/g, "").trim();
+                    return this.name.toLowerCase().includes(query);
+                },
+                onClick: async function (event, search) {
+                    const actors = canvas.tokens.controlled.map((t) => t.actor);
+                    const val = parseInt(search.query.match(/-?\d+/)?.[0] ?? 0);
+                    actors.forEach((actor) => {
+                        const splatterData = getSplatterData(actor);
+                        splatterData.heal(val);
+                    });
+                },
+            }),
+        );
+    }
 }
