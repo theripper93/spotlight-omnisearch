@@ -9,7 +9,7 @@ let indexingDone = false;
 
 let SPOTLIGHT_WIDTH = 700;
 
-let LAST_SEARCH = {query: "", filters: []};
+let LAST_SEARCH = { query: "", filters: [] };
 
 let LAST_INPUT_TIME = 0;
 
@@ -30,7 +30,7 @@ export class Spotlight extends Application {
                 const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${filter}">${filter}</span>`).join("");
                 help._description = () => {
                     return `${currentDesc} <div class="filters-help">${filterSpans}</div>`;
-                }
+                };
                 if (this._html) this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
             }
         });
@@ -72,7 +72,7 @@ export class Spotlight extends Application {
 
     indexActorItems() {
         const actors = canvas?.tokens?.controlled.map((token) => token.actor) ?? [];
-        const typeLocalized = game.i18n.localize("DOCUMENT.Item") + " " + "owned"
+        const typeLocalized = game.i18n.localize("DOCUMENT.Item") + " " + "owned";
         if (_token && !actors.includes(_token.actor)) actors.push(_token.actor);
         if (!actors.includes(game.user.character)) actors.push(game.user.character);
         for (const actor of actors) {
@@ -196,9 +196,8 @@ export class Spotlight extends Application {
                             }
                             next = next.nextElementSibling;
                         }
-
                     }
-                } else {                    
+                } else {
                     next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
                     if (next && next.classList.contains("type-header")) next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
                 }
@@ -316,7 +315,7 @@ export class Spotlight extends Application {
         LAST_SEARCH = {
             query,
             filters,
-        }
+        };
         const section = this._html.querySelector("section");
         const isActiveTimer = !!getSetting("appData").timer;
         section.classList.toggle("no-results", !query && !isActiveTimer && !hasFilters);
@@ -338,15 +337,27 @@ export class Spotlight extends Application {
             const list = this._html.querySelector("#search-result");
             list.innerHTML = "";
             for (const [type, typeResults] of Object.entries(types)) {
+                //sort typeResults by name, then bring to the top the ones that start with the query
+                const sortedTypeResults = [];
+                const doesNotStartWithQuery = [];
+                typeResults.forEach((result) => {
+                    const lc = result.name.toLowerCase();
+                    if (splitQuery.some((q) => lc.startsWith(q))) sortedTypeResults.push(result);
+                    else doesNotStartWithQuery.push(result);
+                });
+                doesNotStartWithQuery.sort((a, b) => a.name.localeCompare(b.name));
+                sortedTypeResults.sort((a, b) => a.name.localeCompare(b.name));
+                sortedTypeResults.push(...doesNotStartWithQuery);
+
                 const typeHeader = document.createElement("li");
                 typeHeader.innerText = type
                     .replaceAll("-", " ")
                     .replaceAll(" ", " - ")
                     .replace(/([a-z])([A-Z])/g, "$1 $2");
-                
+
                 typeHeader.classList.add("type-header");
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
-                typeResults.forEach((result) => {
+                sortedTypeResults.forEach((result) => {
                     list.appendChild(result.element);
                 });
             }

@@ -1,5 +1,5 @@
 import { BaseSearchTerm } from "./baseSearchTerm";
-import {getSetting} from "../settings";
+import { getSetting } from "../settings";
 import { initSpecialSearches } from "./special";
 
 export const INDEX = [];
@@ -19,6 +19,7 @@ export async function buildIndex(force = false) {
     indexBuilt = true;
     await initSpecialSearches();
     await buildModuleIntegration();
+    await buildWeatherEffects();
     if (getSetting("searchSettings")) await buildSettings();
     if (getSetting("searchUtils")) await buildSettingsTab();
     if (getSetting("searchSidebar")) await buildCollections();
@@ -77,7 +78,7 @@ async function buildCompendiumIndex() {
                 new BaseSearchTerm({
                     name: entry.name,
                     description: pack.title + " - " + packPackageName,
-                    keywords: [],
+                    keywords: [pack.title],
                     type: localizedDocumentName + " " + localizedCompendiumName,
                     data: { ...entry, documentName: pack.documentName },
                     img: entry.img,
@@ -379,7 +380,7 @@ function getFoldersRecursive(document, folders = []) {
 async function buildStatusEffects() {
     const effects = CONFIG.statusEffects;
     for (const effect of effects) {
-        if(!effect.name) continue;
+        if (!effect.name) continue;
         INDEX.push(
             new BaseSearchTerm({
                 name: () => game.i18n.localize(effect.name),
@@ -467,6 +468,55 @@ async function buildModuleIntegration() {
                     }),
                 );
             }
+        }
+    }
+}
+
+async function buildWeatherEffects() {
+    if (!game.user.isGM) return;
+    const weatherFX = CONFIG.weatherEffects;
+    for (const [key, effect] of Object.entries(weatherFX)) {
+        const isFxMaster = CONFIG.fxmaster && key.includes("fxmaster");
+        if (isFxMaster) {
+            const FXMKEY = key.replace("fxmaster.", "");
+            console.log(FXMKEY);
+            const FXMEffect = CONFIG.fxmaster.particleEffects[FXMKEY];
+            INDEX.push(
+                new BaseSearchTerm({
+                    name: game.i18n.localize(FXMEffect.label),
+                    description: FXMEffect.description,
+                    keywords: [game.i18n.localize("SCENES.WeatherEffect")],
+                    type: "fxmaster " + game.i18n.localize("SCENES.WeatherEffect"),
+                    img: FXMEffect.icon,
+                    icon: ["fas fa-wand-magic-sparkles", "fas fa-cloud-rain"],
+                    onClick: async function () {
+                        const currentSceneWeather = game.scenes.viewed.weather;
+                        if (currentSceneWeather === key) {
+                            game.scenes.viewed.update({ weather: "" });
+                        } else {
+                            game.scenes.viewed.update({ weather: key });
+                        }
+                    },
+                }),
+            );
+        } else {
+            INDEX.push(
+                new BaseSearchTerm({
+                    name: game.i18n.localize(effect.label),
+                    description: effect.description,
+                    keywords: [game.i18n.localize("SCENES.WeatherEffect")],
+                    type: game.i18n.localize("SCENES.WeatherEffect"),
+                    icon: ["fas fa-map", "fas fa-cloud-sun-rain"],
+                    onClick: async function () {
+                        const currentSceneWeather = game.scenes.viewed.weather;
+                        if (currentSceneWeather === key) {
+                            game.scenes.viewed.update({ weather: "" });
+                        } else {
+                            game.scenes.viewed.update({ weather: key });
+                        }
+                    },
+                }),
+            );
         }
     }
 }

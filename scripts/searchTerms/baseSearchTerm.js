@@ -19,7 +19,7 @@ export class BaseSearchTerm {
         this._description = typeof description === "function" ? description.bind(this) : () => description;
         this._actions = typeof actions === "function" ? actions.bind(this) : () => actions;
         this.dragData = dragData;
-        this.keywords = keywords;
+        this.keywords = keywords.map((keyword) => keyword.toLowerCase());
         this.type = type;
         this.data = data;
         this.img = img;
