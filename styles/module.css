@@ -10,6 +10,7 @@
   --spotlight-scrollbar: var(--color-text-dark-4);
   --spotlight-filter-bg: var(--spotlight-button-bg);
   --spotlight-filter-border: var(--spotlight-border);
+  z-index: 9999 !important;
   border-radius: 10px;
   overflow: hidden;
   font-family: "Roboto", sans-serif;
@@ -260,6 +261,7 @@
   background: var(--spotlight-button-hover);
   padding: 1rem;
   border-radius: 10px;
+  margin-bottom: 1rem;
 }
 #spotlight main section #search-result li.special-app > i {
   font-size: 3rem;

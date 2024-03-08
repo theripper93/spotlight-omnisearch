@@ -9,7 +9,9 @@ let indexingDone = false;
 
 let SPOTLIGHT_WIDTH = 700;
 
-let LAST_SEARCH = { query: "", filters: [] };
+let LAST_SEARCH = {query: "", filters: []};
+
+let LAST_INPUT_TIME = 0;
 
 export class Spotlight extends Application {
     constructor({ first } = {}) {
@@ -135,6 +137,9 @@ export class Spotlight extends Application {
         html.querySelector("input").addEventListener("input", this._onSearch.bind(this));
         //if enter is pressed on the search input, click on the first result
         html.querySelector("input").addEventListener("keydown", (event) => {
+            const inputTime = Date.now();
+            const inputDelta = inputTime - LAST_INPUT_TIME;
+            LAST_INPUT_TIME = inputTime;
             if (event.key === "Enter") {
                 event.preventDefault();
                 const isShift = event.shiftKey;
@@ -182,6 +187,10 @@ export class Spotlight extends Application {
                     //scroll to the selected element
                     next.scrollIntoView({ block: "nearest", behavior: "smooth" });
                 }
+            }
+            //if space + shift is pressed, close the spotlight
+            if (event.key === " " && event.shiftKey && inputDelta < 400) {
+                this.close();
             }
         });
         //timeout for janky core behavior

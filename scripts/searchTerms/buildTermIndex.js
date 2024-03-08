@@ -368,7 +368,7 @@ async function buildStatusEffects() {
     for (const effect of effects) {
         INDEX.push(
             new BaseSearchTerm({
-                name: effect.name,
+                name: () => game.i18n.localize(effect.name ?? effect.label),
                 keywords: [],
                 type: "statusEffect",
                 data: { ...effect },
@@ -434,7 +434,7 @@ async function buildModuleIntegration() {
         );
     }
 
-    if (game.modules.get("mastercrafted")) {
+    if (game.modules.get("mastercrafted")?.active) {
         const recipeBooks = ui.RecipeApp._currentApp._recipeBooks;
         for (const book of recipeBooks) {
             for (const recipe of book.recipes) {

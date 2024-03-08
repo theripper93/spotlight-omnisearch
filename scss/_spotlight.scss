@@ -28,6 +28,8 @@
         }
     }
 
+    z-index: 9999 !important;
+
 
     border-radius: 10px;
     overflow: hidden;
@@ -315,6 +317,7 @@
                         background: var(--spotlight-button-hover);
                         padding: 1rem;
                         border-radius: 10px;
+                        margin-bottom: 1rem;
 
                         > i {
                             font-size: 3rem;
