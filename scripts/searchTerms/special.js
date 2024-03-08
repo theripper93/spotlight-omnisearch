@@ -94,7 +94,7 @@ export async function initSpecialSearches() {
                     const convertedUnit = converted.match(/[a-zA-Z°]+/)?.[0];
                     //round to 2 decimal places
                     if (convertedValue) convertedValue = parseFloat(convertedValue).toFixed(2);
-                    return `<div class="unit-converter-result"><span>${value} ${unit}</span> <i class="fas fa-equals"></i> <span>${convertedValue} ${convertedUnit}</span></div>`;
+                    return `<div class="unit-converter-result"><span>${value} ${unit}</span> <i class="fas fa-equals"></i> <span data-converted="${convertedValue}">${convertedValue} ${convertedUnit}</span></div>`;
                 }
                 return "...";
             },
@@ -111,8 +111,11 @@ export async function initSpecialSearches() {
                 const alphaPart = query.match(/[a-zA-Z°]+/)?.[0];
                 return numberPart && UNITS.includes(alphaPart);
             },
-            onClick: function (search) {
-                navigator.clipboard.writeText(this.name);
+            onClick: function (event, search) {
+                const convertedEl = document.createElement("div");
+                convertedEl.innerHTML = search.name;
+                const convertedValue = convertedEl.querySelector("span[data-converted]").dataset.converted;
+                navigator.clipboard.writeText(convertedValue);
                 ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.calc-clipboard`));
             },
         }),

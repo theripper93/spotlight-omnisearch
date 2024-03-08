@@ -451,7 +451,7 @@ class SearchItem {
 
     addElementListeners() {
         this.element.addEventListener("click", (e) => {
-            this.searchTerm.onClick?.(e);
+            this.searchTerm.onClick?.(e, this.searchTerm);
         });
         this.setDraggable();
 
