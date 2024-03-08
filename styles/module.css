@@ -326,6 +326,20 @@
   cursor: pointer;
   text-shadow: 0 0 5px;
 }
+#spotlight main section #search-result li.special-app .unit-converter-result {
+  display: flex;
+  gap: 1rem;
+  font-size: 2rem;
+  font-weight: bold;
+  align-items: center;
+}
+#spotlight main section #search-result li.special-app .unit-converter-result i {
+  font-size: 1.5rem;
+}
+#spotlight main section #search-result li.special-app .unit-converter-result span:first-child {
+  font-size: 1rem;
+  font-weight: normal;
+}
 #spotlight main section #search-result li.special-app > i {
   font-size: 3rem;
   width: 2rem;

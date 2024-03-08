@@ -72,6 +72,7 @@ export class Spotlight extends Application {
 
     indexActorItems() {
         const actors = canvas?.tokens?.controlled.map((token) => token.actor) ?? [];
+        const typeLocalized = game.i18n.localize("DOCUMENT.Item") + " " + "owned"
         if (_token && !actors.includes(_token.actor)) actors.push(_token.actor);
         if (!actors.includes(game.user.character)) actors.push(game.user.character);
         for (const actor of actors) {
@@ -179,8 +180,28 @@ export class Spotlight extends Application {
                     if (first) first.classList.add("selected");
                     return;
                 }
-                let next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
-                if(next && next.classList.contains("type-header")) next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                let next;
+                if (event.ctrlKey) {
+                    //jump to next or previous type header
+                    next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                    while (next && !next.classList.contains("type-header")) {
+                        next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                    }
+                    if (next) {
+                        next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                        //if the key is arrow up, loop until there is a type header above
+                        if (event.key === "ArrowUp") {
+                            while (next && !next.classList.contains("type-header")) {
+                                next = next.previousElementSibling;
+                            }
+                            next = next.nextElementSibling;
+                        }
+
+                    }
+                } else {                    
+                    next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                    if (next && next.classList.contains("type-header")) next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                }
                 if (next) {
                     selected.classList.remove("selected");
                     next.classList.add("selected");

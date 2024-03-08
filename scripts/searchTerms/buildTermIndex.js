@@ -104,6 +104,8 @@ async function buildCollections() {
 
     const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
 
+    const playerLocalized = game.i18n.localize("ACTOR.TypeCharacterPl");
+
     for (const collection of collections) {
         const localizedCollectionName = game.i18n.localize(`DOCUMENT.${collection.documentName}`);
         if (exclude.includes(collection.documentName)) continue;
@@ -164,7 +166,7 @@ async function buildCollections() {
                     keywords.push(itemPileType);
                     extraType += ` ${itemPileType}`;
                 }
-                if (document.hasPlayerOwner) extraType += " player";
+                if (document.hasPlayerOwner) extraType += ` ${playerLocalized}`;
             }
             index.push(
                 new BaseSearchTerm({
@@ -377,9 +379,10 @@ function getFoldersRecursive(document, folders = []) {
 async function buildStatusEffects() {
     const effects = CONFIG.statusEffects;
     for (const effect of effects) {
+        if(!effect.name) continue;
         INDEX.push(
             new BaseSearchTerm({
-                name: () => game.i18n.localize(effect.name ?? effect.label),
+                name: () => game.i18n.localize(effect.name),
                 keywords: [],
                 type: "statusEffect",
                 data: { ...effect },

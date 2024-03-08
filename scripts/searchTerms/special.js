@@ -7,7 +7,6 @@ export const SPECIAL_SEARCHES = [];
 let SPECIAL_DONE = false;
 
 export async function initSpecialSearches() {
-
     if (SPECIAL_DONE) return;
     SPECIAL_DONE = true;
 
@@ -17,9 +16,32 @@ export async function initSpecialSearches() {
     const TRACKER_MATCHING = ["tracker:", "t:", "t ", "track", "track:", "s:", "s ", "f:", "f ", game.i18n.localize(`${MODULE_ID}.special.tracker.local-keyword`)];
     const COUNTER_MATCHING = ["counter:", "c:", "c ", "count", "count:", "c:", "c ", game.i18n.localize(`${MODULE_ID}.special.counter.local-keyword`)];
 
+    const UNITS_MAPPING = {
+        ft: (value) => value * 0.3048 + "m",
+        in: (value) => value * 2.54 + "cm",
+        yd: (value) => value * 0.9144 + "m",
+        mi: (value) => value * 1.60934 + "km",
+        lb: (value) => value * 0.453592 + "kg",
+        oz: (value) => value * 28.3495 + "g",
+        gal: (value) => value * 3.78541 + "l",
+        pt: (value) => value * 473.176 + "ml",
+        "fl oz": (value) => value * 29.5735 + "ml",
+        tbsp: (value) => value * 14.7868 + "ml",
+        f: (value) => ((value - 32) * 5) / 9 + "c",
+        "°": (value) => (value * 9) / 5 + 32 + "f",
+        "°C": (value) => (value * 9) / 5 + 32 + "°F",
+        "°F": (value) => ((value - 32) * 5) / 9 + "°C",
+        c: (value) => (value * 9) / 5 + 32 + "f",
+        m: (value) => value * 3.28084 + "ft",
+        cm: (value) => value * 0.393701 + "in",
+        km: (value) => value * 0.621371 + "mi",
+        kg: (value) => value * 2.20462 + "lb",
+        g: (value) => value * 0.035274 + "oz",
+        l: (value) => value * 0.264172 + "gal",
+        ml: (value) => value * 0.00211338 + "pt",
+    };
 
-
-
+    const UNITS = Object.keys(UNITS_MAPPING);
 
     const LIGHT_LOCALIZATION = game.i18n.localize(`Light`);
 
@@ -48,6 +70,46 @@ export async function initSpecialSearches() {
             icon: "fad fa-calculator",
             match: (query) => {
                 return query && query.match(/^[0-9\+\-\*\/\(\)\.\s]*$/);
+            },
+            onClick: function (search) {
+                navigator.clipboard.writeText(this.name);
+                ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.calc-clipboard`));
+            },
+        }),
+        //unit converter
+        new BaseSearchTerm({
+            name: function (search) {
+                //remove all spaces
+                let query = search.query.replaceAll(" ", "");
+                //check if the query contains a number and a unit
+                const numberPart = query.match(/[\d.]+/)?.[0];
+                //alpha part should also include the ° symbol
+                const alphaPart = query.match(/[a-zA-Z°]+/)?.[0];
+                const closestUnit = UNITS.find((unit) => alphaPart === unit) ?? UNITS.find((unit) => alphaPart.includes(unit));
+                if (numberPart && closestUnit) {
+                    const value = parseFloat(numberPart);
+                    const unit = closestUnit;
+                    const converted = UNITS_MAPPING[unit](value);
+                    let convertedValue = converted.match(/[\d.]+/)?.[0];
+                    const convertedUnit = converted.match(/[a-zA-Z°]+/)?.[0];
+                    //round to 2 decimal places
+                    if (convertedValue) convertedValue = parseFloat(convertedValue).toFixed(2);
+                    return `<div class="unit-converter-result"><span>${value} ${unit}</span> <i class="fas fa-equals"></i> <span>${convertedValue} ${convertedUnit}</span></div>`;
+                }
+                return "...";
+            },
+            type: "special-app",
+            data: {},
+            img: "",
+            icon: "fad fa-calculator",
+            match: (query) => {
+                //remove all spaces
+                query = query.replaceAll(" ", "");
+                //check if the query contains a number and a unit
+                const numberPart = query.match(/[\d.]+/)?.[0];
+                //alpha part should also include the ° symbol
+                const alphaPart = query.match(/[a-zA-Z°]+/)?.[0];
+                return numberPart && UNITS.includes(alphaPart);
             },
             onClick: function (search) {
                 navigator.clipboard.writeText(this.name);
