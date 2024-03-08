@@ -1,0 +1,121 @@
+{
+    "spotlight-omnisearch": {
+        "actions": {
+            "activate": "Ativar",
+            "execute": "Executar",
+            "play-playlist": "Reproduzir lista de reprodução",
+            "roll-table": "Mesa de rolo",
+            "stop-playlist": "Parar lista de reprodução",
+            "use-item": "Usar item",
+            "view": "Visualizar"
+        },
+        "hotkeys": {
+            "toggleSpotlight": {
+                "name": "Alternar Spotlight Omnisearch"
+            }
+        },
+        "notifications": {
+            "calc-clipboard": "Resultado copiado para a área de transferência",
+            "note": "Nota salva no diário 'Omnisearch Notes'",
+            "timer-gm": "Somente o GM pode iniciar um cronômetro",
+            "tracker-gm": "Somente o GM pode usar o rastreador de sucesso/fracasso"
+        },
+        "settings": {
+            "clickToDismiss": {
+                "hint": "Clique fora do Spotlight Omnisearch para descartá-lo",
+                "name": "Clique para dispensar"
+            },
+            "compendiumConfig": {
+                "hint": "Configure quais compêndios incluir nos resultados da pesquisa",
+                "label": "Configurar compêndios",
+                "name": "Configuração do Compêndio"
+            },
+            "darkMode": {
+                "hint": "Use um tema sombrio para o Spotlight Omnisearch",
+                "name": "Modo escuro"
+            },
+            "gmOnly": {
+                "hint": "Somente o GM pode abrir o Spotlight Omnisearch",
+                "name": "Apenas GM"
+            },
+            "position": {
+                "choices": {
+                    "default": "Padrão (Centro)",
+                    "mouse": "Abrir na posição do mouse",
+                    "save": "Salvar última posição"
+                },
+                "hint": "Defina a posição do Spotlight Omnisearch na tela",
+                "name": "Posição"
+            },
+            "saveLastSearch": {
+                "hint": "Salve a última consulta de pesquisa e resultados para a próxima vez que o Spotlight Omnisearch for aberto",
+                "name": "Salvar última pesquisa"
+            },
+            "searchCompendium": {
+                "hint": "Incluir resultados de pesquisa do compêndio",
+                "name": "Compêndio de Pesquisa"
+            },
+            "searchFiles": {
+                "hint": "Incluir resultados de pesquisa de arquivos (requer índice de arquivos do módulo Dig Down)",
+                "name": "Procurar arquivos"
+            },
+            "searchSettings": {
+                "hint": "Incluir configurações do jogo nos resultados da pesquisa",
+                "name": "Configurações de pesquisa"
+            },
+            "searchSidebar": {
+                "hint": "Incluir resultados de pesquisa da guia da barra lateral",
+                "name": "Barra lateral de pesquisa"
+            },
+            "searchUtils": {
+                "hint": "Incluir resultados de pesquisa de utilitários",
+                "name": "Utilitários de pesquisa"
+            },
+            "showImages": {
+                "hint": "Exibir imagens nos resultados da pesquisa. \nAs imagens aumentarão o tempo de carregamento dos resultados e podem resultar em falhas dependendo do número de resultados e do tamanho das imagens.",
+                "name": "Mostrar imagens"
+            },
+            "spotlightWidth": {
+                "hint": "Defina a largura do Spotlight Omnisearch em pixels",
+                "name": "Largura do destaque"
+            }
+        },
+        "special": {
+            "counter": {
+                "name": "Contador"
+            },
+            "help": {
+                "list[0]": "Shift Space para abrir o Spotlight Omnisearch",
+                "list[1]": "Escape ou clique fora (opcional, padrão desativado) para fechar o Spotlight Omnisearch",
+                "list[2]": "Pressione Enter para confirmar o primeiro resultado",
+                "list[3]": "Shift / Alt Enter para executar a primeira ou segunda ações do primeiro resultado",
+                "list[4]": "Comandos especiais: ajuda, nota, rolagem, cronômetro, rastreador, contador ou digite uma expressão matemática para calcular",
+                "list[5]": "! \npara filtrar os resultados da pesquisa por tipo (!item, !actor). \nFiltros:",
+                "name": "Ajuda"
+            },
+            "light": {
+                "candle": "Vela",
+                "flashlight": "Lanterna",
+                "info": "Aplicar luz aos tokens selecionados",
+                "lantern": "Lanterna",
+                "lantern-shut": "Lanterna (coberta)",
+                "magical": "Luz Mágica",
+                "off": "Remover luz",
+                "torch": "Tocha"
+            },
+            "note": {
+                "name": "Nota rápida"
+            },
+            "roll": {
+                "name": "Rolo Rápido"
+            },
+            "timer": {
+                "name": "Cronômetro",
+                "timeLeft": "Tempo restante"
+            },
+            "tracker": {
+                "name": "Rastreador de sucesso/fracasso"
+            }
+        }
+    }
+}

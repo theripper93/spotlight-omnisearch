@@ -1,0 +1,121 @@
+{
+    "spotlight-omnisearch": {
+        "actions": {
+            "activate": "aktivieren Sie",
+            "execute": "Ausführen",
+            "play-playlist": "Playlist abspielen",
+            "roll-table": "Rolltisch",
+            "stop-playlist": "Stoppen Sie die Wiedergabeliste",
+            "use-item": "Gegenstand benutzen",
+            "view": "Sicht"
+        },
+        "hotkeys": {
+            "toggleSpotlight": {
+                "name": "Spotlight Omnisearch umschalten"
+            }
+        },
+        "notifications": {
+            "calc-clipboard": "Ergebnis in die Zwischenablage kopiert",
+            "note": "Notiz im Journal „Omnisearch Notes“ gespeichert",
+            "timer-gm": "Nur der GM kann einen Timer starten",
+            "tracker-gm": "Nur der GM kann den Erfolgs-/Misserfolgstracker verwenden"
+        },
+        "settings": {
+            "clickToDismiss": {
+                "hint": "Klicken Sie außerhalb von Spotlight Omnisearch, um es zu schließen",
+                "name": "Klicken Sie zum Verwerfen"
+            },
+            "compendiumConfig": {
+                "hint": "Konfigurieren Sie, welche Kompendien in die Suchergebnisse aufgenommen werden sollen",
+                "label": "Kompendien konfigurieren",
+                "name": "Kompendiumkonfiguration"
+            },
+            "darkMode": {
+                "hint": "Verwenden Sie ein dunkles Thema für Spotlight Omnisearch",
+                "name": "Dunkler Modus"
+            },
+            "gmOnly": {
+                "hint": "Nur der GM kann Spotlight Omnisearch öffnen",
+                "name": "Nur GM"
+            },
+            "position": {
+                "choices": {
+                    "default": "Standard (Mitte)",
+                    "mouse": "An der Mausposition öffnen",
+                    "save": "Letzte Position speichern"
+                },
+                "hint": "Legen Sie die Position des Spotlight Omnisearch auf dem Bildschirm fest",
+                "name": "Position"
+            },
+            "saveLastSearch": {
+                "hint": "Speichern Sie die letzte Suchanfrage und die Ergebnisse für das nächste Mal, wenn Spotlight Omnisearch geöffnet wird",
+                "name": "Letzte Suche speichern"
+            },
+            "searchCompendium": {
+                "hint": "Fügen Sie Kompendium-Suchergebnisse hinzu",
+                "name": "Kompendium durchsuchen"
+            },
+            "searchFiles": {
+                "hint": "Einschließen von Dateisuchergebnissen (Erfordert Dateiindex aus dem Dig Down-Modul)",
+                "name": "Dateien suchen"
+            },
+            "searchSettings": {
+                "hint": "Spieleinstellungen in Suchergebnisse einbeziehen",
+                "name": "Sucheinstellungen"
+            },
+            "searchSidebar": {
+                "hint": "Suchergebnisse für Seitenleisten-Tabs einbeziehen",
+                "name": "Seitenleiste durchsuchen"
+            },
+            "searchUtils": {
+                "hint": "Schließen Sie Suchergebnisse für Versorgungsunternehmen ein",
+                "name": "Dienstprogramme durchsuchen"
+            },
+            "showImages": {
+                "hint": "Bilder in Suchergebnissen anzeigen. \nBilder verlängern die Ladezeit der Ergebnisse und können je nach Anzahl der Ergebnisse und Größe der Bilder zu Ruckeln führen.",
+                "name": "Bilder anzeigen"
+            },
+            "spotlightWidth": {
+                "hint": "Legen Sie die Breite des Spotlight Omnisearch in Pixel fest",
+                "name": "Spotlight-Breite"
+            }
+        },
+        "special": {
+            "counter": {
+                "name": "Schalter"
+            },
+            "help": {
+                "list[0]": "Bewegen Sie die Leertaste, um Spotlight Omnisearch zu öffnen",
+                "list[1]": "Escape oder Klicken außerhalb (optional, standardmäßig deaktiviert), um Spotlight Omnisearch zu schließen",
+                "list[2]": "Drücken Sie die Eingabetaste, um das erste Ergebnis zu bestätigen",
+                "list[3]": "Umschalt-/Alt-Eingabetaste, um die erste oder zweite Aktion des ersten Ergebnisses auszuführen",
+                "list[4]": "Spezielle Befehle: Hilfe, Notiz, Rollen, Timer, Tracker, Zähler oder geben Sie einen mathematischen Ausdruck zur Berechnung ein",
+                "list[5]": "! \num Suchergebnisse nach Typ zu filtern (!item, !actor). \nFilter:",
+                "name": "Helfen"
+            },
+            "light": {
+                "candle": "Kerze",
+                "flashlight": "Taschenlampe",
+                "info": "Wenden Sie Licht auf ausgewählte Token an",
+                "lantern": "Laterne",
+                "lantern-shut": "Laterne (abgedeckt)",
+                "magical": "Magisches Licht",
+                "off": "Licht entfernen",
+                "torch": "Fackel"
+            },
+            "note": {
+                "name": "Schnelle Notiz"
+            },
+            "roll": {
+                "name": "Schnelle Rolle"
+            },
+            "timer": {
+                "name": "Timer",
+                "timeLeft": "Übrige Zeit"
+            },
+            "tracker": {
+                "name": "Erfolgs-/Misserfolgs-Tracker"
+            }
+        }
+    }
+}

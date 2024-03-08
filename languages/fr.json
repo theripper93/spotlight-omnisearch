@@ -1,0 +1,121 @@
+{
+    "spotlight-omnisearch": {
+        "actions": {
+            "activate": "Activer",
+            "execute": "Exécuter",
+            "play-playlist": "Lire la liste de lecture",
+            "roll-table": "Table à roulettes",
+            "stop-playlist": "Arrêter la liste de lecture",
+            "use-item": "Utiliser l'article",
+            "view": "Voir"
+        },
+        "hotkeys": {
+            "toggleSpotlight": {
+                "name": "Toggle Spotlight Omnisearch"
+            }
+        },
+        "notifications": {
+            "calc-clipboard": "Résultat copié dans le presse-papiers",
+            "note": "Note enregistrée dans le journal « Omnisearch Notes »",
+            "timer-gm": "Seul le MJ peut démarrer un chronomètre",
+            "tracker-gm": "Seul le MJ peut utiliser le suivi des réussites/échecs."
+        },
+        "settings": {
+            "clickToDismiss": {
+                "hint": "Cliquez en dehors de Spotlight Omnisearch pour le fermer",
+                "name": "Cliquez pour rejeter"
+            },
+            "compendiumConfig": {
+                "hint": "Configurer les recueils à inclure dans les résultats de recherche",
+                "label": "Configurer les recueils",
+                "name": "Configuration du recueil"
+            },
+            "darkMode": {
+                "hint": "Utiliser un thème sombre pour Spotlight Omnisearch",
+                "name": "Mode sombre"
+            },
+            "gmOnly": {
+                "hint": "Seul le MJ peut ouvrir Spotlight Omnisearch",
+                "name": "GM seulement"
+            },
+            "position": {
+                "choices": {
+                    "default": "Par défaut (Centre)",
+                    "mouse": "Ouvrir à la position de la souris",
+                    "save": "Enregistrer la dernière position"
+                },
+                "hint": "Définir la position de Spotlight Omnisearch sur l'écran",
+                "name": "Position"
+            },
+            "saveLastSearch": {
+                "hint": "Enregistrez la dernière requête de recherche et les résultats pour la prochaine fois que Spotlight Omnisearch sera ouvert",
+                "name": "Enregistrer la dernière recherche"
+            },
+            "searchCompendium": {
+                "hint": "Inclure les résultats de recherche du recueil",
+                "name": "Rechercher dans le recueil"
+            },
+            "searchFiles": {
+                "hint": "Inclure les résultats de la recherche de fichiers (nécessite l'index de fichiers du module Dig Down)",
+                "name": "Rechercher des fichiers"
+            },
+            "searchSettings": {
+                "hint": "Inclure les paramètres du jeu dans les résultats de recherche",
+                "name": "Paramètres de recherche"
+            },
+            "searchSidebar": {
+                "hint": "Inclure les résultats de recherche dans l'onglet de la barre latérale",
+                "name": "Barre latérale de recherche"
+            },
+            "searchUtils": {
+                "hint": "Inclure les résultats de recherche d'utilitaires",
+                "name": "Utilitaires de recherche"
+            },
+            "showImages": {
+                "hint": "Afficher les images dans les résultats de recherche. \nLes images augmenteront les temps de chargement des résultats et peuvent entraîner des bégaiements en fonction du nombre de résultats et de la taille des images.",
+                "name": "Afficher les images"
+            },
+            "spotlightWidth": {
+                "hint": "Définir la largeur de Spotlight Omnisearch en pixels",
+                "name": "Largeur du projecteur"
+            }
+        },
+        "special": {
+            "counter": {
+                "name": "Comptoir"
+            },
+            "help": {
+                "list[0]": "Shift Space pour ouvrir Spotlight Omnisearch",
+                "list[1]": "Échapper ou cliquer à l'extérieur (facultatif, désactivé par défaut) pour fermer Spotlight Omnisearch",
+                "list[2]": "Appuyez sur Entrée pour confirmer le premier résultat",
+                "list[3]": "Shift / Alt Enter pour exécuter la première ou la deuxième action du premier résultat",
+                "list[4]": "Commandes spéciales : aide, note, lancer, minuterie, suivi, compteur ou tapez une expression mathématique à calculer",
+                "list[5]": "! \npour filtrer les résultats de recherche par type (!item, !actor). \nFiltres :",
+                "name": "Aide"
+            },
+            "light": {
+                "candle": "Bougie",
+                "flashlight": "Lampe de poche",
+                "info": "Appliquer de la lumière aux jetons sélectionnés",
+                "lantern": "Lanterne",
+                "lantern-shut": "Lanterne (couverte)",
+                "magical": "Lumière magique",
+                "off": "Supprimer la lumière",
+                "torch": "Torche"
+            },
+            "note": {
+                "name": "Note rapide"
+            },
+            "roll": {
+                "name": "Rouleau rapide"
+            },
+            "timer": {
+                "name": "Minuteur",
+                "timeLeft": "Temps restant"
+            },
+            "tracker": {
+                "name": "Suivi des succès/échecs"
+            }
+        }
+    }
+}
