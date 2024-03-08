@@ -263,6 +263,69 @@
   border-radius: 10px;
   margin-bottom: 1rem;
 }
+#spotlight main section #search-result li.special-app .tracker-container {
+  --so-color-success: var(--color-level-info);
+  --so-color-fail: var(--color-border-highlight);
+  --so-tracker-dot-size: 2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.4rem;
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+#spotlight main section #search-result li.special-app .tracker-container .tracker-slash {
+  font-size: calc(var(--so-tracker-dot-size) * 1.5);
+}
+#spotlight main section #search-result li.special-app .tracker-container .tracker-dot {
+  width: var(--so-tracker-dot-size);
+  height: var(--so-tracker-dot-size);
+  border-radius: 50%;
+  border: 2px solid;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  filter: sepia(0.4);
+}
+#spotlight main section #search-result li.special-app .tracker-container .tracker-dot.success {
+  box-shadow: 0 0 5px inset var(--so-color-success);
+}
+#spotlight main section #search-result li.special-app .tracker-container .tracker-dot.success.checked {
+  background-color: var(--so-color-success);
+  box-shadow: 0 0 5px inset;
+}
+#spotlight main section #search-result li.special-app .tracker-container .tracker-dot.fail {
+  box-shadow: 0 0 5px inset var(--so-color-fail);
+}
+#spotlight main section #search-result li.special-app .tracker-container .tracker-dot.fail.checked {
+  background-color: var(--so-color-fail);
+  box-shadow: 0 0 5px inset;
+}
+#spotlight main section #search-result li.special-app .counter-container {
+  --so-counter-text-size: 3rem;
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+#spotlight main section #search-result li.special-app .counter-container .counter-input-container {
+  display: flex;
+  gap: 1rem;
+}
+#spotlight main section #search-result li.special-app .counter-container .counter-input-container input {
+  min-width: 0;
+  width: calc(var(--so-counter-text-size) * 2);
+  height: var(--so-counter-text-size);
+  font-size: var(--so-counter-text-size);
+  text-align: right;
+  background-color: transparent;
+  color: var(--spotlight-text-color);
+  border: none;
+}
+#spotlight main section #search-result li.special-app .counter-container .counter-input-container input:focus, #spotlight main section #search-result li.special-app .counter-container .counter-input-container input:active {
+  box-shadow: none;
+}
+#spotlight main section #search-result li.special-app .counter-container .up-down-container i:hover {
+  cursor: pointer;
+  text-shadow: 0 0 5px;
+}
 #spotlight main section #search-result li.special-app > i {
   font-size: 3rem;
   width: 2rem;

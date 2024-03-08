@@ -45,4 +45,17 @@ Hooks.on("init", () => {
             }
         },
     });
+
+    //hardcode a ctrl + space hotkey
+    document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key === " ") {
+            if (!game.user.isGM && getSetting("gmOnly")) return;
+            const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+            if (current) {
+                current.close();
+            } else {
+                new Spotlight().render(true);
+            }
+        }
+    });
 });

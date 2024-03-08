@@ -121,6 +121,11 @@ export function registerSettings() {
             config: false,
             default: {},
             type: Object,
+            onChange: (value) => {
+                if (ui.spotlightOmnisearch?.rendered) {
+                    ui.spotlightOmnisearch._onSearch();
+                }
+            },
         },
     };
 

@@ -465,6 +465,7 @@ class SearchItem {
                 settingToggle.classList.add(`fa-toggle-${!state ? "on" : "off"}`);
             });
         }
+        this.searchTerm.activateListeners?.(this.element);
     }
 
     getActions() {

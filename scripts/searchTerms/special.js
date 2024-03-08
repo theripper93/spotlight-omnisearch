@@ -7,6 +7,8 @@ export const SPECIAL_SEARCHES = [];
 const NOTE_MATCHING = ["note", "notes", "note:", "notes:", "n:", "n "];
 const ROLL_MATCHING = ["roll", "!roll", "roll:", "r:", "r "];
 const TIMER_MATCHING = ["timer", "timer:", "time", "time:", "t:", "t "];
+const TRACKER_MATCHING = ["tracker", "tracker:", "t:", "t ", "track", "track:", "s:", "s ", "f:", "f "];
+const COUNTER_MATCHING = ["counter", "counter:", "c:", "c ", "count", "count:", "c:", "c "];
 
 SPECIAL_SEARCHES.push(
     //Calculator
@@ -164,6 +166,148 @@ SPECIAL_SEARCHES.push(
             setting.timer = endTimestamp;
             await setSetting("appData", setting);
             ui.spotlightOmnisearch._onSearch();
+        },
+    }),
+    //success fail tracker
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.tracker.name`),
+        type: "special-app",
+        data: {},
+        img: "",
+        icon: "fad fa-check-circle",
+        match: (query) => {
+            return TRACKER_MATCHING.some((keyword) => query.startsWith(keyword));
+        },
+        onClick: async function (search) {},
+        activateListeners: function (html) {
+            const successDotsCount = 7;
+            const failDotsCount = 7;
+            const setting = getSetting("appData");
+            if (!setting.tracker) setting.tracker = { success: 2, fail: 3 };
+            let checkedSuccessDotsCount = setting.tracker.success;
+            let checkedFailDotsCount = setting.tracker.fail;
+            const container = document.createElement("div");
+            container.classList.add("tracker-container");
+            //create success dots then fail dots separated by a  /
+            const successEls = [];
+            for (let i = 0; i < successDotsCount; i++) {
+                const dot = document.createElement("div");
+                dot.classList.add("tracker-dot", "success");
+                if (i < checkedSuccessDotsCount) dot.classList.add("checked");
+                successEls.push(dot);
+                dot.addEventListener("click", async () => {
+                    if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.tracker-gm`));
+                    const isChecked = dot.classList.contains("checked");
+                    if (isChecked && i === checkedSuccessDotsCount - 1) {
+                        dot.classList.remove("checked");
+                        setting.tracker.success--;
+                        checkedSuccessDotsCount--;
+                    } else {
+                        //set all dots to unchecked
+                        successEls.forEach((el) => el.classList.remove("checked"));
+                        for (let j = 0; j <= i; j++) {
+                            successEls[j].classList.add("checked");
+                        }
+                        setting.tracker.success = i + 1;
+                        checkedSuccessDotsCount = i + 1;
+                    }
+                    await setSetting("appData", setting);
+                });
+            }
+            successEls.reverse().forEach((el) => container.appendChild(el));
+            successEls.reverse();
+            const slash = document.createElement("div");
+            slash.classList.add("tracker-slash");
+            slash.innerHTML = `<i class="fa-sharp fa-solid fa-slash-forward"></i>`;
+            container.appendChild(slash);
+            const failEls = [];
+            for (let i = 0; i < failDotsCount; i++) {
+                const dot = document.createElement("div");
+                dot.classList.add("tracker-dot", "fail");
+                if (i < checkedFailDotsCount) dot.classList.add("checked");
+                container.appendChild(dot);
+                failEls.push(dot);
+                dot.addEventListener("click", async () => {
+                    if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.tracker-gm`));
+                    const isChecked = dot.classList.contains("checked");
+                    if (isChecked && i === checkedFailDotsCount - 1) {
+                        dot.classList.remove("checked");
+                        setting.tracker.fail--;
+                        checkedFailDotsCount--;
+                    } else {
+                        //set all dots to unchecked
+                        failEls.forEach((el) => el.classList.remove("checked"));
+                        for (let j = 0; j <= i; j++) {
+                            failEls[j].classList.add("checked");
+                        }
+                        setting.tracker.fail = i + 1;
+                        checkedFailDotsCount = i + 1;
+                    }
+                    await setSetting("appData", setting);
+                });
+            }
+            html.querySelector(".search-info").appendChild(container);
+        },
+    }),
+    //counter
+    new BaseSearchTerm({
+        name: () => game.i18n.localize(`${MODULE_ID}.special.counter.name`),
+        type: "special-app",
+        data: {},
+        img: "",
+        icon: "fad fa-plus-circle",
+        match: (query) => {
+            return COUNTER_MATCHING.some((keyword) => query.startsWith(keyword));
+        },
+        onClick: async function (search) {},
+        activateListeners: function (html) {
+            const setting = getSetting("appData");
+            if (!setting.counter) {
+                setting.counter = [0, 0, 0, 0];
+                setSetting("appData", setting);
+            }
+            const counterEls = [];
+            const container = document.createElement("div");
+            container.classList.add("counter-container");
+            for (let i = 0; i < 4; i++) {
+                const counter = document.createElement("input");
+                counter.type = "number";
+                counter.value = setting.counter[i] || 0;
+                const counterContainer = document.createElement("div");
+                counterContainer.classList.add("counter-input-container");
+                counterContainer.appendChild(counter);
+                const upDownContainer = document.createElement("div");
+                upDownContainer.classList.add("up-down-container");
+                const up = document.createElement("i");
+                up.classList.add("fas", "fa-chevron-up");
+                up.addEventListener("click", async () => {
+                    if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.counter-gm`));
+                    counter.value = parseInt(counter.value) + 1;
+                    setting.counter[i] = counter.value;
+                    await setSetting("appData", setting);
+                });
+                upDownContainer.appendChild(up);
+                const down = document.createElement("i");
+                down.classList.add("fas", "fa-chevron-down");
+                down.addEventListener("click", async () => {
+                    if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.counter-gm`));
+                    counter.value = parseInt(counter.value) - 1;
+                    setting.counter[i] = counter.value;
+                    await setSetting("appData", setting);
+                });
+                upDownContainer.appendChild(down);
+                counterContainer.appendChild(upDownContainer);
+                counterEls.push(counterContainer);
+                counter.addEventListener("change", async () => {
+                    if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.counter-gm`));
+                    const currentSetting = getSetting("appData");
+                    currentSetting.counter = currentSetting.counter ?? [0, 0, 0, 0];
+                    currentSetting.counter[i] = currentSetting.value;
+                    await setSetting("appData", setting);
+                });
+            }
+            counterEls.forEach((el) => container.appendChild(el));
+            html.querySelector(".search-info").appendChild(container);
         },
     }),
 );

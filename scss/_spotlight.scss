@@ -319,6 +319,9 @@
                         border-radius: 10px;
                         margin-bottom: 1rem;
 
+                        @import 'tracker';
+                        @import 'counter';
+
                         > i {
                             font-size: 3rem;
                             width: 2rem;

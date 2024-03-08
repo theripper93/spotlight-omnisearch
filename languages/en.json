@@ -79,7 +79,8 @@
         "notifications": {
             "calc-clipboard": "Result copied to clipboard",
             "note": "Note saved in 'Omnisearch Notes' journal",
-            "timer-gm": "Only the GM can start a timer"
+            "timer-gm": "Only the GM can start a timer",
+            "tracker-gm": "Only the GM can use the success/failure tracker"
         },
         "special": {
             "note": {
@@ -95,7 +96,7 @@
                     "Escape or Click outside (optional, default off) to close the Spotlight Omnisearch",
                     "Press Enter to confirm first result",
                     "Shift / Alt + Enter to execute the first or second actions of the first result",
-                    "Special commands: help, note, roll, timer, or type a Math expression to calculate",
+                    "Special commands: help, note, roll, timer, tracker, counter or type a Math expression to calculate",
                     "! to filter search results by type (!item, !actor). Filters:"
                 ]
             },
@@ -112,6 +113,12 @@
                 "magical": "Magical Light",
                 "flashlight": "Flashlight",
                 "info": "Apply light to selected tokens"
+            },
+            "tracker": {
+                "name": "Success/Failure Tracker"
+            },
+            "counter": {
+                "name": "Counter"
             }
         }
     }

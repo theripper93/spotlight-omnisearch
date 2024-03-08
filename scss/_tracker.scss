@@ -1,0 +1,49 @@
+.tracker-container {
+
+    --so-color-success: var(--color-level-info);
+    --so-color-fail: var(--color-border-highlight);
+    --so-tracker-dot-size: 2rem;
+
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+
+    .tracker-slash {
+        font-size: calc(var(--so-tracker-dot-size) * 1.5);
+    }
+
+
+    .tracker-dot {
+
+        width: var(--so-tracker-dot-size);
+        height: var(--so-tracker-dot-size);
+        border-radius: 50%;
+        border: 2px solid;
+        transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        filter: sepia(0.4);
+
+
+        &.success {
+            box-shadow: 0 0 5px inset var(--so-color-success);
+
+            &.checked {
+                background-color: var(--so-color-success);
+                box-shadow: 0 0 5px inset;
+
+            }
+        }
+
+        &.fail {
+            box-shadow: 0 0 5px inset var(--so-color-fail);
+
+            &.checked {
+                background-color: var(--so-color-fail);
+                box-shadow: 0 0 5px inset;
+
+            }
+        }
+    }
+}

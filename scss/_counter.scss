@@ -1,0 +1,36 @@
+.counter-container {
+
+    --so-counter-text-size: 3rem;
+
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .counter-input-container {
+        display: flex;
+        gap: 1rem;
+
+        input {
+            min-width: 0;
+            width: calc(var(--so-counter-text-size) * 2);
+            height: var(--so-counter-text-size);
+            font-size: var(--so-counter-text-size);
+            text-align: right;
+            background-color: transparent;
+            color: var(--spotlight-text-color);
+            border: none;
+
+            &:focus,
+            &:active {
+                box-shadow: none;
+            }
+        }
+    }
+
+    .up-down-container {
+        i:hover {
+            cursor: pointer;
+            text-shadow: 0 0 5px;
+        }
+    }
+}
