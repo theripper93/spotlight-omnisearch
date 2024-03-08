@@ -47,6 +47,14 @@ export function registerSettings() {
                 save: `${MODULE_ID}.settings.position.choices.save`,
             },
         },
+        alwaysOnTop: {
+            name: `${MODULE_ID}.settings.alwaysOnTop.name`,
+            hint: `${MODULE_ID}.settings.alwaysOnTop.hint`,
+            scope: "client",
+            config: true,
+            default: false,
+            type: Boolean,
+        },
         spotlightWidth: {
             name: `${MODULE_ID}.settings.spotlightWidth.name`,
             hint: `${MODULE_ID}.settings.spotlightWidth.hint`,

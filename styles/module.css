@@ -10,7 +10,6 @@
   --spotlight-scrollbar: var(--color-text-dark-4);
   --spotlight-filter-bg: var(--spotlight-button-bg);
   --spotlight-filter-border: var(--spotlight-border);
-  z-index: 9999 !important;
   border-radius: 10px;
   overflow: hidden;
   font-family: "Roboto", sans-serif;

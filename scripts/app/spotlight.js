@@ -137,82 +137,7 @@ export class Spotlight extends Application {
         });
         html.querySelector("input").addEventListener("input", this._onSearch.bind(this));
         //if enter is pressed on the search input, click on the first result
-        html.querySelector("input").addEventListener("keydown", (event) => {
-            const inputTime = Date.now();
-            const inputDelta = inputTime - LAST_INPUT_TIME;
-            LAST_INPUT_TIME = inputTime;
-            if (event.key === "Enter") {
-                event.preventDefault();
-                const isShift = event.shiftKey;
-                const isAlt = event.altKey;
-                const selected = html.querySelector(".search-item:not(.type-header).selected");
-                const firstItem = selected ?? html.querySelector(".search-item:not(.type-header)");
-                if (!firstItem) return;
-                if (isShift) {
-                    //find the first action button
-                    const actionButton = firstItem.querySelector(".search-item-actions button");
-                    if (actionButton) actionButton.click();
-                } else if (isAlt) {
-                    //find the second action button
-                    const actionButton = firstItem.querySelectorAll(".search-item-actions button")[1];
-                    if (actionButton) actionButton.click();
-                } else {
-                    firstItem?.click();
-                }
-                this.close();
-            }
-            //if escape is pressed, close the spotlight
-            if (event.key === "Escape") {
-                this.close();
-            }
-            //if backspace is pressed and the input is empty, remove the last filter
-            if (event.key === "Backspace" && !html.querySelector("input").value) {
-                const filters = html.querySelectorAll(".filters-container .filter");
-                const lastFilter = filters[filters.length - 1];
-                if (lastFilter) lastFilter.remove();
-                this._onSearch();
-            }
-            //if arrow up or down is pressed, move the selection
-            if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-                const selected = html.querySelector(".search-item.selected");
-                if (!selected) {
-                    const first = html.querySelector(".search-item:not(.type-header)");
-                    if (first) first.classList.add("selected");
-                    return;
-                }
-                let next;
-                if (event.ctrlKey) {
-                    //jump to next or previous type header
-                    next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
-                    while (next && !next.classList.contains("type-header")) {
-                        next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
-                    }
-                    if (next) {
-                        next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
-                        //if the key is arrow up, loop until there is a type header above
-                        if (event.key === "ArrowUp") {
-                            while (next && !next.classList.contains("type-header")) {
-                                next = next.previousElementSibling;
-                            }
-                            next = next.nextElementSibling;
-                        }
-                    }
-                } else {
-                    next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
-                    if (next && next.classList.contains("type-header")) next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
-                }
-                if (next) {
-                    selected.classList.remove("selected");
-                    next.classList.add("selected");
-                    //scroll to the selected element
-                    next.scrollIntoView({ block: "nearest", behavior: "smooth" });
-                }
-            }
-            //if space + shift is pressed, close the spotlight
-            if (event.key === " " && event.shiftKey && inputDelta < 400) {
-                this.close();
-            }
-        });
+        html.querySelector("input").addEventListener("keydown", this._onKeyDown.bind(this));
         //timeout for janky core behavior
         setTimeout(() => {
             //enable the input
@@ -240,6 +165,7 @@ export class Spotlight extends Application {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
+        if(getSetting("alwaysOnTop")) html.closest("#spotlight").style.zIndex = "9999 !important";
         if (this.first) html.querySelector("input").value = "?";
         this._onSearch();
     }
@@ -276,6 +202,83 @@ export class Spotlight extends Application {
             }
         }
         return { filters, query };
+    }
+
+    _onKeyDown(event) {
+        const inputTime = Date.now();
+        const inputDelta = inputTime - LAST_INPUT_TIME;
+        LAST_INPUT_TIME = inputTime;
+        if (event.key === "Enter") {
+            event.preventDefault();
+            const isShift = event.shiftKey;
+            const isAlt = event.altKey;
+            const selected = html.querySelector(".search-item:not(.type-header).selected");
+            const firstItem = selected ?? html.querySelector(".search-item:not(.type-header)");
+            if (!firstItem) return;
+            if (isShift) {
+                //find the first action button
+                const actionButton = firstItem.querySelector(".search-item-actions button");
+                if (actionButton) actionButton.click();
+            } else if (isAlt) {
+                //find the second action button
+                const actionButton = firstItem.querySelectorAll(".search-item-actions button")[1];
+                if (actionButton) actionButton.click();
+            } else {
+                firstItem?.click();
+            }
+            this.close();
+        }
+        //if escape is pressed, close the spotlight
+        if (event.key === "Escape") {
+            this.close();
+        }
+        //if backspace is pressed and the input is empty, remove the last filter
+        if (event.key === "Backspace" && !html.querySelector("input").value) {
+            const filters = html.querySelectorAll(".filters-container .filter");
+            const lastFilter = filters[filters.length - 1];
+            if (lastFilter) lastFilter.remove();
+            this._onSearch();
+        }
+        //if arrow up or down is pressed, move the selection
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            const selected = html.querySelector(".search-item.selected");
+            if (!selected) {
+                const first = html.querySelector(".search-item:not(.type-header)");
+                if (first) first.classList.add("selected");
+                return;
+            }
+            let next;
+            if (event.ctrlKey) {
+                //jump to next or previous type header
+                next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                while (next && !next.classList.contains("type-header")) {
+                    next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                }
+                if (next) {
+                    next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                    //if the key is arrow up, loop until there is a type header above
+                    if (event.key === "ArrowUp") {
+                        while (next && !next.classList.contains("type-header")) {
+                            next = next.previousElementSibling;
+                        }
+                        next = next.nextElementSibling;
+                    }
+                }
+            } else {
+                next = selected[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+                if (next && next.classList.contains("type-header")) next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
+            }
+            if (next) {
+                selected.classList.remove("selected");
+                next.classList.add("selected");
+                //scroll to the selected element
+                next.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            }
+        }
+        //if space + shift is pressed, close the spotlight
+        if (event.key === " " && event.shiftKey && inputDelta < 400) {
+            this.close();
+        }
     }
 
     _onSearch() {

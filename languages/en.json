@@ -31,6 +31,10 @@
                     "mouse": "Open at mouse position"
                 }
             },
+            "alwaysOnTop": {
+                "name": "Always On Top",
+                "hint": "Keep the Spotlight Omnisearch on top of other windows"
+            },
             "spotlightWidth": {
                 "name": "Spotlight Width",
                 "hint": "Set the width of the Spotlight Omnisearch in pixels"
