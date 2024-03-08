@@ -151,8 +151,8 @@ async function buildCollections() {
                             keywords: tocKeywords,
                             description: description,
                             type: pageLocalized,
-                            data: { ...document, documentName: collection.documentName, uuid: document.uuid },
-                            img: document.img,
+                            data: { ...page, documentName: page.documentName, uuid: page.uuid },
+                            img: page.img,
                             icon: ["fas fa-earth-europe", "fas fa-file-lines"],
                             onClick: async function () {
                                 const entity = await fromUuid(document.uuid);
