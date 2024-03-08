@@ -214,7 +214,8 @@ async function buildSettings() {
 
         index.push(
             new BaseSearchTerm({
-                name: game.i18n.localize(setting.name) + toggle,
+                name: game.i18n.localize(setting.name),
+                nameExtra: toggle,
                 description: settingNamespace + game.i18n.localize(setting.hint),
                 query: setting.key,
                 keywords: [`${setting.key}${setting.namespace}`],

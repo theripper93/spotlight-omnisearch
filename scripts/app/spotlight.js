@@ -165,7 +165,7 @@ export class Spotlight extends Application {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
-        if(getSetting("alwaysOnTop")) html.closest("#spotlight").style.zIndex = "9999 !important";
+        if (getSetting("alwaysOnTop")) html.closest("#spotlight").style.zIndex = "9999 !important";
         if (this.first) html.querySelector("input").value = "?";
         this._onSearch();
     }
@@ -361,6 +361,7 @@ export class Spotlight extends Application {
                 typeHeader.classList.add("type-header");
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
                 sortedTypeResults.forEach((result) => {
+                    console.log(result);
                     list.appendChild(result.element);
                 });
             }
@@ -445,6 +446,7 @@ export class Spotlight extends Application {
 class SearchItem {
     constructor(searchTerm) {
         this.name = searchTerm.name;
+        this.nameExtra = searchTerm.nameExtra ?? "";
         this.description = searchTerm.description;
         this.type = searchTerm.type;
         this.data = searchTerm.data;
@@ -486,7 +488,7 @@ class SearchItem {
 
     render() {
         const icons = this.icon.map((icon) => `<i class="${icon}"></i>`).join("");
-        this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
+        this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name + this.nameExtra}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
         const actions = this.getActions();
         if (actions) this.element.querySelector(".search-entry-name").insertAdjacentElement("afterend", actions);
         const settingToggle = this.element.querySelector(".s-toggle-setting");
