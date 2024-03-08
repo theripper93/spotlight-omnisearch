@@ -84,13 +84,16 @@
         },
         "special": {
             "note": {
-                "name": "Quick Note"
+                "name": "Quick Note",
+                "local-keyword": "note"
             },
             "roll": {
-                "name": "Quick Roll"
+                "name": "Quick Roll",
+                "local-keyword": "roll"
             },
             "help": {
                 "name": "Help",
+                "local-keyword": "help",
                 "list": [
                     "Shift + Space to open the Spotlight Omnisearch",
                     "Escape or Click outside (optional, default off) to close the Spotlight Omnisearch",
@@ -102,7 +105,8 @@
             },
             "timer": {
                 "name": "Timer",
-                "timeLeft": "Time Left"
+                "timeLeft": "Time Left",
+                "local-keyword": "timer"
             },
             "light": {
                 "torch": "Torch",
@@ -115,10 +119,12 @@
                 "info": "Apply light to selected tokens"
             },
             "tracker": {
-                "name": "Success/Failure Tracker"
+                "name": "Success/Failure Tracker",
+                "local-keyword": "tracker"
             },
             "counter": {
-                "name": "Counter"
+                "name": "Counter",
+                "local-keyword": "counter"
             }
         }
     }

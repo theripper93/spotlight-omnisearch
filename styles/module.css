@@ -280,7 +280,7 @@
 #spotlight main section #search-result li.special-app .tracker-container .tracker-dot {
   width: var(--so-tracker-dot-size);
   height: var(--so-tracker-dot-size);
-  border-radius: 50%;
+  border-radius: 5px;
   border: 2px solid;
   transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   filter: sepia(0.4);

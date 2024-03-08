@@ -1,5 +1,6 @@
 import { BaseSearchTerm } from "./baseSearchTerm";
-import { getSetting } from "../settings";
+import {getSetting} from "../settings";
+import { initSpecialSearches } from "./special";
 
 export const INDEX = [];
 export const FILTERS = [];
@@ -16,6 +17,7 @@ export async function buildIndex(force = false) {
     }
     if (indexBuilt) return;
     indexBuilt = true;
+    await initSpecialSearches();
     await buildModuleIntegration();
     if (getSetting("searchSettings")) await buildSettings();
     if (getSetting("searchUtils")) await buildSettingsTab();
@@ -49,9 +51,11 @@ async function buildCompendiumIndex() {
     const packs = Array.from(game.packs).filter((p) => (game.user.isGM || !p.private) && allowedCompendiums[p.metadata.id] !== false);
     const index = [];
     await Promise.all(packs.map((p) => p.getIndex()));
+    const localizedCompendiumName = game.i18n.localize("PACKAGE.TagCompendium");
     for (const pack of packs) {
         const packPackageName = pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title;
         const packIndex = Array.from(await pack.getIndex());
+        const localizedDocumentName = game.i18n.localize(`DOCUMENT.${pack.documentName}`);
 
         index.push(
             new BaseSearchTerm({
@@ -59,7 +63,7 @@ async function buildCompendiumIndex() {
                 description: packPackageName,
                 img: pack.banner,
                 keywords: [],
-                type: "compendium",
+                type: localizedCompendiumName,
                 data: { ...pack.metadata },
                 icon: [CONFIG[pack.documentName].sidebarIcon, "fas fa-atlas"],
                 onClick: async function () {
@@ -74,7 +78,7 @@ async function buildCompendiumIndex() {
                     name: entry.name,
                     description: pack.title + " - " + packPackageName,
                     keywords: [],
-                    type: pack.documentName + " compendium",
+                    type: localizedDocumentName + " " + localizedCompendiumName,
                     data: { ...entry, documentName: pack.documentName },
                     img: entry.img,
                     icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
@@ -98,7 +102,10 @@ async function buildCollections() {
 
     const exclude = ["Combat", "Setting", "FogExploration", "ChatMessage", "Folder"];
 
+    const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
+
     for (const collection of collections) {
+        const localizedCollectionName = game.i18n.localize(`DOCUMENT.${collection.documentName}`);
         if (exclude.includes(collection.documentName)) continue;
         const documents = Array.from(collection);
         documents.forEach((document) => {
@@ -139,7 +146,7 @@ async function buildCollections() {
                             actions: pageActions,
                             keywords: tocKeywords,
                             description: description,
-                            type: "JournalEntryPage",
+                            type: pageLocalized,
                             data: { ...document, documentName: collection.documentName, uuid: document.uuid },
                             img: document.img,
                             icon: ["fas fa-earth-europe", "fas fa-file-lines"],
@@ -157,6 +164,7 @@ async function buildCollections() {
                     keywords.push(itemPileType);
                     extraType += ` ${itemPileType}`;
                 }
+                if (document.hasPlayerOwner) extraType += " player";
             }
             index.push(
                 new BaseSearchTerm({
@@ -164,7 +172,7 @@ async function buildCollections() {
                     description: description,
                     keywords: keywords,
                     actions: actions,
-                    type: collection.documentName + extraType,
+                    type: localizedCollectionName + extraType,
                     data: { ...document, documentName: collection.documentName, uuid: document.uuid },
                     img: document.img,
                     icon: ["fas fa-earth-europe", CONFIG[collection.documentName].sidebarIcon],
@@ -184,6 +192,7 @@ async function buildCollections() {
 
 async function buildSettings() {
     const index = [];
+    const localizedSettingName = game.i18n.localize("DOCUMENT.Setting");
     const processSetting = (setting, isMenu) => {
         if (!setting.name || (!setting.config && !isMenu) || setting.config === false) return;
         if (!game.user.isGM && setting.scope === "world") return;
@@ -206,7 +215,7 @@ async function buildSettings() {
                 description: settingNamespace + game.i18n.localize(setting.hint),
                 query: setting.key,
                 keywords: [`${setting.key}${setting.namespace}`],
-                type: "setting",
+                type: localizedSettingName,
                 data: { ...setting },
                 img: null,
                 icon: [icon],
@@ -235,6 +244,7 @@ async function buildSettings() {
     };
     game.settings.menus.forEach((s) => processSetting(s, true));
     game.settings.settings.forEach(processSetting);
+    const localizedKeybindingsName = game.i18n.localize("SETTINGS.Keybindings");
     game.keybindings.actions.forEach((binding, key) => {
         if (!game.user.isGM && binding.restricted) return;
         const name = game.i18n.localize(binding.name);
@@ -249,7 +259,7 @@ async function buildSettings() {
                 name: name,
                 description: description,
                 keywords: [],
-                type: "keybinding",
+                type: localizedKeybindingsName,
                 data: { ...binding },
                 img: null,
                 icon: ["fas fa-keyboard"],
@@ -276,6 +286,7 @@ async function buildSettings() {
 async function buildSettingsTab() {
     const settingsSidebar = document.querySelector(".settings-sidebar#settings");
     const buttons = settingsSidebar.querySelectorAll("button");
+    const tabSettingsLocalized = game.i18n.localize("SIDEBAR.TabSettings");
     const index = [];
     buttons.forEach((button) => {
         //the button innerhtml is formatted as follows <i class="fas fa-cogs"></i>  Configure Settings
@@ -289,7 +300,7 @@ async function buildSettingsTab() {
             new BaseSearchTerm({
                 name: buttonLabel,
                 keywords: [],
-                type: "settingTab",
+                type: tabSettingsLocalized,
                 data: {},
                 img: null,
                 icon: [icon],
