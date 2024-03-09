@@ -276,6 +276,18 @@
                     .search-info {
                         flex: 1;
 
+                        .search-entry-name-wrapper {
+                            display: flex;
+                            justify-content: space-between;
+
+                            .search-entry-name {
+                                max-width: 65%;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+                        }
+
                         &:has(.s-toggle-setting) {
                             span {
                                 display: flex;

@@ -19,6 +19,15 @@ export function registerSettings() {
             type: Boolean,
             onChange: (value) => ui.spotlightOmnisearch?._html.closest("#spotlight").classList.toggle("dark", value),
         },
+        scale: {
+            name: `${MODULE_ID}.settings.scale.name`,
+            hint: `${MODULE_ID}.settings.scale.hint`,
+            scope: "client",
+            config: true,
+            default: 1,
+            type: Number,
+            range: { min: 0.5, max: 2, step: 0.1 },
+        },
         clickToDismiss: {
             name: `${MODULE_ID}.settings.clickToDismiss.name`,
             hint: `${MODULE_ID}.settings.clickToDismiss.hint`,

@@ -14,6 +14,10 @@
                 "name": "Dark Mode",
                 "hint": "Use a dark theme for the Spotlight Omnisearch"
             },
+            "scale": {
+                "name": "Scale",
+                "hint": "Set the scale of the Spotlight Omnisearch. Note that using a scale different than 1 may cause issues with the layout of the search results"
+            },
             "clickToDismiss": {
                 "name": "Click to Dismiss",
                 "hint": "Click outside the Spotlight Omnisearch to dismiss it"
@@ -82,6 +86,7 @@
         "actions": {
             "execute": "Execute",
             "activate": "Activate",
+            "preload": "Preload",
             "view": "View",
             "roll-table": "Roll Table",
             "play-playlist": "Play Playlist",

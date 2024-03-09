@@ -231,6 +231,16 @@
 #spotlight main section #search-result li .search-info {
   flex: 1;
 }
+#spotlight main section #search-result li .search-info .search-entry-name-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+#spotlight main section #search-result li .search-info .search-entry-name-wrapper .search-entry-name {
+  max-width: 65%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #spotlight main section #search-result li .search-info:has(.s-toggle-setting) span {
   display: flex;
 }

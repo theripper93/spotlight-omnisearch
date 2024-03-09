@@ -5,7 +5,6 @@ import { INDEX, FILE_INDEX, buildIndex, FILTERS } from "../searchTerms/buildTerm
 import { getSetting, setSetting } from "../settings.js";
 import { BaseSearchTerm } from "../searchTerms/baseSearchTerm.js";
 
-
 let SPOTLIGHT_WIDTH = 700;
 
 let LAST_SEARCH = { query: "", filters: [] };
@@ -57,6 +56,7 @@ export class Spotlight extends Application {
             minimizable: false,
             width: SPOTLIGHT_WIDTH,
             top: window.innerHeight / 4,
+            scale: getSetting("scale"),
             title: game.i18n.localize(`${MODULE_ID}.${this.APP_ID}.title`),
         });
     }
@@ -478,7 +478,18 @@ class SearchItem {
         const icons = this.icon.map((icon) => `<i class="${icon}"></i>`).join("");
         this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name + this.nameExtra}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
         const actions = this.getActions();
-        if (actions) this.element.querySelector(".search-entry-name").insertAdjacentElement("afterend", actions);
+        if (actions) {
+            const isJournalOrPage = this.data.documentName.includes("Journal");
+            //wrap name in a div so we can insert the actions after it
+            const wrapper = document.createElement("div");
+            if (actions.actions.length <= 3 && !isJournalOrPage) {
+                wrapper.classList.add("search-entry-name-wrapper");
+            }
+            wrapper.appendChild(this.element.querySelector(".search-entry-name"));
+            //set as first child of search-info
+            this.element.querySelector(".search-info").insertAdjacentElement("afterbegin", wrapper);
+            wrapper.appendChild(actions.actionsContainer);
+        }
         const settingToggle = this.element.querySelector(".s-toggle-setting");
         if (settingToggle) {
             settingToggle.addEventListener("click", (e) => {
@@ -517,6 +528,14 @@ class SearchItem {
                     icon: '<i class="fas fa-play"></i>',
                     callback: async () => {
                         (await fromUuid(this.data.uuid)).activate();
+                    },
+                },
+                {
+                    name: `${MODULE_ID}.actions.preload`,
+                    icon: '<i class="fas fa-download"></i>',
+                    callback: async () => {
+                        const scene = fromUuidSync(this.data.uuid);
+                        game.scenes.preload(scene.id, true);
                     },
                 },
             );
@@ -564,7 +583,7 @@ class SearchItem {
             });
             actionsContainer.appendChild(button);
         });
-        return actionsContainer;
+        return { actionsContainer, actions };
     }
 
     setDragging(event) {
