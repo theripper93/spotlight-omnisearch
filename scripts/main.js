@@ -27,6 +27,21 @@ Hooks.on("ready", () => {
         }, 1000);
         setSetting("firstTime", false);
     }
+
+    if (getSetting("enableCtrlSpace")) {
+        //hardcode a ctrl + space hotkey
+        document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey && e.key === " ") {
+                if (!game.user.isGM && getSetting("gmOnly")) return;
+                const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+                if (current) {
+                    current.close();
+                } else {
+                    new Spotlight().render(true);
+                }
+            }
+        });
+    }
 });
 
 Hooks.on("init", () => {
@@ -44,18 +59,5 @@ Hooks.on("init", () => {
                 new Spotlight().render(true);
             }
         },
-    });
-
-    //hardcode a ctrl + space hotkey
-    document.addEventListener("keydown", (e) => {
-        if (e.ctrlKey && e.key === " ") {
-            if (!game.user.isGM && getSetting("gmOnly")) return;
-            const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
-            if (current) {
-                current.close();
-            } else {
-                new Spotlight().render(true);
-            }
-        }
     });
 });
