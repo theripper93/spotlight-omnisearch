@@ -56,7 +56,7 @@ export class Spotlight extends Application {
             minimizable: false,
             width: SPOTLIGHT_WIDTH,
             top: window.innerHeight / 4,
-            scale: getSetting("scale"),
+            classes: getSetting("compactMode") ? ["compact"] : [],
             title: game.i18n.localize(`${MODULE_ID}.${this.APP_ID}.title`),
         });
     }
@@ -276,14 +276,14 @@ export class Spotlight extends Application {
     _onSearch() {
         if (this.closing) return;
         let query = this._html.querySelector("input").value.toLowerCase();
-        const endsWithSpace = query.endsWith(" ");
+        const hasSpace = query.includes(" ");
         query = query.trim();
         //check the query for filtered searches such as !keyword
         const filtersData = this._getFilters(query);
         const filters = filtersData.filters;
         query = filtersData.query;
         let hasFilters = filters.length > 0;
-        if (hasFilters && endsWithSpace) {
+        if (hasFilters && hasSpace) {
             const filtersContainer = this._html.querySelector(".filters-container");
             //filtersContainer.innerHTML = "";
             filters.forEach((filter) => {
@@ -479,7 +479,7 @@ class SearchItem {
         this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name + this.nameExtra}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
         const actions = this.getActions();
         if (actions) {
-            const isJournalOrPage = this.data.documentName.includes("Journal");
+            const isJournalOrPage = this.data?.documentName?.includes("Journal");
             //wrap name in a div so we can insert the actions after it
             const wrapper = document.createElement("div");
             if (actions.actions.length <= 3 && !isJournalOrPage) {

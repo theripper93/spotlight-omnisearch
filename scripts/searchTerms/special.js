@@ -386,6 +386,54 @@ export async function initSpecialSearches() {
                 html.querySelector(".search-info").appendChild(container);
             },
         }),
+        //attribute
+        new BaseSearchTerm({
+            name: (search) => {
+                const attribute = search.query.replace(/(attr:|@)/i, "").trim();
+                return game.i18n.localize(`${MODULE_ID}.special.attribute.name`) + ": " + attribute;
+            },
+            description: (search) => {
+                const query = search.query.replace(/(attr:|@)/i, "").trim();
+                const actors = Array.from(
+                    new Set(
+                        game.users
+                            .map((user) => user.character)
+                            .concat(canvas.tokens.controlled.map((token) => token.actor))
+                            .filter((actor) => actor && actor.isOwner),
+                    ),
+                ).sort((a, b) => a.name.localeCompare(b.name));
+                const container = document.createElement("div");
+                const ul = document.createElement("ul");
+                container.appendChild(ul);
+                actors.forEach((actor) => {
+                    const li = document.createElement("li");
+                    let value = query ? foundry.utils.getProperty(actor.system, query) : foundry.utils.getProperty(actor, "system");
+                    if (value === undefined) {
+                        //first remove the last part of the object path
+                        const queryWithoutLastPart = query.split(".").slice(0, -1).join(".");
+                        value = queryWithoutLastPart ? foundry.utils.getProperty(actor.system, queryWithoutLastPart) ?? "?" : foundry.utils.getProperty(actor, "system");
+                    }
+                    if (typeof value === "object") {
+                        value = Object.keys(value)
+                            .map((key) => `<strong>${key}</strong>`)
+                            .join(", ");
+                    } else {
+                        value = `<strong>${value}</strong>`;
+                    }
+                    li.innerHTML = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;width: 100%"><span>${actor.name}</span><span>${value}</span></div>`;
+                    ul.appendChild(li);
+                });
+                return container.innerHTML;
+            },
+            type: "special-app",
+            data: {},
+            img: "",
+            icon: "fad fa-brackets-curly",
+            match: (query) => {
+                return query.startsWith("attr:") || query.startsWith("@");
+            },
+            onClick: async function (search) {},
+        }),
     );
 
     function parseTime(input) {

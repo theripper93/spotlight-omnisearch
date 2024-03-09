@@ -24,7 +24,7 @@ export class BaseSearchTerm {
         this.data = data;
         this.img = img;
         this.icon = icon;
-        this.nameExtra = nameExtra;
+        this._nameExtra = typeof nameExtra === "function" ? nameExtra.bind(this) : () => nameExtra;
         if (activateListeners) this.activateListeners = activateListeners.bind(this);
         if (onClick) this._onClick = onClick.bind(this);
         if (onDragEnd) this._onDragEnd = onDragEnd.bind(this);
@@ -62,6 +62,10 @@ export class BaseSearchTerm {
 
     get name() {
         return this._name(this);
+    }
+
+    get nameExtra() {
+        return this._nameExtra(this);
     }
 
     get description() {

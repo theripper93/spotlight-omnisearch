@@ -14,9 +14,9 @@
                 "name": "Dark Mode",
                 "hint": "Use a dark theme for the Spotlight Omnisearch"
             },
-            "scale": {
-                "name": "Scale",
-                "hint": "Set the scale of the Spotlight Omnisearch. Note that using a scale different than 1 may cause issues with the layout of the search results"
+            "compactMode": {
+                "name": "Compact Mode",
+                "hint": "Use a compact layout for the Spotlight Omnisearch. This will hide descriptions and reduce size of the search results"
             },
             "clickToDismiss": {
                 "name": "Click to Dismiss",
@@ -166,6 +166,9 @@
                 "dawn": "Dawn",
                 "day": "Day",
                 "dusk": "Dusk"
+            },
+            "attribute": {
+                "name": "Attribute"
             }
         }
     }

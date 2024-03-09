@@ -232,8 +232,10 @@ async function buildSettings() {
         if (!game.user.isGM && setting.scope === "world") return;
         let toggle = "";
         if (setting.type === Boolean) {
-            const state = game.settings.get(setting.namespace, setting.key);
-            toggle = `<i class="s-toggle-setting fad fa-toggle-${state ? "on" : "off"}" data-namespace="${setting.namespace}" data-key="${setting.key}"></i>`;
+            toggle = () => {
+                const state = game.settings.get(setting.namespace, setting.key);
+                return `<i class="s-toggle-setting fad fa-toggle-${state ? "on" : "off"}" data-namespace="${setting.namespace}" data-key="${setting.key}"></i>`
+            };
         }
         const icon = setting.icon ?? "fas fa-cogs";
 
