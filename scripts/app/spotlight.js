@@ -5,7 +5,6 @@ import { INDEX, FILE_INDEX, buildIndex, FILTERS } from "../searchTerms/buildTerm
 import { getSetting, setSetting } from "../settings.js";
 import { BaseSearchTerm } from "../searchTerms/baseSearchTerm.js";
 
-let indexingDone = false;
 
 let SPOTLIGHT_WIDTH = 700;
 
@@ -24,14 +23,12 @@ export class Spotlight extends Application {
         buildIndex().then((r) => {
             if (r) {
                 this._onSearch();
-                indexingDone = true;
                 const help = SPECIAL_SEARCHES.find((search) => search.type.includes("help"));
                 const currentDesc = help.description;
                 const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${filter}">${filter}</span>`).join("");
                 help._description = () => {
                     return `${currentDesc} <div class="filters-help">${filterSpans}</div>`;
                 };
-                if (this._html) this._html.querySelector(".fa-spinner").classList = "fa-light fa-search";
             }
         });
         this._onSearch = debounce(this._onSearch, 167);
@@ -151,12 +148,6 @@ export class Spotlight extends Application {
         setTimeout(() => {
             html.closest("#spotlight").classList.remove("force-opacity");
         }, 300);
-
-        if (!indexingDone) {
-            const searchIcon = html.querySelector(".fa-search");
-            //replace with these classes <i class="fa-light fa-spinner-scale fa-spin"></i>
-            searchIcon.classList = "fa-light fa-spinner fa-spin";
-        }
         const positionType = getSetting("position");
         const storedPosition = getSetting("spotlightPosition");
         if (storedPosition && positionType === "save") {

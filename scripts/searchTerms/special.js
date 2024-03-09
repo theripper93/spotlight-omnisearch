@@ -4,11 +4,9 @@ import { getSetting, setSetting } from "../settings";
 
 export const SPECIAL_SEARCHES = [];
 
-let SPECIAL_DONE = false;
 
 export async function initSpecialSearches() {
-    if (SPECIAL_DONE) return;
-    SPECIAL_DONE = true;
+    SPECIAL_SEARCHES.length = 0;
 
     const NOTE_MATCHING = ["notes", "note:", "notes:", "n:", "n ", game.i18n.localize(`${MODULE_ID}.special.note.local-keyword`)];
     const ROLL_MATCHING = ["!roll", "roll:", "r:", "r ", game.i18n.localize(`${MODULE_ID}.special.roll.local-keyword`)];
@@ -22,6 +20,7 @@ export async function initSpecialSearches() {
         yd: (value) => value * 0.9144 + "m",
         mi: (value) => value * 1.60934 + "km",
         lb: (value) => value * 0.453592 + "kg",
+        lbs: (value) => value * 0.453592 + "kg",
         oz: (value) => value * 28.3495 + "g",
         gal: (value) => value * 3.78541 + "l",
         pt: (value) => value * 473.176 + "ml",
@@ -812,4 +811,20 @@ export async function initSpecialSearches() {
             }),
         );
     }
+
+    //add action for reindexing
+    SPECIAL_SEARCHES.push(
+        new BaseSearchTerm({
+            name: game.i18n.localize(`${MODULE_ID}.special.reindex.name`),
+            description: game.i18n.localize(`${MODULE_ID}.special.reindex.description`),
+            keywords: [],
+            type: game.i18n.localize(`${MODULE_ID}.special.reindex.name`),
+            data: {},
+            img: null,
+            icon: ["fas fa-search"],
+            onClick: async function () {
+                CONFIG.SpotlightOmniseach.rebuildIndex()
+            },
+        })
+    );
 }

@@ -18,6 +18,16 @@ export async function buildIndex(force = false) {
     }
     if (indexBuilt) return;
     indexBuilt = true;
+
+    if (ui.spotlightOmnisearch?.rendered) {
+        const faSearch = ui.spotlightOmnisearch._html.querySelector(".fa-search");
+        if (faSearch) {
+            faSearch.classList.add("fa-spin");
+            faSearch.classList.remove("fa-search");
+            faSearch.classList.add("fa-spinner");
+        }
+    }
+    
     await initSpecialSearches();
     await buildModuleIntegration();
     await buildWeatherEffects();
@@ -45,6 +55,16 @@ export async function buildIndex(force = false) {
     filtersArray = Array.from(new Set(filtersArray));
     FILTERS.push(...filtersArray);
     if (getSetting("searchFiles")) buildFiles();
+
+    if (ui.spotlightOmnisearch?.rendered) {
+        const faSpinner = ui.spotlightOmnisearch._html.querySelector(".fa-spinner");
+        if (faSpinner) {
+            faSpinner.classList.remove("fa-spin");
+            faSpinner.classList.remove("fa-spinner");
+            faSpinner.classList.add("fa-search");
+        }
+    }
+
     return INDEX;
 }
 

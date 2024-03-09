@@ -151,6 +151,10 @@
             "restore": {
                 "name": "Restore",
                 "description": "Restore the selected token(s) to full health"
+            },
+            "reindex": {
+                "name": "Index",
+                "description": "Rebuild the search index for the Spotlight Omnisearch"
             }
         }
     }
