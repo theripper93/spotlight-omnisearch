@@ -4,7 +4,6 @@ import { getSetting, setSetting } from "../settings";
 
 export const SPECIAL_SEARCHES = [];
 
-
 export async function initSpecialSearches() {
     SPECIAL_SEARCHES.length = 0;
 
@@ -689,6 +688,54 @@ export async function initSpecialSearches() {
 
     SPECIAL_SEARCHES.push(...lightEffects);
 
+    //scene darkness action
+
+    SPECIAL_SEARCHES.push(
+        new BaseSearchTerm({
+            name: game.i18n.localize(`SCENES.Darkness`),
+            description: "",
+            keywords: [],
+            actions: [
+                {
+                    name: game.i18n.localize(`${MODULE_ID}.special.darkness.night`),
+                    icon: `<i class="fas fa-moon"></i>`,
+                    callback: async function () {
+                        canvas.scene.update({ darkness: 1 }, { animateDarkness: 10000 });
+                    },
+                },
+                //dawn
+                {
+                    name: game.i18n.localize(`${MODULE_ID}.special.darkness.dawn`),
+                    icon: `<i class="fas fa-sunrise"></i>`,
+                    callback: async function () {
+                        canvas.scene.update({ darkness: 0.3 }, { animateDarkness: 10000 });
+                    },
+                },
+                //day
+                {
+                    name: game.i18n.localize(`${MODULE_ID}.special.darkness.day`),
+                    icon: `<i class="fas fa-sun"></i>`,
+                    callback: async function () {
+                        canvas.scene.update({ darkness: 0 }, { animateDarkness: 10000 });
+                    },
+                },
+                //dusk
+                {
+                    name: game.i18n.localize(`${MODULE_ID}.special.darkness.dusk`),
+                    icon: `<i class="fas fa-sunset"></i>`,
+                    callback: async function () {
+                        canvas.scene.update({ darkness: 0.7 }, { animateDarkness: 10000 });
+                    },
+                },
+            ],
+            type: game.i18n.localize(`SCENES.Darkness`),
+            data: {},
+            img: null,
+            icon: ["fas fa-moon-over-sun"],
+            onClick: async function () {},
+        }),
+    );
+
     if (game.modules.get("splatter")?.active) {
         const getSplatterData = (actor) => {
             const maxHpPath = game.settings.get("splatter", "maxHp");
@@ -823,8 +870,8 @@ export async function initSpecialSearches() {
             img: null,
             icon: ["fas fa-search"],
             onClick: async function () {
-                CONFIG.SpotlightOmniseach.rebuildIndex()
+                CONFIG.SpotlightOmniseach.rebuildIndex();
             },
-        })
+        }),
     );
 }

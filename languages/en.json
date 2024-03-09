@@ -155,6 +155,12 @@
             "reindex": {
                 "name": "Index",
                 "description": "Rebuild the search index for the Spotlight Omnisearch"
+            },
+            "darkness": {
+                "night": "Night",
+                "dawn": "Dawn",
+                "day": "Day",
+                "dusk": "Dusk"
             }
         }
     }
