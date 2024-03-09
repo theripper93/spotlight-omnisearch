@@ -78,11 +78,20 @@
             "spotlightWidth": {
                 "hint": "Legen Sie die Breite des Spotlight Omnisearch in Pixel fest",
                 "name": "Spotlight-Breite"
+            },
+            "alwaysOnTop": {
+                "hint": "Lassen Sie Spotlight Omnisearch über anderen Fenstern",
+                "name": "Immer oben"
+            },
+            "enableCtrlSpace": {
+                "hint": "Aktivieren Sie die Strg-Leertaste, um Spotlight Omnisearch zu öffnen. Da diese Bindung das Core Foundry-Tastenbelegungssystem umgeht, funktioniert sie in Eingabefeldern und Textbereichen.",
+                "name": "Aktivieren Sie die Strg-Leertaste"
             }
         },
         "special": {
             "counter": {
-                "name": "Schalter"
+                "name": "Schalter",
+                "local-keyword": "Schalter"
             },
             "help": {
                 "list[0]": "Bewegen Sie die Leertaste, um Spotlight Omnisearch zu öffnen",
@@ -91,7 +100,8 @@
                 "list[3]": "Umschalt-/Alt-Eingabetaste, um die erste oder zweite Aktion des ersten Ergebnisses auszuführen",
                 "list[4]": "Spezielle Befehle: Hilfe, Notiz, Rollen, Timer, Tracker, Zähler oder geben Sie einen mathematischen Ausdruck zur Berechnung ein",
                 "list[5]": "! \num Suchergebnisse nach Typ zu filtern (!item, !actor). \nFilter:",
-                "name": "Helfen"
+                "name": "Helfen",
+                "local-keyword": "helfen"
             },
             "light": {
                 "candle": "Kerze",
@@ -104,17 +114,35 @@
                 "torch": "Fackel"
             },
             "note": {
-                "name": "Schnelle Notiz"
+                "name": "Schnelle Notiz",
+                "local-keyword": "Notiz"
             },
             "roll": {
-                "name": "Schnelle Rolle"
+                "name": "Schnelle Rolle",
+                "local-keyword": "rollen"
             },
             "timer": {
                 "name": "Timer",
-                "timeLeft": "Übrige Zeit"
+                "timeLeft": "Übrige Zeit",
+                "local-keyword": "Timer"
             },
             "tracker": {
-                "name": "Erfolgs-/Misserfolgs-Tracker"
+                "name": "Erfolgs-/Misserfolgs-Tracker",
+                "local-keyword": "Tracker"
+            },
+            "damage": {
+                "name": "Schaden"
+            },
+            "heal": {
+                "name": "Heilen"
+            },
+            "kill": {
+                "description": "Töte die ausgewählten Token.",
+                "name": "Töten"
+            },
+            "restore": {
+                "description": "Stellen Sie den vollen Zustand der ausgewählten Token wieder her",
+                "name": "Wiederherstellen"
             }
         }
     }

@@ -78,11 +78,20 @@
             "spotlightWidth": {
                 "hint": "Imposta la larghezza di Spotlight Omnisearch in pixel",
                 "name": "Larghezza riflettore"
+            },
+            "alwaysOnTop": {
+                "hint": "Mantieni Spotlight Omnisearch in primo piano rispetto alle altre finestre",
+                "name": "Sempre in cima"
+            },
+            "enableCtrlSpace": {
+                "hint": "Abilita il tasto di scelta rapida Ctrl Spazio per aprire Spotlight Omnisearch: poiché questa associazione ignora il sistema di combinazioni di tasti Core Foundry, funzionerà all'interno dei campi di input e delle aree di testo.",
+                "name": "Abilita Ctrl Spazio"
             }
         },
         "special": {
             "counter": {
-                "name": "Contatore"
+                "name": "Contatore",
+                "local-keyword": "contatore"
             },
             "help": {
                 "list[0]": "Shift Spazio per aprire Spotlight Omnisearch",
@@ -91,7 +100,8 @@
                 "list[3]": "Maiusc/Alt Invio per eseguire la prima o la seconda azione del primo risultato",
                 "list[4]": "Comandi speciali: aiuto, nota, lancio, timer, tracker, contatore o digita un'espressione matematica per calcolare",
                 "list[5]": "! \nper filtrare i risultati della ricerca per tipo (!item, !actor). \nFiltri:",
-                "name": "Aiuto"
+                "name": "Aiuto",
+                "local-keyword": "aiuto"
             },
             "light": {
                 "candle": "Candela",
@@ -104,17 +114,35 @@
                 "torch": "Torcia"
             },
             "note": {
-                "name": "Nota veloce"
+                "name": "Nota veloce",
+                "local-keyword": "Nota"
             },
             "roll": {
-                "name": "Rotolo veloce"
+                "name": "Rotolo veloce",
+                "local-keyword": "rotolo"
             },
             "timer": {
                 "name": "Timer",
-                "timeLeft": "Tempo rimasto"
+                "timeLeft": "Tempo rimasto",
+                "local-keyword": "Timer"
             },
             "tracker": {
-                "name": "Monitoraggio di successi/fallimenti"
+                "name": "Monitoraggio di successi/fallimenti",
+                "local-keyword": "tracker"
+            },
+            "damage": {
+                "name": "Danno"
+            },
+            "heal": {
+                "name": "Guarire"
+            },
+            "kill": {
+                "description": "Uccidi i token selezionati",
+                "name": "Uccisione"
+            },
+            "restore": {
+                "description": "Ripristina la piena salute dei gettoni selezionati",
+                "name": "Ristabilire"
             }
         }
     }

@@ -78,11 +78,20 @@
             "spotlightWidth": {
                 "hint": "Defina a largura do Spotlight Omnisearch em pixels",
                 "name": "Largura do destaque"
+            },
+            "alwaysOnTop": {
+                "hint": "Mantenha o Spotlight Omnisearch no topo de outras janelas",
+                "name": "Sempre no topo"
+            },
+            "enableCtrlSpace": {
+                "hint": "Habilite a tecla de atalho Ctrl Space para abrir o Spotlight Omnisearch - Como esta ligação ignora o sistema de atalhos de teclado do Core Foundry, ela funcionará dentro de campos de entrada e áreas de texto.",
+                "name": "Habilitar Ctrl Espaço"
             }
         },
         "special": {
             "counter": {
-                "name": "Contador"
+                "name": "Contador",
+                "local-keyword": "contador"
             },
             "help": {
                 "list[0]": "Shift Space para abrir o Spotlight Omnisearch",
@@ -91,7 +100,8 @@
                 "list[3]": "Shift / Alt Enter para executar a primeira ou segunda ações do primeiro resultado",
                 "list[4]": "Comandos especiais: ajuda, nota, rolagem, cronômetro, rastreador, contador ou digite uma expressão matemática para calcular",
                 "list[5]": "! \npara filtrar os resultados da pesquisa por tipo (!item, !actor). \nFiltros:",
-                "name": "Ajuda"
+                "name": "Ajuda",
+                "local-keyword": "ajuda"
             },
             "light": {
                 "candle": "Vela",
@@ -104,17 +114,35 @@
                 "torch": "Tocha"
             },
             "note": {
-                "name": "Nota rápida"
+                "name": "Nota rápida",
+                "local-keyword": "observação"
             },
             "roll": {
-                "name": "Rolo Rápido"
+                "name": "Rolo Rápido",
+                "local-keyword": "rolar"
             },
             "timer": {
                 "name": "Cronômetro",
-                "timeLeft": "Tempo restante"
+                "timeLeft": "Tempo restante",
+                "local-keyword": "cronômetro"
             },
             "tracker": {
-                "name": "Rastreador de sucesso/fracasso"
+                "name": "Rastreador de sucesso/fracasso",
+                "local-keyword": "rastreador"
+            },
+            "damage": {
+                "name": "Dano"
+            },
+            "heal": {
+                "name": "Curar"
+            },
+            "kill": {
+                "description": "Mate o(s) token(s) selecionado(s)",
+                "name": "Matar"
+            },
+            "restore": {
+                "description": "Restaurar o(s) token(s) selecionado(s) com integridade total",
+                "name": "Restaurar"
             }
         }
     }

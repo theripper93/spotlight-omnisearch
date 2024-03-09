@@ -1,120 +1,152 @@
 {
     "spotlight-omnisearch": {
-        "actions": {
-            "activate": "活性化",
-            "execute": "実行する",
-            "play-playlist": "プレイリストを再生する",
-            "roll-table": "ロールテーブル",
-            "stop-playlist": "プレイリストの停止",
-            "use-item": "アイテムを使う",
-            "view": "ビュー"
+        "settings": {
+            "compendiumConfig": {
+                "name": "辞典設定",
+                "hint": "検索に含まれる辞典を選択します",
+                "label": "辞典設定"
+            },
+            "gmOnly": {
+                "name": "GMのみ",
+                "hint": "万能サーチを使えるのがGMのみとなります。"
+            },
+            "darkMode": {
+                "name": "ダークモード",
+                "hint": "万能サーチのダークテーマを使用します。"
+            },
+            "clickToDismiss": {
+                "name": "クリックで非表示",
+                "hint": "万能サーチ外をクリックすると非表示にします。"
+            },
+            "saveLastSearch": {
+                "name": "最後の検索を記憶",
+                "hint": "次に万能サーチを開いたとき、最後に使用していた検索語句が記憶され表示されます。"
+            },
+            "position": {
+                "name": "位置",
+                "hint": "万能サーチの位置を調整できます",
+                "choices": {
+                    "default": "デフォルト（中央）",
+                    "save": "最後の位置を記憶",
+                    "mouse": "マウス位置で開く"
+                }
+            },
+            "spotlightWidth": {
+                "name": "検索バーの幅",
+                "hint": "万能サーチの検索バーの広さをピクセル単位で設定します。"
+            },
+            "showImages": {
+                "name": "画像を表示",
+                "hint": "検索結果に画像を表示するかどうか。画像を含めることで検索時間が増加する場合があります。"
+            },
+            "searchFiles": {
+                "name": "ファイルを含める",
+                "hint": "ファイルも検索結果に含める（Dig Down モッド必須）"
+            },
+            "searchSettings": {
+                "name": "設定を含める",
+                "hint": "本体やモッドの設定も検索結果に含めます。"
+            },
+            "searchCompendium": {
+                "name": "辞典を含める",
+                "hint": "辞典も検索結果に含めます。"
+            },
+            "searchSidebar": {
+                "name": "サイドバーを含める",
+                "hint": "サイドバーのタブも検索結果に含めます。"
+            },
+            "searchUtils": {
+                "name": "ユーティリティを含める",
+                "hint": "カウンターやダイスロールなどのユーティリティを検索結果に含めます。"
+            },
+            "alwaysOnTop": {
+                "hint": "Spotlight Omnisearch を他のウィンドウの上に置いておく",
+                "name": "常にトップに"
+            },
+            "enableCtrlSpace": {
+                "hint": "Ctrl Space ホットキーを有効にして Spotlight Omnisearch を開きます。このバインディングは Core Foundry キーバインド システムをバイパスするため、入力フィールドとテキスト エリア内で機能します。",
+                "name": "Ctrl スペースを有効にする"
+            }
         },
         "hotkeys": {
             "toggleSpotlight": {
-                "name": "スポットライト オムニサーチの切り替え"
+                "name": "万能サーチ切り替え"
             }
+        },
+        "app": {},
+        "flags": {},
+        "actions": {
+            "execute": "実行",
+            "activate": "有効化",
+            "view": "表示",
+            "roll-table": "ロール表",
+            "play-playlist": "プレイリスト再生",
+            "stop-playlist": "プレイリスト停止",
+            "use-item": "アイテム使用"
         },
         "notifications": {
-            "calc-clipboard": "結果がクリップボードにコピーされました",
-            "note": "「Omnisearch Notes」ジャーナルに保存されたメモ",
-            "timer-gm": "タイマーを開始できるのは GM だけです",
-            "tracker-gm": "GM のみが成功/失敗トラッカーを使用できます"
-        },
-        "settings": {
-            "clickToDismiss": {
-                "hint": "Spotlight Omnisearch の外側をクリックして閉じる",
-                "name": "クリックして閉じる"
-            },
-            "compendiumConfig": {
-                "hint": "検索結果にどの要約を含めるかを構成する",
-                "label": "概要の構成",
-                "name": "概要の構成"
-            },
-            "darkMode": {
-                "hint": "Spotlight Omnisearch にダークテーマを使用する",
-                "name": "ダークモード"
-            },
-            "gmOnly": {
-                "hint": "Spotlight Omnisearch を開くことができるのは GM だけです",
-                "name": "GMのみ"
-            },
-            "position": {
-                "choices": {
-                    "default": "デフォルト（中央）",
-                    "mouse": "マウスの位置で開く",
-                    "save": "最後の位置を保存する"
-                },
-                "hint": "画面上の Spotlight Omnisearch の位置を設定します",
-                "name": "位置"
-            },
-            "saveLastSearch": {
-                "hint": "次回 Spotlight Omnisearch を開いたときのために、最後の検索クエリと結果を保存します。",
-                "name": "最後の検索を保存"
-            },
-            "searchCompendium": {
-                "hint": "概要の検索結果を含める",
-                "name": "検索概要"
-            },
-            "searchFiles": {
-                "hint": "ファイル検索結果を含める (Dig Down モジュールからのファイル インデックスが必要)",
-                "name": "ファイル検索"
-            },
-            "searchSettings": {
-                "hint": "検索結果にゲーム設定を含める",
-                "name": "検索設定"
-            },
-            "searchSidebar": {
-                "hint": "サイドバータブの検索結果を含める",
-                "name": "検索サイドバー"
-            },
-            "searchUtils": {
-                "hint": "ユーティリティの検索結果を含める",
-                "name": "検索ユーティリティ"
-            },
-            "showImages": {
-                "hint": "検索結果に画像を表示します。\n画像を使用すると結果の読み込み時間が長くなり、結果の数や画像のサイズによっては途切れが発生する可能性があります。",
-                "name": "画像を表示する"
-            },
-            "spotlightWidth": {
-                "hint": "Spotlight Omnisearch の幅をピクセル単位で設定します。",
-                "name": "スポットライトの幅"
-            }
+            "calc-clipboard": "検索結果をクリップボードにコピーしました。",
+            "note": "Omnisearch Notes資料に結果を保存しました。",
+            "timer-gm": "タイマーはGMのみが開始できます。",
+            "tracker-gm": "成功・失敗トラッカーはGMのみが使用できます。"
         },
         "special": {
-            "counter": {
-                "name": "カウンター"
-            },
-            "help": {
-                "list[0]": "Shift Space を押して Spotlight Omnisearch を開きます",
-                "list[1]": "エスケープするか外側をクリックして (オプション、デフォルトはオフ)、Spotlight Omnisearch を閉じます。",
-                "list[2]": "Enter を押して最初の結果を確認します",
-                "list[3]": "Shift / Alt Enter を押して、最初の結果の最初または 2 番目のアクションを実行します",
-                "list[4]": "特別なコマンド: ヘルプ、メモ、ロール、タイマー、トラッカー、カウンター、または計算する数式を入力します。",
-                "list[5]": "！\n検索結果をタイプ (!item、!actor) でフィルタリングします。\nフィルター:",
-                "name": "ヘルプ"
-            },
-            "light": {
-                "candle": "キャンドル",
-                "flashlight": "懐中電灯",
-                "info": "選択したトークンに光を当てます",
-                "lantern": "ランタン",
-                "lantern-shut": "ランタン（屋根付き）",
-                "magical": "魔法の光",
-                "off": "ライトを削除する",
-                "torch": "松明"
-            },
             "note": {
-                "name": "クイックノート"
+                "name": "クイックメモ",
+                "local-keyword": "注記"
             },
             "roll": {
-                "name": "クイックロール"
+                "name": "クイックロール",
+                "local-keyword": "ロール"
+            },
+            "help": {
+                "name": "ヘルプ",
+                "list": [
+                    "Shift + スペースで万能サーチを開きます",
+                    "ESCまたは枠外にクリック（設定で有効化可能）することで閉じることができます。",
+                    "最初の結果を確定するにはエンターキー",
+                    "ShiftまたはAlt + エンターで最初または2番めの結果の内容を実行します。",
+                    "特殊コマンド：ヘルプ、メモ、ロール、ライマー、トラッカー、カウンターまたは数式を入れると処理できます。",
+                    "! で種別ごとにフィルタリング可能です。（!アイテム, !キャラクター 等"
+                ],
+                "local-keyword": "ヘルプ"
             },
             "timer": {
                 "name": "タイマー",
-                "timeLeft": "残り時間"
+                "timeLeft": "残り時間",
+                "local-keyword": "タイマー"
+            },
+            "light": {
+                "torch": "松明",
+                "lantern": "ランタン",
+                "lantern-shut": "ランタン（フード付き）",
+                "off": "照明を消す",
+                "candle": "蝋燭",
+                "magical": "魔法の光",
+                "flashlight": "懐中電灯",
+                "info": "選択したコマに照明を適用"
             },
             "tracker": {
-                "name": "成功/失敗トラッカー"
+                "name": "成功/失敗トラッカー",
+                "local-keyword": "トラッカー"
+            },
+            "counter": {
+                "name": "カウンター",
+                "local-keyword": "カウンター"
+            },
+            "damage": {
+                "name": "ダメージ"
+            },
+            "heal": {
+                "name": "癒す"
+            },
+            "kill": {
+                "description": "選択したトークンをキルします",
+                "name": "殺す"
+            },
+            "restore": {
+                "description": "選択したトークンを完全な状態に復元します",
+                "name": "復元する"
             }
         }
     }

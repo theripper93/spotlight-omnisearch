@@ -78,11 +78,20 @@
             "spotlightWidth": {
                 "hint": "Establecer el ancho de Spotlight Omnisearch en píxeles",
                 "name": "Ancho del foco"
+            },
+            "alwaysOnTop": {
+                "hint": "Mantenga Spotlight Omnisearch encima de otras ventanas",
+                "name": "Siempre en la cima"
+            },
+            "enableCtrlSpace": {
+                "hint": "Habilite la tecla de acceso rápido Ctrl Space para abrir Spotlight Omnisearch: dado que este enlace omite el sistema de combinaciones de teclas de Core Foundry, funcionará dentro de los campos de entrada y áreas de texto.",
+                "name": "Habilitar Ctrl Espacio"
             }
         },
         "special": {
             "counter": {
-                "name": "Encimera"
+                "name": "Encimera",
+                "local-keyword": "encimera"
             },
             "help": {
                 "list[0]": "Shift Space para abrir Spotlight Omnisearch",
@@ -91,7 +100,8 @@
                 "list[3]": "Shift / Alt Enter para ejecutar la primera o segunda acción del primer resultado",
                 "list[4]": "Comandos especiales: ayuda, nota, rollo, cronómetro, rastreador, contador o escriba una expresión matemática para calcular",
                 "list[5]": "! \npara filtrar los resultados de búsqueda por tipo (!item, !actor). \nFiltros:",
-                "name": "Ayuda"
+                "name": "Ayuda",
+                "local-keyword": "ayuda"
             },
             "light": {
                 "candle": "Vela",
@@ -104,17 +114,35 @@
                 "torch": "Antorcha"
             },
             "note": {
-                "name": "Nota rápida"
+                "name": "Nota rápida",
+                "local-keyword": "nota"
             },
             "roll": {
-                "name": "Rollo rápido"
+                "name": "Rollo rápido",
+                "local-keyword": "rollo"
             },
             "timer": {
                 "name": "Temporizador",
-                "timeLeft": "Tiempo restante"
+                "timeLeft": "Tiempo restante",
+                "local-keyword": "Temporizador"
             },
             "tracker": {
-                "name": "Rastreador de éxito/fracaso"
+                "name": "Rastreador de éxito/fracaso",
+                "local-keyword": "rastreador"
+            },
+            "damage": {
+                "name": "Daño"
+            },
+            "heal": {
+                "name": "Sanar"
+            },
+            "kill": {
+                "description": "Mata las fichas seleccionadas",
+                "name": "Matar"
+            },
+            "restore": {
+                "description": "Restaurar los tokens seleccionados a su estado completo",
+                "name": "Restaurar"
             }
         }
     }

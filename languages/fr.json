@@ -78,11 +78,20 @@
             "spotlightWidth": {
                 "hint": "Définir la largeur de Spotlight Omnisearch en pixels",
                 "name": "Largeur du projecteur"
+            },
+            "alwaysOnTop": {
+                "hint": "Gardez Spotlight Omnisearch au-dessus des autres fenêtres",
+                "name": "Toujours au top"
+            },
+            "enableCtrlSpace": {
+                "hint": "Activez le raccourci clavier Ctrl Espace pour ouvrir Spotlight Omnisearch - Étant donné que cette liaison contourne le système de raccourcis clavier Core Foundry, elle fonctionnera dans les champs de saisie et les zones de texte.",
+                "name": "Activer l'espace Ctrl"
             }
         },
         "special": {
             "counter": {
-                "name": "Comptoir"
+                "name": "Comptoir",
+                "local-keyword": "comptoir"
             },
             "help": {
                 "list[0]": "Shift Space pour ouvrir Spotlight Omnisearch",
@@ -91,7 +100,8 @@
                 "list[3]": "Shift / Alt Enter pour exécuter la première ou la deuxième action du premier résultat",
                 "list[4]": "Commandes spéciales : aide, note, lancer, minuterie, suivi, compteur ou tapez une expression mathématique à calculer",
                 "list[5]": "! \npour filtrer les résultats de recherche par type (!item, !actor). \nFiltres :",
-                "name": "Aide"
+                "name": "Aide",
+                "local-keyword": "aide"
             },
             "light": {
                 "candle": "Bougie",
@@ -104,17 +114,35 @@
                 "torch": "Torche"
             },
             "note": {
-                "name": "Note rapide"
+                "name": "Note rapide",
+                "local-keyword": "note"
             },
             "roll": {
-                "name": "Rouleau rapide"
+                "name": "Rouleau rapide",
+                "local-keyword": "rouler"
             },
             "timer": {
                 "name": "Minuteur",
-                "timeLeft": "Temps restant"
+                "timeLeft": "Temps restant",
+                "local-keyword": "minuteur"
             },
             "tracker": {
-                "name": "Suivi des succès/échecs"
+                "name": "Suivi des succès/échecs",
+                "local-keyword": "traqueur"
+            },
+            "damage": {
+                "name": "Dommage"
+            },
+            "heal": {
+                "name": "Guérir"
+            },
+            "kill": {
+                "description": "Tuez le(s) jeton(s) sélectionné(s)",
+                "name": "Tuer"
+            },
+            "restore": {
+                "description": "Restaurer le(s) jeton(s) sélectionné(s) en pleine santé",
+                "name": "Restaurer"
             }
         }
     }
