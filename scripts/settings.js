@@ -55,6 +55,14 @@ export function registerSettings() {
             default: false,
             type: Boolean,
         },
+        enableCtrlSpace: {
+            name: `${MODULE_ID}.settings.enableCtrlSpace.name`,
+            hint: `${MODULE_ID}.settings.enableCtrlSpace.hint`,
+            scope: "client",
+            config: true,
+            default: true,
+            type: Boolean,
+        },
         spotlightWidth: {
             name: `${MODULE_ID}.settings.spotlightWidth.name`,
             hint: `${MODULE_ID}.settings.spotlightWidth.hint`,

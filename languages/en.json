@@ -22,6 +22,10 @@
                 "name": "Save Last Search",
                 "hint": "Save the last search query and results for the next time the Spotlight Omnisearch is opened"
             },
+            "enableCtrlSpace": {
+                "name": "Enable Ctrl + Space",
+                "hint": "Enable the Ctrl + Space hotkey to open the Spotlight Omnisearch - Since this binding bypasses the Core Foundry keybindings system, it will work inside input fields and text areas."
+            },
             "position": {
                 "name": "Position",
                 "hint": "Set the position of the Spotlight Omnisearch on the screen",

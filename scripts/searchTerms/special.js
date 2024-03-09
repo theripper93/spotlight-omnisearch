@@ -50,7 +50,7 @@ export async function initSpecialSearches() {
         new BaseSearchTerm({
             name: function (search) {
                 try {
-                    return eval(search.query);
+                    return `${eval(search.query)}`;
                 } catch {
                     //remove characters from the end until the last character is a number
                     let query = search.query;
@@ -58,7 +58,7 @@ export async function initSpecialSearches() {
                         query = query.slice(0, -1);
                     }
                     try {
-                        return eval(query);
+                        return `${eval(query)}`;
                     } catch {
                         return "...";
                     }
