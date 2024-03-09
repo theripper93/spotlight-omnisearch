@@ -1,17 +1,33 @@
-<form action="submit" style="display: flex; flex-direction: column;">
-    <div class="compendium-grid" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));flex: 1;">
+<form action="submit" style="display: flex; flex-direction: column;max-height: 100%;">
+    <div class="compendium-grid"
+        style="display: grid;grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));flex: 1;overflow-y: auto;">
 
-        {{#each data as |compendium|}}
+        {{#each compendiumsByPackage as |compendiumList|}}
 
-        <div class="form-group">
-            <input type="checkbox" name="{{compendium.id}}" {{#if compendium.checked}}checked{{/if}}>
-            <label for="{{compendium.id}}">{{compendium.name}} ({{compendium.package}})</label>
-        </div>
+        <fieldset>
+            <legend>{{@key}}</legend>
+            <div class="flexrow">
+                <button type="button" class="check-all"><i class="fa-solid fa-check-square"></i> {{localize 'Select
+                    All'}}</button>
+                <button type="button" class="uncheck-all"><i class="fa-solid fa-square"></i> {{localize 'Unselect
+                    All'}}</button>
+            </div>
+            {{#each compendiumList as |compendium|}}
+
+            <div class="form-group">
+                <input type="checkbox" name="{{compendium.id}}" {{#if compendium.checked}}checked{{/if}}>
+                <label for="{{compendium.id}}">{{compendium.name}} ({{compendium.package}})</label>
+            </div>
+
+            {{/each}}
+        </fieldset>
 
         {{/each}}
     </div>
 
-    <footer>
-        <button type="submit">{{localize 'Save'}}</button>
+    <footer class="flexrow">
+        <button type="button" id="check-all"><i class="fa-solid fa-check-square"></i> {{localize 'Select All'}}</button>
+        <button type="button" id="uncheck-all"><i class="fa-solid fa-square"></i> {{localize 'Unselect All'}}</button>
+        <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize 'Save'}}</button>
     </footer>
 </form>

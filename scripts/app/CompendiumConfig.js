@@ -47,17 +47,58 @@ export class CompendiumConfig extends FormApplication {
                 id,
                 checked: sett[id] ?? true,
                 name: compendium.metadata.label,
-                package: compendium.metadata.packageName,
+                package: game.modules.get(compendium.metadata.packageName)?.title ?? game.system.title,
             });
         }
-        data.sort((a, b) => a.name.localeCompare(b.name));
 
-        return { data };
+        //sort by package name
+        data.sort((a, b) => a.package.localeCompare(b.package));
+
+        const compendiumsByPackage = {};
+        for (const compendium of data) {
+            if (!compendiumsByPackage[compendium.package]) {
+                compendiumsByPackage[compendium.package] = [];
+            }
+            compendiumsByPackage[compendium.package].push(compendium);
+        }
+        // Sort by package name
+        for (const p in compendiumsByPackage) {
+            compendiumsByPackage[p].sort((a, b) => a.name.localeCompare(b.name));
+        }
+        return { compendiumsByPackage };
     }
 
     activateListeners(html) {
         super.activateListeners(html);
         html = html[0] ?? html;
+        html.querySelector("#check-all").addEventListener("click", (event) => {
+            for (const checkbox of html.querySelectorAll("input[type=checkbox]")) {
+                checkbox.checked = true;
+            }
+        });
+        html.querySelector("#uncheck-all").addEventListener("click", (event) => {
+            for (const checkbox of html.querySelectorAll("input[type=checkbox]")) {
+                checkbox.checked = false;
+            }
+        });
+        html.querySelectorAll(".check-all").forEach((el) => {
+            el.addEventListener("click", (event) => {
+                event.preventDefault();
+                const group = el.closest("fieldset").querySelectorAll("input[type=checkbox]");
+                for (const checkbox of group) {
+                    checkbox.checked = true;
+                }
+            });
+        });
+        html.querySelectorAll(".uncheck-all").forEach((el) => {
+            el.addEventListener("click", (event) => {
+                event.preventDefault();
+                const group = el.closest("fieldset").querySelectorAll("input[type=checkbox]");
+                for (const checkbox of group) {
+                    checkbox.checked = false;
+                }
+            });
+        });
     }
 
     async _updateObject(event, formData) {
