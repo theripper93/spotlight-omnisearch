@@ -120,6 +120,14 @@ export function registerSettings() {
             default: true,
             type: Boolean,
         },
+        useMetricForLights: {
+            name: `${MODULE_ID}.settings.useMetricForLights.name`,
+            hint: `${MODULE_ID}.settings.useMetricForLights.hint`,
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        },
         spotlightPosition: {
             scope: "client",
             config: false,

@@ -66,6 +66,10 @@
             "searchUtils": {
                 "name": "Search Utilities",
                 "hint": "Include utility search results"
+            },
+            "useMetricForLights": {
+                "name": "Use Metric for Lights",
+                "hint": "Use metric units quick light effects"
             }
         },
         "hotkeys": {

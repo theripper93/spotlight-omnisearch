@@ -428,6 +428,9 @@ export async function initSpecialSearches() {
         return { hours, minutes, seconds };
     }
 
+    const useMetricForLights = getSetting("useMetricForLights");
+    const conversionRatio = useMetricForLights ? 0.3048 : 1;
+
     const lightEffects = [
         new BaseSearchTerm({
             name: () => game.i18n.localize(`${MODULE_ID}.special.light.torch`),
@@ -481,9 +484,9 @@ export async function initSpecialSearches() {
                         light: {
                             alpha: 0.5,
                             angle: 360,
-                            bright: 5,
+                            bright: 5 * conversionRatio,
                             coloration: 1,
-                            dim: 10,
+                            dim: 10 * conversionRatio,
                             luminosity: 0.5,
                             saturation: 0,
                             contrast: 0,
@@ -520,9 +523,9 @@ export async function initSpecialSearches() {
                         light: {
                             alpha: 0.5,
                             angle: 360,
-                            bright: 30,
+                            bright: 30 * conversionRatio,
                             coloration: 1,
-                            dim: 60,
+                            dim: 60 * conversionRatio,
                             luminosity: 0.5,
                             saturation: 0,
                             contrast: 0,
@@ -561,7 +564,7 @@ export async function initSpecialSearches() {
                             angle: 360,
                             bright: 0,
                             coloration: 1,
-                            dim: 5,
+                            dim: 5 * conversionRatio,
                             luminosity: 0.5,
                             saturation: 0,
                             contrast: 0,
@@ -598,9 +601,9 @@ export async function initSpecialSearches() {
                         light: {
                             alpha: 0.5,
                             angle: 360,
-                            bright: 20,
+                            bright: 20 * conversionRatio,
                             coloration: 1,
-                            dim: 20,
+                            dim: 20 * conversionRatio,
                             luminosity: 0.5,
                             saturation: 0,
                             contrast: 0,
@@ -637,9 +640,9 @@ export async function initSpecialSearches() {
                         light: {
                             alpha: 0.5,
                             angle: 90,
-                            bright: 20,
+                            bright: 20 * conversionRatio,
                             coloration: 1,
-                            dim: 20,
+                            dim: 20 * conversionRatio,
                             luminosity: 0.5,
                             saturation: 0,
                             contrast: 0,
