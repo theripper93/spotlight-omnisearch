@@ -132,6 +132,16 @@ async function buildCollections() {
 
                     const pageActions = [];
                     const tocKeywords = [];
+
+                    if (page.type === "image")
+                        pageActions.push({
+                            name: game.i18n.localize("JOURNAL.ActionShow"),
+                            icon: `<i class="fa-solid fa-image"></i>`,
+                            callback: async function () {
+                                new ImagePopout(page.src, {}).render(true);
+                            },
+                        });
+
                     Object.values(page.toc).forEach((toc) => {
                         tocKeywords.push(toc.text.toLowerCase());
                         pageActions.push({
