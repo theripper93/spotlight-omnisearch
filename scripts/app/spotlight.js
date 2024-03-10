@@ -12,10 +12,11 @@ let LAST_SEARCH = { query: "", filters: [] };
 let LAST_INPUT_TIME = 0;
 
 export class Spotlight extends Application {
-    constructor({ first } = {}) {
+    constructor({ first, toTaskbar } = {}) {
         super();
         SPOTLIGHT_WIDTH = getSetting("spotlightWidth") || 700;
         this.first = first;
+        this.toTaskbar = toTaskbar;
         this.ACTOR_ITEMS_INDEX = [];
         ui.spotlightOmnisearch?.close();
         ui.spotlightOmnisearch = this;
@@ -117,7 +118,11 @@ export class Spotlight extends Application {
     activateListeners(html) {
         super.activateListeners(html);
         html = html[0] ?? html;
+        const windowApp = html.closest("#spotlight");
         this._html = html;
+        if (this.toTaskbar) {
+            windowApp.classList.add("to-taskbar");
+        }
         const filtersContainer = html.querySelector(".filters-container");
         LAST_SEARCH.filters.forEach((filter) => {
             const filterElement = document.createElement("span");
@@ -171,7 +176,8 @@ export class Spotlight extends Application {
         const prev = this._html.querySelector("section").style.maxHeight;
         this._html.querySelector("section").style.maxHeight = `${maxHeight}px`;
         if (prev !== this._html.querySelector("section").style.maxHeight) {
-            windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3);
+            const hasTaskbar = windowApp.classList.contains("to-taskbar");
+            windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3 || hasTaskbar);
             this.setPosition({ height: "auto" });
         }
         this.updateStoredPosition();
@@ -368,7 +374,7 @@ export class Spotlight extends Application {
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
             if (isActiveTimer && search.type.includes("timer")) {
                 results.push(new SearchItem(search));
-                if(!query) break;
+                if (!query) break;
                 continue;
             }
             if (search.match(query)) {
@@ -433,14 +439,17 @@ export class Spotlight extends Application {
         document.removeEventListener("click", Spotlight.onClickAway);
         return super.close(...args);
     }
-}
 
+    static toTaskbar({left, bottom}) {
+        new Spotlight({ toTaskbar: left }).render(true, { left });
+    }
+}
 
 function convertFullWidthToRegular(text) {
     const fullWidthNumbers = "０１２３４５６７８９";
     const regularNumbers = "0123456789";
-    const regex = new RegExp('[' + fullWidthNumbers + ']', 'g');
-    return text.replace(regex, function(match) {
+    const regex = new RegExp("[" + fullWidthNumbers + "]", "g");
+    return text.replace(regex, function (match) {
         return regularNumbers[fullWidthNumbers.indexOf(match)];
     });
 }

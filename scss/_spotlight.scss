@@ -13,6 +13,13 @@
     --spotlight-filter-bg: var(--spotlight-button-bg);
     --spotlight-filter-border: var(--spotlight-border);
 
+
+    &.to-taskbar {
+        bottom: 50px !important;
+        top: auto !important;
+        max-height: 70vh !important;
+    }
+
     &.dark {
         --spotlight-text-color: var(--color-text-light-4);
         --spotlight-background: rgb(0 0 0 / 40%);
@@ -118,6 +125,7 @@
         padding: 0;
         background: transparent;
         color: var(--spotlight-text-color);
+        overflow: hidden;
 
         &::before {
             content: "";

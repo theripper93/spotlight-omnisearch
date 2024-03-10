@@ -16,6 +16,11 @@
   transition: opacity 0.2s ease-in-out;
   border: 1px solid var(--spotlight-border);
 }
+#spotlight.to-taskbar {
+  bottom: 50px !important;
+  top: auto !important;
+  max-height: 70vh !important;
+}
 #spotlight.dark {
   --spotlight-text-color: var(--color-text-light-4);
   --spotlight-background: rgb(0 0 0 / 40%);
@@ -95,6 +100,7 @@
   padding: 0;
   background: transparent;
   color: var(--spotlight-text-color);
+  overflow: hidden;
 }
 #spotlight .window-content::before {
   content: "";
