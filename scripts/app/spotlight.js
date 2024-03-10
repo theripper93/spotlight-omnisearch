@@ -365,7 +365,7 @@ export class Spotlight extends Application {
         //match special searches
         for (const search of SPECIAL_SEARCHES) {
             search.query = query;
-            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) return;
+            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
             if (isActiveTimer && search.type.includes("timer")) {
                 results.push(new SearchItem(search));
                 if(!query) break;
