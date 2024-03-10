@@ -205,6 +205,7 @@ export class Spotlight extends Application {
         const html = this._html;
         const inputTime = Date.now();
         const inputDelta = inputTime - LAST_INPUT_TIME;
+        html.querySelector(".input-suggestion").innerText = "";
         LAST_INPUT_TIME = inputTime;
         if (event.key === "Enter") {
             event.preventDefault();
@@ -281,23 +282,31 @@ export class Spotlight extends Application {
 
     _onSearch() {
         if (this.closing) return;
-        let query = this._html.querySelector("input").value.toLowerCase();
+        const input = this._html.querySelector("input");
+        const inputSuggestion = this._html.querySelector(".input-suggestion");
+        let query = input.value.toLowerCase();
         query = convertFullWidthToRegular(query);
         const hasSpace = query.includes(" ");
         query = query.trim();
+        if (!query) inputSuggestion.innerText = "";
         //check the query for filtered searches such as !keyword
         const filtersData = this._getFilters(query);
         const filters = filtersData.filters;
         query = filtersData.query;
         let hasFilters = filters.length > 0;
+        if (hasFilters) {
+            const matchedFilters = FILTERS.filter((f) => f.startsWith(filters[0]));
+            inputSuggestion.innerText = `!${matchedFilters.join(" / ")}`;
+        }
         if (hasFilters && hasSpace) {
             const filtersContainer = this._html.querySelector(".filters-container");
-            //filtersContainer.innerHTML = "";
             filters.forEach((filter) => {
                 const filterElement = document.createElement("span");
-                filterElement.innerText = filter;
+                const matchingFilters = FILTERS.filter((f) => f.startsWith(filter));
+                const singleFilter = matchingFilters.length === 1 ? matchingFilters[0] : filter;
+                filterElement.innerText = singleFilter;
                 filterElement.classList.add("filter");
-                filterElement.dataset.filter = filter;
+                filterElement.dataset.filter = singleFilter;
                 filterElement.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -306,7 +315,8 @@ export class Spotlight extends Application {
                 });
 
                 filtersContainer.appendChild(filterElement);
-                this._html.querySelector("input").value = this._html.querySelector("input").value.replace(`!${filter}`, "").trim();
+                input.value = this._html.querySelector("input").value.replace(`!${filter}`, "").trim();
+                inputSuggestion.innerText = "";
             });
         }
         const spanFilters = this._html.querySelectorAll(".filters-container .filter");
@@ -336,6 +346,8 @@ export class Spotlight extends Application {
                 types[result.type].push(result);
             });
 
+            let suggestionAdded = false;
+
             const list = this._html.querySelector("#search-result");
             list.innerHTML = "";
             for (const [type, typeResults] of Object.entries(types)) {
@@ -360,6 +372,10 @@ export class Spotlight extends Application {
                 typeHeader.classList.add("type-header");
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
                 sortedTypeResults.forEach((result) => {
+                    if (!suggestionAdded) {
+                        suggestionAdded = true;
+                        inputSuggestion.innerText = !inputSuggestion.innerText ? input.value + " " + result.name : inputSuggestion.innerText;
+                    }
                     list.appendChild(result.element);
                 });
             }
@@ -367,6 +383,7 @@ export class Spotlight extends Application {
                 section.classList.add("no-results");
             }
             this.setPosition({ height: "auto" });
+            input.placeholder = "";
         };
         //match special searches
         for (const search of SPECIAL_SEARCHES) {
@@ -440,7 +457,7 @@ export class Spotlight extends Application {
         return super.close(...args);
     }
 
-    static toTaskbar({left, bottom}) {
+    static toTaskbar({ left, bottom }) {
         new Spotlight({ toTaskbar: left }).render(true, { left });
     }
 }

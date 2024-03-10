@@ -2,8 +2,11 @@
     <header>
         <i class="fal fa-search"></i>
         <div class="filters-container"></div>
+        <div class="input-wrapper">
+        <span class="input-suggestion"></span>
         <input type="search" disabled autofocus spellcheck="false" value="{{lastSearch}}"
             placeholder="{{#if first}}Shift + Spacebar to toggle {{/if}}Spotlight Omnisearch">
+        </div>
     </header>
     <section class="no-results">
         <ul id="search-result">

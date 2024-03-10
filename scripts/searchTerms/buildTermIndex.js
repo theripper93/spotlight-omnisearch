@@ -227,7 +227,8 @@ async function buildCollections() {
 async function buildSettings() {
     const index = [];
     const localizedSettingName = game.i18n.localize("DOCUMENT.Setting");
-    const processSetting = (setting, isMenu) => {
+    const processSetting = (setting, isMenu = false) => {
+        isMenu = isMenu === true ? true : false;
         if (!setting.name || (!setting.config && !isMenu) || setting.config === false) return;
         if (!game.user.isGM && setting.scope === "world") return;
         let toggle = "";

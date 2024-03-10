@@ -171,6 +171,28 @@
 #spotlight main header i {
   font-size: 1.5rem;
 }
+#spotlight main header .input-wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+#spotlight main header .input-wrapper span {
+  font-size: 1.8rem;
+  height: 65%;
+  width: 100%;
+  position: absolute;
+  padding: 0px 3px;
+  margin-bottom: 1px;
+  border-radius: 3px;
+  line-height: inherit;
+  opacity: 0.5;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 #spotlight main header input[type=search] {
   font-size: 1.8rem;
   height: 65%;
@@ -178,6 +200,9 @@
   border: none;
   background: none;
   color: var(--spotlight-text-color);
+}
+#spotlight main header input[type=search].matched-filter {
+  color: var(--color-border-highlight);
 }
 #spotlight main header input[type=search]:focus, #spotlight main header input[type=search]:hover {
   box-shadow: none;
