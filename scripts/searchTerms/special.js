@@ -374,11 +374,11 @@ export async function initSpecialSearches() {
                     upDownContainer.appendChild(down);
                     counterContainer.appendChild(upDownContainer);
                     counterEls.push(counterContainer);
-                    counter.addEventListener("change", async () => {
+                    counter.addEventListener("keyup", async () => {
                         if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.counter-gm`));
                         const currentSetting = getSetting("appData");
                         currentSetting.counter = currentSetting.counter ?? [0, 0, 0, 0];
-                        currentSetting.counter[i] = currentSetting.value;
+                        currentSetting.counter[i] = parseInt(counter.value);
                         await setSetting("appData", setting);
                     });
                 }

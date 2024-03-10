@@ -276,6 +276,7 @@ export class Spotlight extends Application {
     _onSearch() {
         if (this.closing) return;
         let query = this._html.querySelector("input").value.toLowerCase();
+        query = convertFullWidthToRegular(query);
         const hasSpace = query.includes(" ");
         query = query.trim();
         //check the query for filtered searches such as !keyword
@@ -362,24 +363,27 @@ export class Spotlight extends Application {
             this.setPosition({ height: "auto" });
         };
         //match special searches
-        SPECIAL_SEARCHES.forEach((search) => {
+        for (const search of SPECIAL_SEARCHES) {
             search.query = query;
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) return;
             if (isActiveTimer && search.type.includes("timer")) {
                 results.push(new SearchItem(search));
-                return;
+                if(!query) break;
+                continue;
             }
             if (search.match(query)) {
                 results.push(new SearchItem(search));
             }
-        });
-
-        if (!query && isActiveTimer) return completeSearch();
+        }
 
         const splitQuery = query
             .split(" ")
             .map((q) => q.trim())
             .filter((q) => q);
+
+        if (!query && isActiveTimer) {
+            return completeSearch();
+        }
 
         //match actor items
         for (let i = 0; i < this.ACTOR_ITEMS_INDEX.length; i++) {
@@ -429,6 +433,16 @@ export class Spotlight extends Application {
         document.removeEventListener("click", Spotlight.onClickAway);
         return super.close(...args);
     }
+}
+
+
+function convertFullWidthToRegular(text) {
+    const fullWidthNumbers = "０１２３４５６７８９";
+    const regularNumbers = "0123456789";
+    const regex = new RegExp('[' + fullWidthNumbers + ']', 'g');
+    return text.replace(regex, function(match) {
+        return regularNumbers[fullWidthNumbers.indexOf(match)];
+    });
 }
 
 class SearchItem {

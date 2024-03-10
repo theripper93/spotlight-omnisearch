@@ -1,20 +1,26 @@
 export class BaseSearchTerm {
     /**
-     * Create a base search term.
-     * @param {Object} options - The options for the base search term.
-     * @param {string|function} options.name - The name of the search term. If a function is provided, it will be bound to the instance. The name will be used also to match the search term.
-     * @param {string|function} options.description - The description of the search term. If a function is provided, it will be bound to the instance.
-     * @param {Array.<string>} [options.keywords=[]] - The keywords for the search term. The keywords will be used to match the search term but are hidden from the user.
-     * @param {Array.<Object>} [options.actions=[]] - The actions for the search term.
-     * @param {Object} options.dragData - The drag data for the search term. If provided, it will be supplied to the drag handler.
-     * @param {string} options.type - The type of the search term. This can be anything but is used in !search commands to filter the results.
-     * @param {Object} options.data - The data for the search term. Arbitrary data that can be used by the search term.
-     * @param {string} options.img - The image for the search term.
-     * @param {string|Array.<string>} options.icon - The icon for the search term. Needs to be a valid font-awesome icon.
-     * @param {function} [options.onClick=null] - The click handler for the search term. If provided, it will be bound to the instance.
+     * Creates an instance of BaseSearchTerm.
+     * @constructor
+     * @param {Object} options - The options for creating the search term.
+     * @param {string|Function} options.name - The name or function returning the name of the search term. This will be used to match the search term against a query.
+     * @param {string|Function} [options.nameExtra=""] - The additional name or function returning the additional name of the search term. This will be added to the name but will not be used to match the search term against a query.
+     * @param {string|Function} [options.description=""] - The description or function returning the description of the search term.
+     * @param {Array<string>} [options.keywords=[]] - The array of keywords associated with the search term. This will be used to match the search term against a query.
+     * @param {Array<Function>} [options.actions=[]] - The array of actions associated with the search term.
+     * @param {*} options.dragData - The data associated with the drag action.
+     * @param {string} options.type - The type of the search term. This will be split by space and used to match !type filters.
+     * @param {Object} [options.data={}] - Additional data associated with the search term.
+     * @param {string} options.img - The image URL associated with the search term.
+     * @param {string|Array<string>} options.icon - The icon URL associated with the search term. If 2 icons are provided, they will be rendered on the right of the search term.
+     * @param {Function} [options.onClick=null] - The function to handle click events.
+     * @param {Function} [options.onDragStart=null] - The function to handle drag start events.
+     * @param {Function} [options.onDragEnd=null] - The function to handle drag end events.
+     * @param {Function} [options.match=null] - The function to match the search term against a query. If not provided, the name and keywords will be used to match the search term against a query.
+     * @param {Function} [options.activateListeners=null] - The function to activate listeners for the search term.
      */
 
-    constructor({ name, nameExtra = "", description = "", keywords = [], actions = [], dragData, type, data = {}, img, icon, onClick = null, onDragStart = null, onDragEnd = null, match = null, activateListeners = null}) {
+    constructor({ name, nameExtra = "", description = "", keywords = [], actions = [], dragData, type, data = {}, img, icon, onClick = null, onDragStart = null, onDragEnd = null, match = null, activateListeners = null }) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
         this._description = typeof description === "function" ? description.bind(this) : () => description;
         this._actions = typeof actions === "function" ? actions.bind(this) : () => actions;
