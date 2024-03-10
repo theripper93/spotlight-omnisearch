@@ -19,7 +19,7 @@ Hooks.on("init", () => {
     };
 });
 
-Hooks.on("ready", () => {
+Hooks.once("canvasReady", () => {
     if (getSetting("firstTime")) {
         setTimeout(() => {
             if (!game.user.isGM && getSetting("gmOnly")) return;
@@ -27,7 +27,9 @@ Hooks.on("ready", () => {
         }, 1000);
         setSetting("firstTime", false);
     }
+});
 
+Hooks.on("ready", () => {
     if (getSetting("enableCtrlSpace")) {
         //hardcode a ctrl + space hotkey
         document.addEventListener("keydown", (e) => {
