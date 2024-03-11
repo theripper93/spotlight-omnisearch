@@ -1,4 +1,5 @@
 import { MODULE_ID } from "./main.js";
+import {updateTimerInterval} from "./timer.js";
 
 export function registerSettings() {
     const settings = {
@@ -156,8 +157,10 @@ export function registerSettings() {
             type: Object,
             onChange: (value) => {
                 if (ui.spotlightOmnisearch?.rendered) {
-                    ui.spotlightOmnisearch._onSearch();
+
+                    if(!("counter" in value))ui.spotlightOmnisearch._onSearch();
                 }
+                updateTimerInterval();
             },
         },
     };

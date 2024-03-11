@@ -4,6 +4,8 @@ import { getSetting, setSetting } from "../settings";
 
 export const SPECIAL_SEARCHES = [];
 
+let LAST_COUNTER_FOCUS = null;
+
 export async function initSpecialSearches() {
     SPECIAL_SEARCHES.length = 0;
 
@@ -379,6 +381,7 @@ export async function initSpecialSearches() {
                         const currentSetting = getSetting("appData");
                         currentSetting.counter = currentSetting.counter ?? [0, 0, 0, 0];
                         currentSetting.counter[i] = parseInt(counter.value);
+                        LAST_COUNTER_FOCUS = i;
                         await setSetting("appData", setting);
                     });
                 }

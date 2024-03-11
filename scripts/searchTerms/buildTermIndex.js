@@ -75,7 +75,7 @@ async function buildCompendiumIndex() {
     await Promise.all(packs.map((p) => p.getIndex()));
     const localizedCompendiumName = game.i18n.localize("PACKAGE.TagCompendium");
     for (const pack of packs) {
-        const packPackageName = pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title;
+        const packPackageName = (pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title) ?? game.i18n.localize("PACKAGE.Type.world");
         const packIndex = Array.from(await pack.getIndex());
         const localizedDocumentName = game.i18n.localize(`DOCUMENT.${pack.documentName}`);
 

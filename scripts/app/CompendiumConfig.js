@@ -47,7 +47,7 @@ export class CompendiumConfig extends FormApplication {
                 id,
                 checked: sett[id] ?? true,
                 name: compendium.metadata.label,
-                package: game.modules.get(compendium.metadata.packageName)?.title ?? game.system.title,
+                package:  (compendium.metadata.packageType === "system" ? game.system.title : game.modules.get(compendium.metadata.packageName)?.title) ?? game.i18n.localize("PACKAGE.Type.world"),
             });
         }
 

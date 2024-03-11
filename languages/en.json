@@ -123,7 +123,8 @@
             "timer": {
                 "name": "Timer",
                 "timeLeft": "Time Left",
-                "local-keyword": "timer"
+                "local-keyword": "timer",
+                "expired": "Timer Expired!"
             },
             "light": {
                 "torch": "Torch",

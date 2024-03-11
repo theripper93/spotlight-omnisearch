@@ -4,6 +4,7 @@ import { initConfig } from "./config.js";
 import { BaseSearchTerm } from "./searchTerms/baseSearchTerm.js";
 import { INDEX, buildIndex } from "./searchTerms/buildTermIndex.js";
 import { getSetting, registerSettings, setSetting } from "./settings.js";
+import {updateTimerInterval} from "./timer.js";
 
 export const MODULE_ID = "spotlight-omnisearch";
 
@@ -44,6 +45,7 @@ Hooks.on("ready", () => {
             }
         });
     }
+    updateTimerInterval();
 });
 
 Hooks.on("init", () => {
