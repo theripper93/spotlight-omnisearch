@@ -676,6 +676,9 @@ class SearchItem {
             this.element.addEventListener("dragend", (event) => {
                 this.endDragging(event);
             });
+            this.element.addEventListener("drop", (event) => {
+                this.searchTerm.onDrop?.(event);
+            });
         }
     }
 }

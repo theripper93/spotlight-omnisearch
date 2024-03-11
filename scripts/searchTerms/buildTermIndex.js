@@ -1,7 +1,7 @@
 import { BaseSearchTerm } from "./baseSearchTerm";
 import { getSetting } from "../settings";
 import { initSpecialSearches } from "./special";
-import {MODULE_ID} from "../main";
+import { MODULE_ID } from "../main";
 
 const IMAGE = Object.keys(CONST.IMAGE_FILE_EXTENSIONS);
 const AUDIO = Object.keys(CONST.AUDIO_FILE_EXTENSIONS);
@@ -75,7 +75,7 @@ export async function buildIndex(force = false) {
 }
 
 function createDocumentTypeTypeString(documentName, documentType) {
-    if(!documentType) return "";
+    if (!documentType) return "";
     documentName = documentName.toUpperCase();
     //capitalize first letter of documentType
     documentType = documentType.charAt(0).toUpperCase() + documentType.slice(1);
@@ -404,6 +404,56 @@ async function buildFiles() {
                     tileSize: canvas?.grid?.size ?? 100,
                 };
             }
+            if (isAudio) {
+                dropData = {
+                    src: file,
+                };
+            }
+            let onDrop = null;
+            const actions = [];
+            if (isAudio) {
+                onDrop = async function (event) {
+                    const target = document.elementFromPoint(event.clientX, event.clientY);
+                    if (!target) return;
+                    console.log("Dropped audio", target);
+                    const isPlaylist = target.closest(".document.playlist");
+                    const isCanvas = target.closest("#board");
+                    if (isPlaylist) {
+                        const playlistDocument = game.playlists.get(isPlaylist.dataset.entryId);
+                        const fnNoExt = fileName.split(".").slice(0, -1).join(".");
+                        const soundName = decodeURIComponent(fnNoExt);
+                        playlistDocument.createEmbeddedDocuments("PlaylistSound", [
+                            {
+                                name: soundName,
+                                path: file,
+                            },
+                        ]);
+                    }
+                    if(isCanvas){
+                        const [x, y] = [event.clientX, event.clientY];
+                        const t = canvas.stage.worldTransform;
+                        const cX = (x - t.tx) / canvas.stage.scale.x;
+                        const cy = (y - t.ty) / canvas.stage.scale.y;
+                        canvas.sounds.activate();
+                        canvas.scene.createEmbeddedDocuments("AmbientSound", [
+                            {
+                                path: file,
+                                radius: canvas.scene.dimensions.distance*3,
+                                x: cX,
+                                y: cy,
+                            },
+                        ]);
+                    }
+                };
+                actions.push({
+                    name: game.i18n.localize(`${MODULE_ID}.actions.playForEveryone`),
+                    icon: `<i class="fas fa-play"></i>`,
+                    callback: async function () {
+                        if (previewAudio) previewAudio.stop();
+                        await AudioHelper.play({ src: file, autoplay: true, volume: 0.7, loop: false }, true);
+                    },
+                });
+            }
             index.push(
                 new BaseSearchTerm({
                     name: decodeURIComponent(fileName),
@@ -411,14 +461,16 @@ async function buildFiles() {
                     type: "file " + fileName.split(".").pop().toLowerCase(),
                     dragData: dropData,
                     img: null,
+                    actions: actions,
                     icon: [icon],
+                    onDragEnd: onDrop,
                     onClick: async function () {
                         if (isImageOrVideo) {
                             new ImagePopout(file, {}).render(true);
                         }
                         if (isAudio) {
                             if (previewAudio) previewAudio.stop();
-                            previewAudio = await AudioHelper.play({src: file, autoplay: true, volume: 0.5, loop: false}, false);
+                            previewAudio = await AudioHelper.play({ src: file, autoplay: true, volume: 0.5, loop: false }, false);
                             const current = previewAudio;
                             setTimeout(() => {
                                 if (current === previewAudio) previewAudio.stop();

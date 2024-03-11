@@ -91,7 +91,8 @@
             "roll-table": "Roll Table",
             "play-playlist": "Play Playlist",
             "stop-playlist": "Stop Playlist",
-            "use-item": "Use Item"
+            "use-item": "Use Item",
+            "playForEveryone": "Play for Everyone"
         },
         "notifications": {
             "calc-clipboard": "Result copied to clipboard",
