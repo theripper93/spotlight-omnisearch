@@ -23,12 +23,6 @@ export class Spotlight extends Application {
         buildIndex().then((r) => {
             if (r) {
                 this._onSearch();
-                const help = SPECIAL_SEARCHES.find((search) => search.type.includes("help"));
-                const currentDesc = help.description;
-                const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${filter}">${filter}</span>`).join("");
-                help._description = () => {
-                    return `${currentDesc} <div class="filters-help">${filterSpans}</div>`;
-                };
             }
         });
         this._onSearch = debounce(this._onSearch, 167);

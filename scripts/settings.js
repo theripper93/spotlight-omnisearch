@@ -158,7 +158,7 @@ export function registerSettings() {
             onChange: (value) => {
                 if (ui.spotlightOmnisearch?.rendered) {
 
-                    if(!("counter" in value))ui.spotlightOmnisearch._onSearch();
+                    if(!("counter" in value) || !game.user.isGM) ui.spotlightOmnisearch._onSearch();
                 }
                 updateTimerInterval();
             },

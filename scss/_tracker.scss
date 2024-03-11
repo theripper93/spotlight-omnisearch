@@ -2,10 +2,11 @@
 
     --so-color-success: var(--color-level-info);
     --so-color-fail: var(--color-border-highlight);
-    --so-tracker-dot-size: 2rem;
+    --so-tracker-dot-size: 1.9rem;
 
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 0.4rem;
     padding: 1rem;
     align-items: center;

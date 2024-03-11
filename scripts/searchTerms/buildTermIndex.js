@@ -1,7 +1,11 @@
 import { BaseSearchTerm } from "./baseSearchTerm";
 import { getSetting } from "../settings";
 import { initSpecialSearches } from "./special";
-import { MODULE_ID } from "../main";
+import {MODULE_ID} from "../main";
+
+const IMAGE = Object.keys(CONST.IMAGE_FILE_EXTENSIONS);
+const AUDIO = Object.keys(CONST.AUDIO_FILE_EXTENSIONS);
+const VIDEO = Object.keys(CONST.VIDEO_FILE_EXTENSIONS);
 
 export const INDEX = [];
 export const FILTERS = [];
@@ -14,6 +18,7 @@ export async function buildIndex(force = false) {
     if (force) {
         indexBuilt = false;
         INDEX.length = 0;
+        FILTERS.length = 0;
         FILE_INDEX.length = 0;
     }
     if (indexBuilt) return;
@@ -27,7 +32,7 @@ export async function buildIndex(force = false) {
             faSearch.classList.add("fa-spinner");
         }
     }
-    
+
     await initSpecialSearches();
     await buildModuleIntegration();
     await buildWeatherEffects();
@@ -36,6 +41,8 @@ export async function buildIndex(force = false) {
     if (getSetting("searchSidebar")) await buildCollections();
     await buildStatusEffects();
     if (getSetting("searchCompendium")) await buildCompendiumIndex();
+    if (getSetting("searchFiles")) await buildFiles();
+
     const promises = [];
     Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
     await Promise.all(promises);
@@ -46,7 +53,7 @@ export async function buildIndex(force = false) {
         filters.add(term.type);
     });
 
-    let filtersArray = [];
+    let filtersArray = ["mp3", "ogg", "webm", "webp", "png", "jpg", "jpeg"];
     Array.from(filters).forEach((filter) => {
         filtersArray.push(...filter.split(" ").map((f) => f.toLowerCase()));
     });
@@ -54,7 +61,6 @@ export async function buildIndex(force = false) {
     //remove duplicates
     filtersArray = Array.from(new Set(filtersArray));
     FILTERS.push(...filtersArray);
-    if (getSetting("searchFiles")) buildFiles();
 
     if (ui.spotlightOmnisearch?.rendered) {
         const faSpinner = ui.spotlightOmnisearch._html.querySelector(".fa-spinner");
@@ -66,6 +72,16 @@ export async function buildIndex(force = false) {
     }
 
     return INDEX;
+}
+
+function createDocumentTypeTypeString(documentName, documentType) {
+    if(!documentType) return "";
+    documentName = documentName.toUpperCase();
+    //capitalize first letter of documentType
+    documentType = documentType.charAt(0).toUpperCase() + documentType.slice(1);
+    const localKey = `${documentName}.Type${documentType}`;
+    const localized = game.i18n.localize(localKey);
+    return localized !== localKey ? ` ${localized}` : ` ${documentType}`;
 }
 
 async function buildCompendiumIndex() {
@@ -100,7 +116,7 @@ async function buildCompendiumIndex() {
                     name: entry.name,
                     description: pack.title + " - " + packPackageName,
                     keywords: [pack.title],
-                    type: localizedDocumentName + " " + localizedCompendiumName,
+                    type: localizedDocumentName + " " + localizedCompendiumName + createDocumentTypeTypeString(pack.documentName, entry.type),
                     data: { ...entry, documentName: pack.documentName },
                     img: entry.img,
                     icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
@@ -235,7 +251,7 @@ async function buildSettings() {
         if (setting.type === Boolean) {
             toggle = () => {
                 const state = game.settings.get(setting.namespace, setting.key);
-                return `<i class="s-toggle-setting fad fa-toggle-${state ? "on" : "off"}" data-namespace="${setting.namespace}" data-key="${setting.key}"></i>`
+                return `<i class="s-toggle-setting fad fa-toggle-${state ? "on" : "off"}" data-namespace="${setting.namespace}" data-key="${setting.key}"></i>`;
             };
         }
         const icon = setting.icon ?? "fas fa-cogs";
@@ -351,19 +367,18 @@ async function buildSettingsTab() {
     INDEX.push(...index);
 }
 
+let previewAudio = null;
+
 async function buildFiles() {
     if (!game.user.isGM) return;
-    await new Promise((resolve) => setTimeout(resolve, 5000));
     const fileCache = canvas.deepSearchCache?._fileIndexCache;
     if (!fileCache) return;
-    const IMAGE = Object.keys(CONST.IMAGE_FILE_EXTENSIONS);
-    const AUDIO = Object.keys(CONST.AUDIO_FILE_EXTENSIONS);
-    const VIDEO = Object.keys(CONST.VIDEO_FILE_EXTENSIONS);
     const index = [];
     for (const [fileName, files] of Object.entries(fileCache)) {
         const ext = fileName.split(".").pop().toLowerCase();
         let icon = "fas fa-file";
         let isImageOrVideo = false;
+        let isAudio = false;
         if (IMAGE.includes(ext)) {
             icon = "fas fa-image";
             isImageOrVideo = true;
@@ -372,7 +387,10 @@ async function buildFiles() {
             icon = "fas fa-film";
             isImageOrVideo = true;
         }
-        if (AUDIO.includes(ext)) icon = "fas fa-volume-up";
+        if (AUDIO.includes(ext)) {
+            icon = "fas fa-volume-up";
+            isAudio = true;
+        }
 
         files.forEach((file) => {
             let dropData = null;
@@ -390,13 +408,21 @@ async function buildFiles() {
                 new BaseSearchTerm({
                     name: decodeURIComponent(fileName),
                     keywords: [file],
-                    type: "file",
+                    type: "file " + fileName.split(".").pop().toLowerCase(),
                     dragData: dropData,
                     img: null,
                     icon: [icon],
                     onClick: async function () {
                         if (isImageOrVideo) {
                             new ImagePopout(file, {}).render(true);
+                        }
+                        if (isAudio) {
+                            if (previewAudio) previewAudio.stop();
+                            previewAudio = await AudioHelper.play({src: file, autoplay: true, volume: 0.5, loop: false}, false);
+                            const current = previewAudio;
+                            setTimeout(() => {
+                                if (current === previewAudio) previewAudio.stop();
+                            }, 5000);
                         }
                     },
                 }),

@@ -1,6 +1,7 @@
 import { BaseSearchTerm } from "./baseSearchTerm";
 import { MODULE_ID } from "../main";
-import { getSetting, setSetting } from "../settings";
+import {getSetting, setSetting} from "../settings";
+import { FILTERS } from "./buildTermIndex";
 
 export const SPECIAL_SEARCHES = [];
 
@@ -185,7 +186,9 @@ export async function initSpecialSearches() {
             name: () => game.i18n.localize(`${MODULE_ID}.special.help.name`),
             description: (search) => {
                 const listElements = game.i18n.translations["spotlight-omnisearch"].special.help.list;
-                return `<ul>${listElements.map((element) => `<li style="pointer-events:none">${element}</li>`).join("")}</ul>`;
+                const baseDescription = `<ul>${listElements.map((element) => `<li style="pointer-events:none">${element}</li>`).join("")}</ul>`;
+                const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${filter}">${filter}</span>`).join("");
+                return `${baseDescription} <div class="filters-help">${filterSpans}</div>`;
             },
             type: "special-app help",
             data: {},
