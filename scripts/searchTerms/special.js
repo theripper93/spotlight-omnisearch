@@ -241,7 +241,7 @@ export async function initSpecialSearches() {
                 const setting = getSetting("appData");
                 setting.timer = endTimestamp;
                 await setSetting("appData", setting);
-                ui.spotlightOmnisearch._onSearch();
+                ui.spotlightOmnisearch?._onSearch();
             },
         }),
         //success fail tracker

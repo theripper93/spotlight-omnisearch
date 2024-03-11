@@ -33,7 +33,7 @@ export class Spotlight extends Application {
         });
         this._onSearch = debounce(this._onSearch, 167);
         this.updateStoredPosition = debounce(this.updateStoredPosition, 167);
-        document.addEventListener("click", Spotlight.onClickAway);
+        document.addEventListener("mousedown", Spotlight.onClickAway);
         this.indexActorItems();
     }
 
@@ -167,6 +167,7 @@ export class Spotlight extends Application {
     }
 
     setPosition(...args) {
+        if (!this.element[0]) return;
         super.setPosition(...args);
         //get max availeble vertical space
         const windowApp = this._html.closest("#spotlight");
@@ -374,7 +375,9 @@ export class Spotlight extends Application {
                 sortedTypeResults.forEach((result) => {
                     if (!suggestionAdded) {
                         suggestionAdded = true;
-                        inputSuggestion.innerText = !inputSuggestion.innerText ? input.value + " " + result.name : inputSuggestion.innerText;
+                        const tempSpan = document.createElement("div");
+                        tempSpan.innerHTML = result.name;
+                        inputSuggestion.innerText = !inputSuggestion.innerText ? input.value + " " + tempSpan.innerText : inputSuggestion.innerText;
                     }
                     list.appendChild(result.element);
                 });
@@ -453,7 +456,7 @@ export class Spotlight extends Application {
 
     async close(...args) {
         ui.spotlightOmnisearch = null;
-        document.removeEventListener("click", Spotlight.onClickAway);
+        document.removeEventListener("mousedown", Spotlight.onClickAway);
         return super.close(...args);
     }
 
@@ -471,8 +474,22 @@ function convertFullWidthToRegular(text) {
     });
 }
 
+let localizations = null;
+
+function loadBasicLocalizations() {
+    localizations = {
+        MACRO: game.i18n.localize("DOCUMENT.Macro"),
+        JOURNAL_ENTRY: game.i18n.localize("DOCUMENT.JournalEntry"),
+        ROLL_TABLE: game.i18n.localize("DOCUMENT.RollTable"),
+        PLAYLIST: game.i18n.localize("DOCUMENT.Playlist"),
+        SCENE: game.i18n.localize("DOCUMENT.Scene"),
+        JOURNAL_ENTRY_PAGE: game.i18n.localize("DOCUMENT.JournalEntryPage"),
+    };
+}
+
 class SearchItem {
     constructor(searchTerm) {
+        if (!localizations) loadBasicLocalizations();
         this.name = searchTerm.name;
         this.nameExtra = searchTerm.nameExtra ?? "";
         this.description = searchTerm.description;
@@ -546,7 +563,7 @@ class SearchItem {
 
     getActions() {
         const actions = [...this.actions] ?? [];
-        if (this.type.includes("Macro")) {
+        if (this.type.includes(localizations.MACRO)) {
             actions.push({
                 name: `${MODULE_ID}.actions.execute`,
                 icon: '<i class="fas fa-terminal"></i>',
@@ -554,7 +571,7 @@ class SearchItem {
                     (await fromUuid(this.data.uuid)).execute();
                 },
             });
-        } else if (this.type == "Scene") {
+        } else if (this.type == localizations.SCENE) {
             actions.push(
                 {
                     name: `${MODULE_ID}.actions.view`,
@@ -579,7 +596,7 @@ class SearchItem {
                     },
                 },
             );
-        } else if (this.type.includes("RollTable")) {
+        } else if (this.type.includes(localizations.ROLL_TABLE)) {
             actions.push({
                 name: `${MODULE_ID}.actions.roll-table`,
                 icon: '<i class="fas fa-dice-d20"></i>',
@@ -587,7 +604,7 @@ class SearchItem {
                     (await fromUuid(this.data.uuid)).draw();
                 },
             });
-        } else if (this.type.includes("Playlist")) {
+        } else if (this.type.includes(localizations.PLAYLIST)) {
             const playlist = fromUuidSync(this.data.uuid);
             if (playlist) {
                 if (playlist.playing) {
@@ -607,6 +624,13 @@ class SearchItem {
                         },
                     });
                 }
+            }
+        } else if (this.type.includes(localizations.JOURNAL_ENTRY) || this.type.includes(localizations.JOURNAL_ENTRY_PAGE)) {
+            const query = this.searchTerm.query.toLowerCase();
+            const matchingActions = actions.filter((action) => action.name.toLowerCase().includes(query));
+            if (matchingActions.length) {
+                actions.length = 0;
+                actions.push(...matchingActions);
             }
         }
 
