@@ -163,6 +163,12 @@ export function registerSettings() {
                 updateTimerInterval();
             },
         },
+        recent: {
+            scope: "client",
+            config: false,
+            default: [],
+            type: Array,
+        }
     };
 
     registerSettingsArray(settings);

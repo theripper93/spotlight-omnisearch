@@ -307,7 +307,7 @@
                     .search-item-actions {
                         padding: 0.2em 0;
                         display: flex;
-                        flex-wrap: wrap;
+                        flex-wrap: nowrap;
                         gap: 0.2rem;
 
                         button {
@@ -322,6 +322,7 @@
                             padding: 0.2em 0.2em;
                             font-weight: bold;
                             color: var(--spotlight-text-color);
+                            white-space: nowrap;
 
                             i {
                                 order: -1;
@@ -339,6 +340,9 @@
 
                     .search-info {
                         flex: 1;
+                        &:has(.search-entry-name-wrapper){
+                            overflow: hidden;
+                        }
 
                         .search-entry-name-wrapper {
                             display: flex;
@@ -346,7 +350,6 @@
                             align-items: center;
 
                             .search-entry-name {
-                                max-width: 65%;
                                 white-space: nowrap;
                                 overflow: hidden;
                                 text-overflow: ellipsis;

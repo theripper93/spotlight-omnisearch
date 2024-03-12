@@ -81,6 +81,8 @@
                 "name": "Toggle Spotlight Omnisearch"
             }
         },
+        "recent-searches": "Recent Searches",
+        "recent-tooltip": "Clear recent searches",
         "app": {},
         "flags": {},
         "actions": {

@@ -12,12 +12,19 @@ Hooks.on("init", () => {
     initConfig();
     registerSettings();
     CompendiumConfig.register();
-    CONFIG.SpotlightOmniseach = {
+    CONFIG.SpotlightOmnisearch = {
         app: Spotlight,
         INDEX: INDEX,
         SearchTerm: BaseSearchTerm,
         rebuildIndex: () => buildIndex(true),
     };
+    //setup a getter for the typo in the api config
+    Object.defineProperty(CONFIG, "SpotlightOmniseach", {
+        get: () => {
+            console.warn("The CONFIG.SpotlightOmniseach contained a typo, please update your modules to use the correct spelling by using CONFIG.SpotlightOmnisearch. This will be removed in version 1.0.0.");
+            return CONFIG.SpotlightOmnisearch;
+        },
+    });
 });
 
 Hooks.once("canvasReady", () => {

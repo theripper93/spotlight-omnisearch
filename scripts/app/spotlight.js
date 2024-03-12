@@ -335,8 +335,25 @@ export class Spotlight extends Application {
 
         const completeSearch = () => {
             //sort by type
-            const types = {};
+            const types = {
+                "recent-searches": [],
+            };
+            const recent = getSetting("recent") ?? [];
+            const recentHeader = document.createElement("li");
+            recentHeader.classList.add("type-header");
+            recentHeader.style.justifyContent = "space-between";
+            recentHeader.style.background = "none";
+            recentHeader.innerHTML = `${game.i18n.localize(`${MODULE_ID}.recent-searches`)} <span class="clear-recent"><i data-tooltip="${game.i18n.localize(`${MODULE_ID}.recent-tooltip`)}" style="cursor: pointer;pointer-events: all;" class="fas fa-trash-clock"></i></span>`;
+            recentHeader.querySelector("i").addEventListener("click", () => {
+                setSetting("recent", []);
+                this._onSearch();
+            });
+
             results.forEach((result) => {
+                if (recent.includes(result.name)) {
+                    types["recent-searches"].push(result);
+                    return;
+                }
                 if (!types[result.type]) types[result.type] = [];
                 types[result.type].push(result);
             });
@@ -346,6 +363,7 @@ export class Spotlight extends Application {
             const list = this._html.querySelector("#search-result");
             list.innerHTML = "";
             for (const [type, typeResults] of Object.entries(types)) {
+                if(!typeResults.length) continue;
                 //sort typeResults by name, then bring to the top the ones that start with the query
                 const sortedTypeResults = [];
                 const doesNotStartWithQuery = [];
@@ -358,13 +376,14 @@ export class Spotlight extends Application {
                 sortedTypeResults.sort((a, b) => a.name.localeCompare(b.name));
                 sortedTypeResults.push(...doesNotStartWithQuery);
 
-                const typeHeader = document.createElement("li");
+                let typeHeader = document.createElement("li");
                 typeHeader.innerText = type
                     .replaceAll("-", " ")
                     .replaceAll(" ", " - ")
                     .replace(/([a-z])([A-Z])/g, "$1 $2");
 
                 typeHeader.classList.add("type-header");
+                if(type === "recent-searches") typeHeader = recentHeader;
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
                 sortedTypeResults.forEach((result) => {
                     if (!suggestionAdded) {
@@ -488,6 +507,7 @@ class SearchItem {
         this.nameExtra = searchTerm.nameExtra ?? "";
         this.description = searchTerm.description;
         this.type = searchTerm.type;
+        this.isSpecialApp = this.type.includes("special-app");
         this.data = searchTerm.data;
         this.img = searchTerm.img;
         this.dragData = searchTerm.dragData;
@@ -506,6 +526,7 @@ class SearchItem {
 
     addElementListeners() {
         this.element.addEventListener("click", (e) => {
+            if(!this.isSpecialApp) updateRecent(this.name);
             this.searchTerm.onClick?.(e, this.searchTerm);
         });
         this.setDraggable();
@@ -635,6 +656,7 @@ class SearchItem {
             const button = document.createElement("button");
             button.innerHTML = action.icon + " " + game.i18n.localize(action.name);
             button.addEventListener("click", (e) => {
+                if(!this.isSpecialApp) updateRecent(this.name);
                 e.preventDefault();
                 e.stopPropagation();
                 action.callback(e);
@@ -681,4 +703,13 @@ class SearchItem {
             });
         }
     }
+}
+
+
+function updateRecent(name) {
+    const recent = getSetting("recent") ?? [];
+    if (recent.includes(name)) return;
+    recent.unshift(name);
+    if (recent.length > 50) recent.pop();
+    return setSetting("recent", recent);
 }

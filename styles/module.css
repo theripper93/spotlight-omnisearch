@@ -254,7 +254,7 @@
 #spotlight main section #search-result li .search-item-actions {
   padding: 0.2em 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.2rem;
 }
 #spotlight main section #search-result li .search-item-actions button {
@@ -269,6 +269,7 @@
   padding: 0.2em 0.2em;
   font-weight: bold;
   color: var(--spotlight-text-color);
+  white-space: nowrap;
 }
 #spotlight main section #search-result li .search-item-actions button i {
   order: -1;
@@ -282,13 +283,15 @@
 #spotlight main section #search-result li .search-info {
   flex: 1;
 }
+#spotlight main section #search-result li .search-info:has(.search-entry-name-wrapper) {
+  overflow: hidden;
+}
 #spotlight main section #search-result li .search-info .search-entry-name-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 #spotlight main section #search-result li .search-info .search-entry-name-wrapper .search-entry-name {
-  max-width: 65%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
