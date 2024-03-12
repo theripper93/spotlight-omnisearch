@@ -331,7 +331,8 @@
                             }
 
                             &:focus,
-                            &:hover {
+                            &:hover,
+                            &.selected {
                                 box-shadow: none;
                                 background: var(--spotlight-button-hover);
                             }

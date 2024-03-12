@@ -276,7 +276,7 @@
   margin: 0;
   width: 1.5rem;
 }
-#spotlight main section #search-result li .search-item-actions button:focus, #spotlight main section #search-result li .search-item-actions button:hover {
+#spotlight main section #search-result li .search-item-actions button:focus, #spotlight main section #search-result li .search-item-actions button:hover, #spotlight main section #search-result li .search-item-actions button.selected {
   box-shadow: none;
   background: var(--spotlight-button-hover);
 }

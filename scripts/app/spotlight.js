@@ -208,6 +208,11 @@ export class Spotlight extends Application {
             const isAlt = event.altKey;
             const selected = html.querySelector(".search-item:not(.type-header).selected");
             const firstItem = selected ?? html.querySelector(".search-item:not(.type-header)");
+            const selectedAction = firstItem?.querySelector(".search-item-actions button.selected");
+            if (selectedAction) {
+                selectedAction.click();
+                return this.close();
+            }
             if (!firstItem) return;
             if (isShift) {
                 //find the first action button
@@ -235,6 +240,7 @@ export class Spotlight extends Application {
         }
         //if arrow up or down is pressed, move the selection
         if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            html.querySelectorAll("button").forEach((button) => button.classList.remove("selected"));
             const selected = html.querySelector(".search-item.selected");
             if (!selected) {
                 const first = html.querySelector(".search-item:not(.type-header)");
@@ -268,6 +274,26 @@ export class Spotlight extends Application {
                 //scroll to the selected element
                 next.scrollIntoView({ block: "nearest", behavior: "smooth" });
             }
+        }
+        //if arrow left or right is pressed, highlight action in currently selected item
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            const selected = html.querySelector(".search-item.selected");
+            if (!selected) return;
+            const actions = selected.querySelectorAll(".search-item-actions button");
+            if (!actions.length) return;
+            const selectedAction = selected.querySelector(".search-item-actions button.selected");
+            if (!selectedAction) {
+                actions[0].classList.add("selected");
+                return;
+            }
+            let next;
+            if (event.key === "ArrowLeft") {
+                next = selectedAction.previousElementSibling ?? actions[actions.length - 1];
+            } else {
+                next = selectedAction.nextElementSibling ?? actions[0];
+            }
+            selectedAction.classList.remove("selected");
+            next.classList.add("selected");
         }
         //if space + shift is pressed, close the spotlight
         if (event.key === " " && event.shiftKey && inputDelta < 400) {
