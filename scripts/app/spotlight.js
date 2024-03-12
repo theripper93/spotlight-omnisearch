@@ -707,6 +707,8 @@ class SearchItem {
 
 
 function updateRecent(name) {
+    const useHistory = getSetting("useHistory");
+    if (!useHistory) return;
     const recent = getSetting("recent") ?? [];
     if (recent.includes(name)) return;
     recent.unshift(name);

@@ -45,6 +45,14 @@ export function registerSettings() {
             default: false,
             type: Boolean,
         },
+        useHistory: {
+            name: `${MODULE_ID}.settings.useHistory.name`,
+            hint: `${MODULE_ID}.settings.useHistory.hint`,
+            scope: "client",
+            config: true,
+            default: true,
+            type: Boolean,
+        },
         position: {
             name: `${MODULE_ID}.settings.position.name`,
             hint: `${MODULE_ID}.settings.position.hint`,
