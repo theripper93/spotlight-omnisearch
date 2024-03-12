@@ -307,7 +307,7 @@
                     .search-item-actions {
                         padding: 0.2em 0;
                         display: flex;
-                        flex-wrap: nowrap;
+                        flex-wrap: wrap;
                         gap: 0.2rem;
 
                         button {
@@ -341,8 +341,13 @@
 
                     .search-info {
                         flex: 1;
-                        &:has(.search-entry-name-wrapper){
+
+                        &:has(.search-entry-name-wrapper) {
                             overflow: hidden;
+
+                            .search-item-actions {
+                                flex-wrap: nowrap;
+                            }
                         }
 
                         .search-entry-name-wrapper {

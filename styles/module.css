@@ -254,7 +254,7 @@
 #spotlight main section #search-result li .search-item-actions {
   padding: 0.2em 0;
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 0.2rem;
 }
 #spotlight main section #search-result li .search-item-actions button {
@@ -285,6 +285,9 @@
 }
 #spotlight main section #search-result li .search-info:has(.search-entry-name-wrapper) {
   overflow: hidden;
+}
+#spotlight main section #search-result li .search-info:has(.search-entry-name-wrapper) .search-item-actions {
+  flex-wrap: nowrap;
 }
 #spotlight main section #search-result li .search-info .search-entry-name-wrapper {
   display: flex;
