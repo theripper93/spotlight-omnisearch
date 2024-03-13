@@ -362,6 +362,7 @@ export class Spotlight extends Application {
         const completeSearch = () => {
             //sort by type
             const types = {
+                "special-app": [],
                 "recent-searches": [],
             };
             const recent = getSetting("recent") ?? [];
