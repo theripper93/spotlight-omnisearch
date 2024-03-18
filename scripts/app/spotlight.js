@@ -317,7 +317,8 @@ export class Spotlight extends Application {
         let hasFilters = filters.length > 0;
         if (hasFilters) {
             const matchedFilters = FILTERS.filter((f) => f.startsWith(filters[0]));
-            inputSuggestion.innerText = `!${matchedFilters.join(" / ")}`;
+            const suggestionText = `${matchedFilters.join(" / ")}`.replace(filters[0], "");
+            inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`
         }
         if (hasFilters && hasSpace) {
             const filtersContainer = this._html.querySelector(".filters-container");
@@ -417,7 +418,7 @@ export class Spotlight extends Application {
                         suggestionAdded = true;
                         const tempSpan = document.createElement("div");
                         tempSpan.innerHTML = result.name;
-                        inputSuggestion.innerText = !inputSuggestion.innerText ? input.value + " " + tempSpan.innerText : inputSuggestion.innerText;
+                        inputSuggestion.innerHTML = !inputSuggestion.innerText ? `<span class="input-spacer">${input.value}</span>` + " " + tempSpan.innerText : inputSuggestion.innerText;
                     }
                     list.appendChild(result.element);
                 });

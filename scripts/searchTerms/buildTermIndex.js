@@ -184,6 +184,7 @@ async function buildCollections() {
                             name: toc.text,
                             icon: `<i class="fa-solid fa-hashtag"></i>`,
                             callback: async function () {
+                                if(ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid+"#"+toc.slug);
                                 const entity = await fromUuid(document.uuid);
                                 entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
                             },
@@ -201,6 +202,7 @@ async function buildCollections() {
                             img: page.img,
                             icon: ["fas fa-earth-europe", "fas fa-file-lines"],
                             onClick: async function () {
+                                if(ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid);
                                 const entity = await fromUuid(document.uuid);
                                 entity.sheet.render(true, { pageId: page.id, anchor: null });
                             },

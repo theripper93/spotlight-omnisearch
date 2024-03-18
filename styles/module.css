@@ -54,6 +54,9 @@
 #spotlight.compact main section #search-result li i {
   font-size: 1rem;
 }
+#spotlight.compact main section #search-result li .clear-recent i {
+  font-size: 0.7rem;
+}
 #spotlight.force-opacity {
   opacity: 1 !important;
 }
@@ -178,7 +181,10 @@
   align-items: center;
   height: 100%;
 }
-#spotlight main header .input-wrapper span {
+#spotlight main header .input-wrapper span.input-spacer {
+  opacity: 0;
+}
+#spotlight main header .input-wrapper span.input-suggestion {
   font-size: 1.8rem;
   height: 65%;
   width: 100%;

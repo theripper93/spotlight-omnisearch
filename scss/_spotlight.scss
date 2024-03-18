@@ -36,6 +36,7 @@
     }
 
     &.compact {
+
         .search-info {
             font-size: 1rem;
 
@@ -59,6 +60,12 @@
 
             i {
                 font-size: 1rem;
+            }
+
+            .clear-recent {
+                i {
+                    font-size: 0.7rem;
+                }
             }
         }
     }
@@ -219,7 +226,11 @@
                 align-items: center;
                 height: 100%;
 
-                span {
+                span.input-spacer{
+                    opacity: 0;
+                }
+
+                span.input-suggestion {
                     font-size: 1.8rem;
                     height: 65%;
                     width: 100%;
