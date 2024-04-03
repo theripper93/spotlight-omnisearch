@@ -87,6 +87,8 @@ function createDocumentTypeTypeString(documentName, documentType) {
 async function buildCompendiumIndex() {
     const allowedCompendiums = getSetting("compendiumConfig");
     const packs = Array.from(game.packs).filter((p) => (game.user.isGM || !p.private) && allowedCompendiums[p.metadata.id] !== false);
+    const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
+    const fullCompendiumJournalIndex = getSetting("fullCompendiumJournalIndex");
     const index = [];
     await Promise.all(packs.map((p) => p.getIndex()));
     const localizedCompendiumName = game.i18n.localize("PACKAGE.TagCompendium");
@@ -111,21 +113,97 @@ async function buildCompendiumIndex() {
         );
 
         packIndex.forEach((entry) => {
-            index.push(
-                new BaseSearchTerm({
-                    name: entry.name,
-                    description: pack.title + " - " + packPackageName,
-                    keywords: [pack.title],
-                    type: localizedDocumentName + " " + localizedCompendiumName + createDocumentTypeTypeString(pack.documentName, entry.type),
-                    data: { ...entry, documentName: pack.documentName },
-                    img: entry.img,
-                    icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
-                    onClick: async function () {
-                        const entity = await fromUuid(entry.uuid);
-                        entity.sheet.render(true);
-                    },
-                }),
-            );
+            if (pack.documentName === "JournalEntry" && fullCompendiumJournalIndex) {
+                pack.getDocument(entry._id).then(async (document) => {
+                    const actions = [];
+                    document.pages.forEach((page) => {
+                        actions.push({
+                            name: page.name,
+                            icon: `<i class="fa-solid fa-file-lines"></i>`,
+                            callback: async function () {
+                                const entity = await fromUuid(document.uuid);
+                                entity.sheet.render(true, { pageId: page.id, anchor: null });
+                            },
+                        });
+
+                        const pageActions = [];
+                        const tocKeywords = [];
+
+                        if (page.type === "image")
+                            pageActions.push({
+                                name: game.i18n.localize("JOURNAL.ActionShow"),
+                                icon: `<i class="fa-solid fa-image"></i>`,
+                                callback: async function () {
+                                    new ImagePopout(page.src, {}).render(true);
+                                },
+                            });
+
+                        Object.values(page.toc).forEach((toc) => {
+                            tocKeywords.push(toc.text.toLowerCase());
+                            pageActions.push({
+                                name: toc.text,
+                                icon: `<i class="fa-solid fa-hashtag"></i>`,
+                                callback: async function () {
+                                    if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid, toc.slug);
+                                    const entity = await fromUuid(document.uuid);
+                                    entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
+                                },
+                            });
+                        });
+
+                        index.push(
+                            new BaseSearchTerm({
+                                name: page.name + ` (${document.name})`,
+                                actions: pageActions,
+                                keywords: tocKeywords,
+                                description: packPackageName,
+                                type: pageLocalized,
+                                data: { ...page, documentName: page.documentName, uuid: page.uuid },
+                                img: page.img,
+                                icon: ["fas fa-atlas", "fas fa-file-lines"],
+                                onClick: async function () {
+                                    if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid);
+                                    const entity = await fromUuid(document.uuid);
+                                    entity.sheet.render(true, { pageId: page.id, anchor: null });
+                                },
+                            }),
+                        );
+                    });
+
+                    index.push(
+                        new BaseSearchTerm({
+                            name: entry.name,
+                            description: pack.title + " - " + packPackageName,
+                            keywords: [pack.title],
+                            actions: actions,
+                            type: localizedDocumentName + " " + localizedCompendiumName + createDocumentTypeTypeString(pack.documentName, entry.type),
+                            data: { ...entry, documentName: pack.documentName },
+                            img: entry.img,
+                            icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
+                            onClick: async function () {
+                                const entity = await fromUuid(entry.uuid);
+                                entity.sheet.render(true);
+                            },
+                        }),
+                    );
+                });
+            } else {
+                index.push(
+                    new BaseSearchTerm({
+                        name: entry.name,
+                        description: pack.title + " - " + packPackageName,
+                        keywords: [pack.title],
+                        type: localizedDocumentName + " " + localizedCompendiumName + createDocumentTypeTypeString(pack.documentName, entry.type),
+                        data: { ...entry, documentName: pack.documentName },
+                        img: entry.img,
+                        icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
+                        onClick: async function () {
+                            const entity = await fromUuid(entry.uuid);
+                            entity.sheet.render(true);
+                        },
+                    }),
+                );
+            }
         });
     }
     //sort index by type
@@ -184,7 +262,7 @@ async function buildCollections() {
                             name: toc.text,
                             icon: `<i class="fa-solid fa-hashtag"></i>`,
                             callback: async function () {
-                                if(ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid+"#"+toc.slug);
+                                if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid, toc.slug);
                                 const entity = await fromUuid(document.uuid);
                                 entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
                             },
@@ -202,7 +280,7 @@ async function buildCollections() {
                             img: page.img,
                             icon: ["fas fa-earth-europe", "fas fa-file-lines"],
                             onClick: async function () {
-                                if(ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid);
+                                if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid);
                                 const entity = await fromUuid(document.uuid);
                                 entity.sheet.render(true, { pageId: page.id, anchor: null });
                             },
@@ -431,7 +509,7 @@ async function buildFiles() {
                             },
                         ]);
                     }
-                    if(isCanvas){
+                    if (isCanvas) {
                         const [x, y] = [event.clientX, event.clientY];
                         const t = canvas.stage.worldTransform;
                         const cX = (x - t.tx) / canvas.stage.scale.x;
@@ -440,7 +518,7 @@ async function buildFiles() {
                         canvas.scene.createEmbeddedDocuments("AmbientSound", [
                             {
                                 path: file,
-                                radius: canvas.scene.dimensions.distance*3,
+                                radius: canvas.scene.dimensions.distance * 3,
                                 x: cX,
                                 y: cy,
                             },

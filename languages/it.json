@@ -7,7 +7,9 @@
             "roll-table": "Tavolo a rulli",
             "stop-playlist": "Interrompi la playlist",
             "use-item": "Usa l'oggetto",
-            "view": "Visualizzazione"
+            "view": "Visualizzazione",
+            "playForEveryone": "Gioca per tutti",
+            "preload": "Precarica"
         },
         "hotkeys": {
             "toggleSpotlight": {
@@ -86,6 +88,22 @@
             "enableCtrlSpace": {
                 "hint": "Abilita il tasto di scelta rapida Ctrl Spazio per aprire Spotlight Omnisearch: poiché questa associazione ignora il sistema di combinazioni di tasti Core Foundry, funzionerà all'interno dei campi di input e delle aree di testo.",
                 "name": "Abilita Ctrl Spazio"
+            },
+            "compactMode": {
+                "hint": "Utilizza un layout compatto per Spotlight Omnisearch. \nCiò nasconderà le descrizioni e ridurrà le dimensioni dei risultati della ricerca",
+                "name": "Modalità compatta"
+            },
+            "fullCompendiumJournalIndex": {
+                "hint": "Includere pagine e intestazioni nell'indicizzazione del giornale del compendio. \nCiò aumenterà il tempo di inizializzazione dell'indice. \nSi consiglia di disabilitarlo se si dispone di un gran numero di compendi di riviste.",
+                "name": "Indice completo del diario del compendio"
+            },
+            "useHistory": {
+                "hint": "Utilizza la cronologia delle ricerche per suggerire ricerche precedenti",
+                "name": "Utilizza la cronologia delle ricerche"
+            },
+            "useMetricForLights": {
+                "hint": "Utilizza effetti di luce rapidi con unità metriche",
+                "name": "Usa la metrica per le luci"
             }
         },
         "special": {
@@ -124,7 +142,8 @@
             "timer": {
                 "name": "Timer",
                 "timeLeft": "Tempo rimasto",
-                "local-keyword": "Timer"
+                "local-keyword": "Timer",
+                "expired": "Il timer è scaduto!"
             },
             "tracker": {
                 "name": "Monitoraggio di successi/fallimenti",
@@ -143,7 +162,22 @@
             "restore": {
                 "description": "Ripristina la piena salute dei gettoni selezionati",
                 "name": "Ristabilire"
+            },
+            "attribute": {
+                "name": "Attributo"
+            },
+            "darkness": {
+                "dawn": "Alba",
+                "day": "Giorno",
+                "dusk": "Crepuscolo",
+                "night": "Notte"
+            },
+            "reindex": {
+                "description": "Ricostruisci l'indice di ricerca per Spotlight Omnisearch",
+                "name": "Indice"
             }
-        }
+        },
+        "recent-searches": "Ricerche recenti",
+        "recent-tooltip": "Cancella le ricerche recenti"
     }
 }

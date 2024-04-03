@@ -7,7 +7,9 @@
             "roll-table": "Mesa de rolo",
             "stop-playlist": "Parar lista de reprodução",
             "use-item": "Usar item",
-            "view": "Visualizar"
+            "view": "Visualizar",
+            "playForEveryone": "Jogue para todos",
+            "preload": "Pré-carregar"
         },
         "hotkeys": {
             "toggleSpotlight": {
@@ -86,6 +88,22 @@
             "enableCtrlSpace": {
                 "hint": "Habilite a tecla de atalho Ctrl Space para abrir o Spotlight Omnisearch - Como esta ligação ignora o sistema de atalhos de teclado do Core Foundry, ela funcionará dentro de campos de entrada e áreas de texto.",
                 "name": "Habilitar Ctrl Espaço"
+            },
+            "compactMode": {
+                "hint": "Use um layout compacto para o Spotlight Omnisearch. \nIsso ocultará as descrições e reduzirá o tamanho dos resultados da pesquisa",
+                "name": "Modo Compacto"
+            },
+            "fullCompendiumJournalIndex": {
+                "hint": "Incluir páginas e cabeçalhos na indexação do periódico do compêndio. \nIsso aumentará o tempo de inicialização do índice. \nÉ recomendado desabilitar esta opção se você tiver um grande número de compêndios de periódicos.",
+                "name": "Índice completo do diário do compêndio"
+            },
+            "useHistory": {
+                "hint": "Use o histórico de pesquisa para sugerir pesquisas anteriores",
+                "name": "Use o histórico de pesquisa"
+            },
+            "useMetricForLights": {
+                "hint": "Use efeitos de luz rápidos em unidades métricas",
+                "name": "Use métricas para luzes"
             }
         },
         "special": {
@@ -124,7 +142,8 @@
             "timer": {
                 "name": "Cronômetro",
                 "timeLeft": "Tempo restante",
-                "local-keyword": "cronômetro"
+                "local-keyword": "cronômetro",
+                "expired": "Temporizador expirou!"
             },
             "tracker": {
                 "name": "Rastreador de sucesso/fracasso",
@@ -143,7 +162,22 @@
             "restore": {
                 "description": "Restaurar o(s) token(s) selecionado(s) com integridade total",
                 "name": "Restaurar"
+            },
+            "attribute": {
+                "name": "Atributo"
+            },
+            "darkness": {
+                "dawn": "Alvorecer",
+                "day": "Dia",
+                "dusk": "Crepúsculo",
+                "night": "Noite"
+            },
+            "reindex": {
+                "description": "Reconstrua o índice de pesquisa para o Spotlight Omnisearch",
+                "name": "Índice"
             }
-        }
+        },
+        "recent-searches": "pesquisas recentes",
+        "recent-tooltip": "Limpar pesquisas recentes"
     }
 }

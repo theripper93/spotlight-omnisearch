@@ -66,6 +66,22 @@
             "enableCtrlSpace": {
                 "hint": "Ctrl Space ホットキーを有効にして Spotlight Omnisearch を開きます。このバインディングは Core Foundry キーバインド システムをバイパスするため、入力フィールドとテキスト エリア内で機能します。",
                 "name": "Ctrl スペースを有効にする"
+            },
+            "compactMode": {
+                "hint": "Spotlight Omnisearch にはコンパクトなレイアウトを使用します。\nこれにより説明が非表示になり、検索結果のサイズが小さくなります。",
+                "name": "コンパクトモード"
+            },
+            "fullCompendiumJournalIndex": {
+                "hint": "概要ジャーナルのインデックス作成にページとヘッダーを含めます。\nこれにより、インデックスの初期化時間が長くなります。\n多数の雑誌概要がある場合は、これを無効にすることをお勧めします。",
+                "name": "完全な要約ジャーナル索引"
+            },
+            "useHistory": {
+                "hint": "検索履歴を使用して以前の検索を提案する",
+                "name": "検索履歴を使用する"
+            },
+            "useMetricForLights": {
+                "hint": "メートル単位のクイック ライト エフェクトを使用する",
+                "name": "ライトのメトリックを使用する"
             }
         },
         "hotkeys": {
@@ -82,7 +98,9 @@
             "roll-table": "ロール表",
             "play-playlist": "プレイリスト再生",
             "stop-playlist": "プレイリスト停止",
-            "use-item": "アイテム使用"
+            "use-item": "アイテム使用",
+            "playForEveryone": "みんなでプレイ",
+            "preload": "プリロード"
         },
         "notifications": {
             "calc-clipboard": "検索結果をクリップボードにコピーしました。",
@@ -114,7 +132,8 @@
             "timer": {
                 "name": "タイマー",
                 "timeLeft": "残り時間",
-                "local-keyword": "タイマー"
+                "local-keyword": "タイマー",
+                "expired": "タイマーが切れました!"
             },
             "light": {
                 "torch": "松明",
@@ -147,7 +166,22 @@
             "restore": {
                 "description": "選択したトークンを完全な状態に復元します",
                 "name": "復元する"
+            },
+            "attribute": {
+                "name": "属性"
+            },
+            "darkness": {
+                "dawn": "夜明け",
+                "day": "日",
+                "dusk": "夕暮れ",
+                "night": "夜"
+            },
+            "reindex": {
+                "description": "Spotlight Omnisearch の検索インデックスを再構築する",
+                "name": "索引"
             }
-        }
+        },
+        "recent-searches": "最近の検索",
+        "recent-tooltip": "最近の検索をクリア"
     }
 }

@@ -7,7 +7,9 @@
             "roll-table": "Table à roulettes",
             "stop-playlist": "Arrêter la liste de lecture",
             "use-item": "Utiliser l'article",
-            "view": "Voir"
+            "view": "Voir",
+            "playForEveryone": "Jouez pour tout le monde",
+            "preload": "Préchargement"
         },
         "hotkeys": {
             "toggleSpotlight": {
@@ -86,6 +88,22 @@
             "enableCtrlSpace": {
                 "hint": "Activez le raccourci clavier Ctrl Espace pour ouvrir Spotlight Omnisearch - Étant donné que cette liaison contourne le système de raccourcis clavier Core Foundry, elle fonctionnera dans les champs de saisie et les zones de texte.",
                 "name": "Activer l'espace Ctrl"
+            },
+            "compactMode": {
+                "hint": "Utilisez une mise en page compacte pour Spotlight Omnisearch. \nCela masquera les descriptions et réduira la taille des résultats de recherche",
+                "name": "Mode compact"
+            },
+            "fullCompendiumJournalIndex": {
+                "hint": "Incluez les pages et les en-têtes dans l’indexation du recueil. \nCela augmentera le temps d'initialisation de l'index. \nIl est recommandé de désactiver cette option si vous disposez d'un grand nombre de recueils de revues.",
+                "name": "Index complet du recueil du journal"
+            },
+            "useHistory": {
+                "hint": "Utiliser l'historique de recherche pour suggérer des recherches précédentes",
+                "name": "Utiliser l'historique de recherche"
+            },
+            "useMetricForLights": {
+                "hint": "Utilisez des effets de lumière rapides en unités métriques",
+                "name": "Utiliser la métrique pour les lumières"
             }
         },
         "special": {
@@ -124,7 +142,8 @@
             "timer": {
                 "name": "Minuteur",
                 "timeLeft": "Temps restant",
-                "local-keyword": "minuteur"
+                "local-keyword": "minuteur",
+                "expired": "Minuterie expirée !"
             },
             "tracker": {
                 "name": "Suivi des succès/échecs",
@@ -143,7 +162,22 @@
             "restore": {
                 "description": "Restaurer le(s) jeton(s) sélectionné(s) en pleine santé",
                 "name": "Restaurer"
+            },
+            "attribute": {
+                "name": "Attribut"
+            },
+            "darkness": {
+                "dawn": "Aube",
+                "day": "Jour",
+                "dusk": "Crépuscule",
+                "night": "Nuit"
+            },
+            "reindex": {
+                "description": "Reconstruire l'index de recherche pour Spotlight Omnisearch",
+                "name": "Indice"
             }
-        }
+        },
+        "recent-searches": "recherches récentes",
+        "recent-tooltip": "Effacer les recherches récentes"
     }
 }

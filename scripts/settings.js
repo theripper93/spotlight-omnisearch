@@ -122,6 +122,14 @@ export function registerSettings() {
             default: true,
             type: Boolean,
         },
+        fullCompendiumJournalIndex: {
+            name: `${MODULE_ID}.settings.fullCompendiumJournalIndex.name`,
+            hint: `${MODULE_ID}.settings.fullCompendiumJournalIndex.hint`,
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean,
+        },
         searchSidebar: {
             name: `${MODULE_ID}.settings.searchSidebar.name`,
             hint: `${MODULE_ID}.settings.searchSidebar.hint`,

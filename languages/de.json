@@ -7,7 +7,9 @@
             "roll-table": "Rolltisch",
             "stop-playlist": "Stoppen Sie die Wiedergabeliste",
             "use-item": "Gegenstand benutzen",
-            "view": "Sicht"
+            "view": "Sicht",
+            "playForEveryone": "Spielen Sie für alle",
+            "preload": "Vorladen"
         },
         "hotkeys": {
             "toggleSpotlight": {
@@ -86,6 +88,22 @@
             "enableCtrlSpace": {
                 "hint": "Aktivieren Sie die Strg-Leertaste, um Spotlight Omnisearch zu öffnen. Da diese Bindung das Core Foundry-Tastenbelegungssystem umgeht, funktioniert sie in Eingabefeldern und Textbereichen.",
                 "name": "Aktivieren Sie die Strg-Leertaste"
+            },
+            "compactMode": {
+                "hint": "Verwenden Sie ein kompaktes Layout für Spotlight Omnisearch. \nDadurch werden Beschreibungen ausgeblendet und die Größe der Suchergebnisse verringert",
+                "name": "Kompaktmodus"
+            },
+            "fullCompendiumJournalIndex": {
+                "hint": "Beziehen Sie Seiten und Überschriften in die Indexierung von Kompendium-Journalen ein. \nDadurch verlängert sich die Initialisierungszeit des Index. \nEs wird empfohlen, dies zu deaktivieren, wenn Sie über eine große Anzahl von Zeitschriftenkompendien verfügen.",
+                "name": "Vollständiger Compendium Journal Index"
+            },
+            "useHistory": {
+                "hint": "Nutzen Sie den Suchverlauf, um frühere Suchvorgänge vorzuschlagen",
+                "name": "Verwenden Sie den Suchverlauf"
+            },
+            "useMetricForLights": {
+                "hint": "Verwenden Sie schnelle Lichteffekte in metrischen Einheiten",
+                "name": "Verwenden Sie Metrik für Lichter"
             }
         },
         "special": {
@@ -124,7 +142,8 @@
             "timer": {
                 "name": "Timer",
                 "timeLeft": "Übrige Zeit",
-                "local-keyword": "Timer"
+                "local-keyword": "Timer",
+                "expired": "Timer abgelaufen!"
             },
             "tracker": {
                 "name": "Erfolgs-/Misserfolgs-Tracker",
@@ -143,7 +162,22 @@
             "restore": {
                 "description": "Stellen Sie den vollen Zustand der ausgewählten Token wieder her",
                 "name": "Wiederherstellen"
+            },
+            "attribute": {
+                "name": "Attribut"
+            },
+            "darkness": {
+                "dawn": "Dämmerung",
+                "day": "Tag",
+                "dusk": "Dämmerung",
+                "night": "Nacht"
+            },
+            "reindex": {
+                "description": "Erstellen Sie den Suchindex für Spotlight Omnisearch neu",
+                "name": "Index"
             }
-        }
+        },
+        "recent-searches": "Aktuelle Suchanfragen",
+        "recent-tooltip": "Letzte Suchanfragen löschen"
     }
 }

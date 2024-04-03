@@ -366,7 +366,8 @@ export class Spotlight extends Application {
                 "special-app": [],
                 "recent-searches": [],
             };
-            const recent = getSetting("recent") ?? [];
+            const useHistory = getSetting("useHistory")
+            const recent = useHistory ? getSetting("recent") ?? [] : [];
             const recentHeader = document.createElement("li");
             recentHeader.classList.add("type-header");
             recentHeader.style.justifyContent = "space-between";

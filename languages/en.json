@@ -67,6 +67,10 @@
                 "name": "Search Compendium",
                 "hint": "Include compendium search results"
             },
+            "fullCompendiumJournalIndex": {
+                "name": "Full Compendium Journal Index",
+                "hint": "Include pages and headers in compendium journal indexing. This will increase the initialization time of the index. It's recommended to disable this if you have a large number of journal compendiums."
+            },
             "searchSidebar": {
                 "name": "Search Sidebar",
                 "hint": "Include sidebar tab search results"
