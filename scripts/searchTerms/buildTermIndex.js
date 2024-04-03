@@ -116,7 +116,6 @@ async function buildCompendiumIndex() {
             if (pack.documentName === "JournalEntry" && fullCompendiumJournalIndex) {
 
                 const document = await pack.getDocument(entry._id);
-                    console.log("indexing journal pages", document)
                     const actions = [];
                     document.pages.forEach((page) => {
                         actions.push({
