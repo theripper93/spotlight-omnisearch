@@ -112,9 +112,11 @@ async function buildCompendiumIndex() {
             }),
         );
 
-        packIndex.forEach((entry) => {
+        for(const entry of packIndex) {
             if (pack.documentName === "JournalEntry" && fullCompendiumJournalIndex) {
-                pack.getDocument(entry._id).then(async (document) => {
+
+                const document = await pack.getDocument(entry._id);
+                    console.log("indexing journal pages", document)
                     const actions = [];
                     document.pages.forEach((page) => {
                         actions.push({
@@ -186,7 +188,6 @@ async function buildCompendiumIndex() {
                             },
                         }),
                     );
-                });
             } else {
                 index.push(
                     new BaseSearchTerm({
@@ -204,7 +205,7 @@ async function buildCompendiumIndex() {
                     }),
                 );
             }
-        });
+        }
     }
     //sort index by type
     index.sort((a, b) => a.type.localeCompare(b.type));
