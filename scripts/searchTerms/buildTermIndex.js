@@ -594,7 +594,7 @@ async function buildStatusEffects() {
 
 async function buildModuleIntegration() {
     //dfreds
-    if (game.dfreds) {
+    if (game.modules.get("dfreds-convenient-effects")?.active && game.dfreds?.effects?.all) {
         const allEffects = game.dfreds.effects.all;
         const moduleName = game.modules.get("dfreds-convenient-effects").title;
         for (const effect of allEffects) {
