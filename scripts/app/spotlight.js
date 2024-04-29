@@ -12,11 +12,16 @@ let LAST_SEARCH = { query: "", filters: [] };
 let LAST_INPUT_TIME = 0;
 
 export class Spotlight extends Application {
-    constructor({ first, toTaskbar } = {}) {
+    constructor({ first, toTaskbar, isPrompt, promptOptions } = {}) {
         super();
         SPOTLIGHT_WIDTH = getSetting("spotlightWidth") || 700;
+        this.promise = new Promise((resolve) => {
+            this._resolve = resolve;
+        });
         this.first = first;
         this.toTaskbar = toTaskbar;
+        this.isPrompt = isPrompt;
+        this.promptOptions = promptOptions;
         this.ACTOR_ITEMS_INDEX = [];
         ui.spotlightOmnisearch?.close();
         ui.spotlightOmnisearch = this;
@@ -157,6 +162,7 @@ export class Spotlight extends Application {
         }
         if (getSetting("alwaysOnTop")) html.closest("#spotlight").style.zIndex = "9999 !important";
         if (this.first) html.querySelector("input").value = "?";
+        if (this.promptOptions.query) html.querySelector("input").value = this.promptOptions.query;
         this._onSearch();
     }
 
@@ -496,10 +502,11 @@ export class Spotlight extends Application {
         }, 1);
     }
 
-    async close(...args) {
+    async close(options = {}) {
         ui.spotlightOmnisearch = null;
+        this._resolve(options.result);
         document.removeEventListener("mousedown", Spotlight.onClickAway);
-        return super.close(...args);
+        return super.close(options);
     }
 
     static toTaskbar({ left, bottom }) {
@@ -544,6 +551,7 @@ class SearchItem {
         if (!getSetting("showImages")) this.img = null;
         this.icon = Array.isArray(searchTerm.icon) ? searchTerm.icon : [searchTerm.icon];
         this.element = document.createElement("li");
+        this.element._searchItem = this;
         this.element.classList.add("search-item", ...this.type.split(" "));
         if (this.icon.length > 1) {
             this.element.classList.add("multi-icons");
@@ -555,7 +563,8 @@ class SearchItem {
 
     addElementListeners() {
         this.element.addEventListener("click", (e) => {
-            if(!this.isSpecialApp) updateRecent(this.name);
+            if (!this.isSpecialApp) updateRecent(this.name);
+            if(ui.spotlightOmnisearch.isPrompt) return ui.spotlightOmnisearch.close({ result: this.searchTerm });
             this.searchTerm.onClick?.(e, this.searchTerm);
         });
         this.setDraggable();

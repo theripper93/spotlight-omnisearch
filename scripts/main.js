@@ -17,6 +17,16 @@ Hooks.on("init", () => {
         INDEX: INDEX,
         SearchTerm: BaseSearchTerm,
         rebuildIndex: () => buildIndex(true),
+        prompt: async (options = {query : ""}) => {
+            if (!game.user.isGM && getSetting("gmOnly")) return null;
+            const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+            if (current) {
+                current.close();
+            }
+            const spotlight = new Spotlight({promptOptions: options, isPrompt: true});
+            spotlight.render(true);
+            return spotlight.promise;
+        },
     };
     //setup a getter for the typo in the api config
     Object.defineProperty(CONFIG, "SpotlightOmniseach", {
