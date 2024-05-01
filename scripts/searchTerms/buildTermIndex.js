@@ -227,7 +227,7 @@ async function buildCollections() {
         if (exclude.includes(collection.documentName)) continue;
         const documents = Array.from(collection);
         documents.forEach((document) => {
-            if (!document.isOwner) return;
+            if (!document.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)) return;
             const keywords = [];
             let description = "";
             let extraType = "";
@@ -235,6 +235,7 @@ async function buildCollections() {
             const actions = [];
             if (collection.documentName === "JournalEntry") {
                 document.pages.forEach((page) => {
+                    if(!page.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)) return;
                     actions.push({
                         name: page.name,
                         icon: `<i class="fa-solid fa-file-lines"></i>`,
