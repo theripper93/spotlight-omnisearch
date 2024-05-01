@@ -162,7 +162,7 @@ export class Spotlight extends Application {
         }
         if (getSetting("alwaysOnTop")) html.closest("#spotlight").style.zIndex = "9999 !important";
         if (this.first) html.querySelector("input").value = "?";
-        if (this.promptOptions.query) html.querySelector("input").value = this.promptOptions.query;
+        if (this.promptOptions?.query) html.querySelector("input").value = this.promptOptions.query;
         this._onSearch();
     }
 
