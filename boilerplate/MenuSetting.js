@@ -6,7 +6,10 @@ export class MenuSetting extends FormApplication {
     }
 
     static get APP_ID() {
-        return this.name.split(/(?=[A-Z])/).join('-').toLowerCase();
+        return this.name
+            .split(/(?=[A-Z])/)
+            .join("-")
+            .toLowerCase();
     }
 
     get APP_ID() {
@@ -22,7 +25,7 @@ export class MenuSetting extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: this.APP_ID,
             template: `modules/${MODULE_ID}/templates/${this.APP_ID}.hbs`,
             popOut: true,

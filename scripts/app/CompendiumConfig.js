@@ -25,7 +25,7 @@ export class CompendiumConfig extends FormApplication {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: this.APP_ID,
             template: `modules/${MODULE_ID}/templates/${this.APP_ID}.hbs`,
             popOut: true,
@@ -47,7 +47,7 @@ export class CompendiumConfig extends FormApplication {
                 id,
                 checked: sett[id] ?? true,
                 name: compendium.metadata.label,
-                package:  (compendium.metadata.packageType === "system" ? game.system.title : game.modules.get(compendium.metadata.packageName)?.title) ?? game.i18n.localize("PACKAGE.Type.world"),
+                package: (compendium.metadata.packageType === "system" ? game.system.title : game.modules.get(compendium.metadata.packageName)?.title) ?? game.i18n.localize("PACKAGE.Type.world"),
             });
         }
 

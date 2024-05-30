@@ -30,8 +30,8 @@ export class Spotlight extends Application {
                 this._onSearch();
             }
         });
-        this._onSearch = debounce(this._onSearch, 167);
-        this.updateStoredPosition = debounce(this.updateStoredPosition, 167);
+        this._onSearch = foundry.utils.debounce(this._onSearch, 167);
+        this.updateStoredPosition = foundry.utils.debounce(this.updateStoredPosition, 167);
         document.addEventListener("mousedown", Spotlight.onClickAway);
         this.indexActorItems();
     }
@@ -48,7 +48,7 @@ export class Spotlight extends Application {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: this.APP_ID,
             template: `modules/${MODULE_ID}/templates/${this.APP_ID}.hbs`,
             popOut: true,
@@ -69,7 +69,6 @@ export class Spotlight extends Application {
 
     indexActorItems() {
         const actors = canvas?.tokens?.controlled.map((token) => token.actor) ?? [];
-        const typeLocalized = game.i18n.localize("DOCUMENT.Item") + " " + "owned";
         if (_token && !actors.includes(_token.actor)) actors.push(_token.actor);
         if (!actors.includes(game.user.character)) actors.push(game.user.character);
         for (const actor of actors) {
@@ -324,7 +323,7 @@ export class Spotlight extends Application {
         if (hasFilters) {
             const matchedFilters = FILTERS.filter((f) => f.startsWith(filters[0]));
             const suggestionText = `${matchedFilters.join(" / ")}`.replace(filters[0], "");
-            inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`
+            inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`;
         }
         if (hasFilters && hasSpace) {
             const filtersContainer = this._html.querySelector(".filters-container");
@@ -372,7 +371,7 @@ export class Spotlight extends Application {
                 "special-app": [],
                 "recent-searches": [],
             };
-            const useHistory = getSetting("useHistory")
+            const useHistory = getSetting("useHistory");
             const recent = useHistory ? getSetting("recent") ?? [] : [];
             const recentHeader = document.createElement("li");
             recentHeader.classList.add("type-header");
@@ -398,7 +397,7 @@ export class Spotlight extends Application {
             const list = this._html.querySelector("#search-result");
             list.innerHTML = "";
             for (const [type, typeResults] of Object.entries(types)) {
-                if(!typeResults.length) continue;
+                if (!typeResults.length) continue;
                 //sort typeResults by name, then bring to the top the ones that start with the query
                 const sortedTypeResults = [];
                 const doesNotStartWithQuery = [];
@@ -418,7 +417,7 @@ export class Spotlight extends Application {
                     .replace(/([a-z])([A-Z])/g, "$1 $2");
 
                 typeHeader.classList.add("type-header");
-                if(type === "recent-searches") typeHeader = recentHeader;
+                if (type === "recent-searches") typeHeader = recentHeader;
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
                 sortedTypeResults.forEach((result) => {
                     if (!suggestionAdded) {
@@ -564,7 +563,7 @@ class SearchItem {
     addElementListeners() {
         this.element.addEventListener("click", (e) => {
             if (!this.isSpecialApp) updateRecent(this.name);
-            if(ui.spotlightOmnisearch.isPrompt) return ui.spotlightOmnisearch.close({ result: this.searchTerm });
+            if (ui.spotlightOmnisearch.isPrompt) return ui.spotlightOmnisearch.close({ result: this.searchTerm });
             this.searchTerm.onClick?.(e, this.searchTerm);
         });
         this.setDraggable();
@@ -694,7 +693,7 @@ class SearchItem {
             const button = document.createElement("button");
             button.innerHTML = action.icon + " " + game.i18n.localize(action.name);
             button.addEventListener("click", (e) => {
-                if(!this.isSpecialApp) updateRecent(this.name);
+                if (!this.isSpecialApp) updateRecent(this.name);
                 e.preventDefault();
                 e.stopPropagation();
                 action.callback(e);
@@ -742,7 +741,6 @@ class SearchItem {
         }
     }
 }
-
 
 function updateRecent(name) {
     const useHistory = getSetting("useHistory");
