@@ -23,7 +23,7 @@ export async function buildIndex(force = false) {
     }
     if (indexBuilt) return;
     indexBuilt = true;
-    
+
     if (ui.spotlightOmnisearch?._html) {
         const faSearch = ui.spotlightOmnisearch._html.querySelector(".fa-search");
         if (faSearch) {
@@ -32,7 +32,7 @@ export async function buildIndex(force = false) {
             faSearch.classList.add("fa-spinner");
         }
     }
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    
     await initSpecialSearches();
     await buildModuleIntegration();
     await buildWeatherEffects();
