@@ -25,11 +25,6 @@ export class Spotlight extends Application {
         this.ACTOR_ITEMS_INDEX = [];
         ui.spotlightOmnisearch?.close();
         ui.spotlightOmnisearch = this;
-        buildIndex().then((r) => {
-            if (r) {
-                this._onSearch();
-            }
-        });
         this._onSearch = foundry.utils.debounce(this._onSearch, 167);
         this.updateStoredPosition = foundry.utils.debounce(this.updateStoredPosition, 167);
         document.addEventListener("mousedown", Spotlight.onClickAway);
@@ -115,9 +110,17 @@ export class Spotlight extends Application {
 
     activateListeners(html) {
         super.activateListeners(html);
+
         html = html[0] ?? html;
         const windowApp = html.closest("#spotlight");
         this._html = html;
+        
+        buildIndex().then((r) => {
+            if (r) {
+                this._onSearch();
+            }
+        });
+
         if (this.toTaskbar) {
             windowApp.classList.add("to-taskbar");
         }
