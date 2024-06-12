@@ -327,6 +327,7 @@ async function buildSettings() {
         isMenu = isMenu === true ? true : false;
         if (!setting.name || (!setting.config && !isMenu) || setting.config === false) return;
         if (!game.user.isGM && setting.scope === "world") return;
+        if (!game.user.isGM && setting.restricted) return;
         let toggle = "";
         if (setting.type === Boolean) {
             toggle = () => {
