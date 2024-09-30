@@ -595,8 +595,8 @@ async function buildStatusEffects() {
 
 async function buildModuleIntegration() {
     //dfreds
-    if (game.modules.get("dfreds-convenient-effects")?.active && game.dfreds?.effects?.all) {
-        const allEffects = game.dfreds.effects.all;
+    if (game.modules.get("dfreds-convenient-effects")?.active) {
+        const allEffects = game.dfreds.effectInterface.findEffects();
         const moduleName = game.modules.get("dfreds-convenient-effects").title;
         for (const effect of allEffects) {
             INDEX.push(
@@ -609,7 +609,7 @@ async function buildModuleIntegration() {
                     img: effect.img,
                     icon: ["fas fa-hand-sparkles", "fas fa-bolt"],
                     onClick: async function () {
-                        game.dfreds.effectInterface.toggleEffect(effect.name);
+                        game.dfreds.effectInterface.toggleEffect({effectId: effect.id});
                     },
                 }),
             );
