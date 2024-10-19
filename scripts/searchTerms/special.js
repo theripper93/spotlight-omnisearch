@@ -82,8 +82,8 @@ export async function initSpecialSearches() {
             name: function (search) {
                 //remove all spaces
                 let query = search.query.replaceAll(" ", "");
-                //check if the query contains a number and a unit
-                const numberPart = query.match(/[\d.]+/)?.[0];
+                //check if the query contains a number and a unit, the number should be matched for plus and minus signs as well
+                const numberPart = query.match(/[\d+-.]+/)?.[0];
                 //alpha part should also include the ° symbol
                 const alphaPart = query.match(/[a-zA-Z°]+/)?.[0];
                 const closestUnit = UNITS.find((unit) => alphaPart === unit) ?? UNITS.find((unit) => alphaPart.includes(unit));
@@ -91,7 +91,7 @@ export async function initSpecialSearches() {
                     const value = parseFloat(numberPart);
                     const unit = closestUnit;
                     const converted = UNITS_MAPPING[unit](value);
-                    let convertedValue = converted.match(/[\d.]+/)?.[0];
+                    let convertedValue = converted.match(/[\d+-.]+/)?.[0];
                     const convertedUnit = converted.match(/[a-zA-Z°]+/)?.[0];
                     //round to 2 decimal places
                     if (convertedValue) convertedValue = parseFloat(convertedValue).toFixed(2);
