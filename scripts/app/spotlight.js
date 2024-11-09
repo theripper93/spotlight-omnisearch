@@ -618,6 +618,7 @@ class SearchItem {
 
     getActions() {
         const actions = [...this.actions] ?? [];
+        const isCompendiumDocument = this.data.uuid?.includes("Compendium");
         if (this.type.includes(localizations.MACRO)) {
             actions.push({
                 name: `${MODULE_ID}.actions.execute`,
@@ -626,7 +627,7 @@ class SearchItem {
                     (await fromUuid(this.data.uuid)).execute();
                 },
             });
-        } else if (this.type == localizations.SCENE) {
+        } else if (this.type == localizations.SCENE && !isCompendiumDocument) {
             actions.push(
                 {
                     name: `${MODULE_ID}.actions.view`,
@@ -661,7 +662,7 @@ class SearchItem {
             });
         } else if (this.type.includes(localizations.PLAYLIST)) {
             const playlist = fromUuidSync(this.data.uuid);
-            if (playlist) {
+            if (playlist && !isCompendiumDocument) {
                 if (playlist.playing) {
                     actions.push({
                         name: `${MODULE_ID}.actions.stop-playlist`,
