@@ -497,9 +497,9 @@ export async function initSpecialSearches() {
                         light: {
                             alpha: 0.5,
                             angle: 360,
-                            bright: 20,
+                            bright: 20 * conversionRatio,
                             coloration: 1,
-                            dim: 40,
+                            dim: 40 * conversionRatio,
                             luminosity: 0.5,
                             saturation: 0,
                             contrast: 0,
