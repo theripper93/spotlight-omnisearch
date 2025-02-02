@@ -1,5 +1,5 @@
 import {MODULE_ID} from "./main";
-import { getSetting } from "./settings";
+import { getSetting, setSetting } from "./settings";
 
 let interval = null;
 
@@ -13,7 +13,6 @@ export function updateTimerInterval() {
     }
     //set the interval
     interval = setInterval(() => {
-        console.log("Updating timer interval");
         const timestampNow = Date.now();
         const isExpired = timestampNow > intervalSetting;
         if (isExpired) {
@@ -23,6 +22,9 @@ export function updateTimerInterval() {
                 speaker: {alias: "Timer"},
                 whisper: ChatMessage.getWhisperRecipients("GM"),
             });
+            const appData = getSetting("appData");
+            appData.timer = null;
+            setSetting("appData", appData);
             return;
         }
     }, 1000);
