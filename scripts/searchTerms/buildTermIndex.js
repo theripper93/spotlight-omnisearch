@@ -386,7 +386,7 @@ async function buildSettings() {
         let description = "";
         const bindings = game.keybindings.bindings.get(key);
         bindings.forEach((b) => {
-            description += `<span class="key">${KeybindingsConfig._humanizeBinding(b)}</span>`;
+            description += `<span class="key">${foundry.applications.sidebar.apps.ControlsConfig.humanizeBinding(b)}</span>`;
         });
         if (binding.hint) description += game.i18n.localize(binding.hint);
         index.push(
