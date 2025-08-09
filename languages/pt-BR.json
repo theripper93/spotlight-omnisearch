@@ -7,8 +7,8 @@
                 "label": "Configurar Compêndios"
             },
             "gmOnly": {
-                "name": "Apenas MJ",
-                "hint": "Apenas o MJ pode abrir o Spotlight Omnisearch."
+                "name": "Apenas Mestre",
+                "hint": "Apenas o mestre poderá abrir o Spotlight Omnisearch."
             },
             "darkMode": {
                 "name": "Modo Escuro",
@@ -56,28 +56,28 @@
                 "hint": "Exibe imagens em resultados de pesquisa. Imagens aumentam o tempo de carregamento dos resultados e podem resultar em falhas, dependendo do número de resultados e do tamanho das imagens."
             },
             "searchFiles": {
-                "name": "Procurar Arquivos",
+                "name": "Incluir Arquivos",
                 "hint": "Inclui resultado de pesquisa de arquivos (requer 'File Index' do módulo 'Dig Down')."
             },
             "searchSettings": {
-                "name": "Configurações de Pesquisa",
+                "name": "Incluir Configurações",
                 "hint": "Inclui as configurações de jogo no resultado das pesquisas."
             },
             "searchCompendium": {
-                "name": "Procurar Compêndio",
-                "hint": "Inclui o compêndio no resultado das pesquisas."
+                "name": "Incluir Compêndios",
+                "hint": "Inclui os compêndios no resultado das pesquisas."
             },
             "fullCompendiumJournalIndex": {
-                "name": "Índice Completa de Compêndio de Diários",
-                "hint": "Inclui páginas e cabeçalhos na indexação do compêndio de diários. Isso aumentará o tempo de inicialização do índice. É recomendado desabilitar esta opção se você tiver um grande número de compêndios de diários."
+                "name": "Compêndios: Indexar Diários",
+                "hint": "Inclui páginas e cabeçalhos na indexação dos compêndios de diários. Isso aumentará o tempo de inicialização do índice. É recomendado desabilitar esta opção se você tiver um grande número de compêndios de diários."
             },
             "searchSidebar": {
-                "name": "Barra Lateral de Pesquisa",
-                "hint": "Inclui a barra lateral no resultado das pesquisas."
+                "name": "Incluir Barra Lateral",
+                "hint": "Inclui documentos das abas da barra lateral (Atores, Itens, Diários, etc) no resultado das pesquisas."
             },
             "searchUtils": {
-                "name": "Utilitários de Pesquisa",
-                "hint": "Inclui utilitários no resultado das pesquisas."
+                "name": "Incluir Utilitários",
+                "hint": "Inclui os botões da aba de Configurações de Jogo no resultado das pesquisas."
             },
             "useMetricForLights": {
                 "name": "Usar Metros para Luzes",
