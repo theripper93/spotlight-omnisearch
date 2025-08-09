@@ -58,7 +58,8 @@ export class BaseSearchTerm {
 
     match(query) {
         try {
-            return this.name.toLowerCase().includes(query) || this.keywords.some((keyword) => keyword.includes(query));
+            const cleanQuery = foundry.applications.ux.SearchFilter.cleanQuery(this.name);
+            return cleanQuery.toLowerCase().includes(query) || this.keywords.some((keyword) => keyword.includes(query));
         } catch (error) {
             console.error(`Error matching search term:`, this);
             console.error(error);
