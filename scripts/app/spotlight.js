@@ -193,7 +193,7 @@ export class Spotlight extends Application {
     _getFilters(query) {
         const filters = [];
         while (query.includes("!")) {
-            const filter = query.match(/^!(\w+)/g);
+            const filter = query.match(/^!(\S+)/g);
             if (filter) {
                 filters.push(filter[0].replace("!", "").toLowerCase());
                 query = query.replace(filter[0], "").trim();
@@ -438,6 +438,8 @@ export class Spotlight extends Application {
             this.setPosition({ height: "auto" });
             input.placeholder = "";
         };
+
+        query = foundry.applications.ux.SearchFilter.cleanQuery(query);
         //match special searches
         for (const search of SPECIAL_SEARCHES) {
             search.query = query;
