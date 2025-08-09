@@ -219,7 +219,7 @@ async function buildCollections() {
 
     const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
 
-    const playerLocalized = game.i18n.localize("ACTOR.TypeCharacterPl");
+    const playerLocalized = game.i18n.localize("PLAYERS.Title");
 
     for (const collection of collections) {
         const localizedCollectionName = game.i18n.localize(`DOCUMENT.${collection.documentName}`);
@@ -379,7 +379,7 @@ async function buildSettings() {
     };
     game.settings.menus.forEach((s) => processSetting(s, true));
     game.settings.settings.forEach(processSetting);
-    const localizedKeybindingsName = game.i18n.localize("SETTINGS.Keybindings");
+    const localizedKeybindingsName = game.i18n.localize("spotlight-omnisearch.KEYBINDING");
     game.keybindings.actions.forEach((binding, key) => {
         if (!game.user.isGM && binding.restricted) return;
         const name = game.i18n.localize(binding.name);
@@ -678,8 +678,8 @@ async function buildWeatherEffects() {
                 new BaseSearchTerm({
                     name: game.i18n.localize(FXMEffect.label),
                     description: FXMEffect.description,
-                    keywords: [game.i18n.localize("SCENES.WeatherEffect")],
-                    type: "fxmaster " + game.i18n.localize("SCENES.WeatherEffect"),
+                    keywords: [game.i18n.localize("SCENE.FIELDS.weather.label")],
+                    type: "fxmaster " + game.i18n.localize("SCENE.FIELDS.weather.label"),
                     img: FXMEffect.icon,
                     icon: ["fas fa-wand-magic-sparkles", "fas fa-cloud-rain"],
                     onClick: async function () {
@@ -697,8 +697,8 @@ async function buildWeatherEffects() {
                 new BaseSearchTerm({
                     name: game.i18n.localize(effect.label),
                     description: effect.description,
-                    keywords: [game.i18n.localize("SCENES.WeatherEffect")],
-                    type: game.i18n.localize("SCENES.WeatherEffect"),
+                    keywords: [game.i18n.localize("SCENE.FIELDS.weather.label")],
+                    type: game.i18n.localize("SCENE.FIELDS.weather.label"),
                     icon: ["fas fa-map", "fas fa-cloud-sun-rain"],
                     onClick: async function () {
                         const currentSceneWeather = game.scenes.viewed.weather;

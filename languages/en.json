@@ -1,5 +1,6 @@
 {
     "spotlight-omnisearch": {
+        "KEYBINDING": "Keybinding",
         "settings": {
             "compendiumConfig": {
                 "name": "Compendium Configuration",
