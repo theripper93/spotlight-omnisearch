@@ -1,7 +1,7 @@
-import { BaseSearchTerm } from "./baseSearchTerm";
-import { getSetting } from "../settings";
-import { initSpecialSearches } from "./special";
 import { MODULE_ID } from "../main";
+import { getSetting } from "../settings";
+import { BaseSearchTerm } from "./baseSearchTerm";
+import { initSpecialSearches } from "./special";
 
 const IMAGE = Object.keys(CONST.IMAGE_FILE_EXTENSIONS);
 const AUDIO = Object.keys(CONST.AUDIO_FILE_EXTENSIONS);
@@ -32,7 +32,7 @@ export async function buildIndex(force = false) {
             faSearch.classList.add("fa-spinner");
         }
     }
-    
+
     await initSpecialSearches();
     await buildModuleIntegration();
     await buildWeatherEffects();
@@ -76,12 +76,13 @@ export async function buildIndex(force = false) {
 
 function createDocumentTypeTypeString(documentName, documentType) {
     if (!documentType) return "";
-    documentName = documentName.toUpperCase();
-    //capitalize first letter of documentType
-    documentType = documentType.charAt(0).toUpperCase() + documentType.slice(1);
-    const localKey = `${documentName}.Type${documentType}`;
-    const localized = game.i18n.localize(localKey);
-    return localized !== localKey ? ` ${localized}` : ` ${documentType}`;
+    const capitalizedType = documentType.capitalize();
+    const validLocStrings = [`${documentName.toUpperCase()}.Type${capitalizedType}`, `TYPES.${documentName}.${documentType}`];
+    for (const str of validLocStrings) {
+        const loc = game.i18n.localize(str);
+        if (str !== loc) return loc;
+    }
+    return capitalizedType;
 }
 
 async function buildCompendiumIndex() {
