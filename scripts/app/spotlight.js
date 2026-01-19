@@ -4,6 +4,7 @@ import { SPECIAL_SEARCHES } from "../searchTerms/special.js";
 import { INDEX, FILE_INDEX, buildIndex, FILTERS } from "../searchTerms/buildTermIndex.js";
 import { getSetting, setSetting } from "../settings.js";
 import { BaseSearchTerm } from "../searchTerms/baseSearchTerm.js";
+import { HandlebarsApplication, mergeClone } from "../lib/utils.js";
 
 let SPOTLIGHT_WIDTH = 700;
 
@@ -11,7 +12,7 @@ let LAST_SEARCH = { query: "", filters: [] };
 
 let LAST_INPUT_TIME = 0;
 
-export class Spotlight extends Application {
+export class Spotlight extends HandlebarsApplication {
     constructor({ first, toTaskbar, isPrompt, promptOptions } = {}) {
         super();
         SPOTLIGHT_WIDTH = getSetting("spotlightWidth") || 700;
@@ -30,29 +31,16 @@ export class Spotlight extends Application {
         document.addEventListener("mousedown", Spotlight.onClickAway);
         this.indexActorItems();
     }
-
-    static get APP_ID() {
-        return this.name
-            .split(/(?=[A-Z])/)
-            .join("-")
-            .toLowerCase();
-    }
-
-    get APP_ID() {
-        return this.constructor.APP_ID;
-    }
-
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            id: this.APP_ID,
-            template: `modules/${MODULE_ID}/templates/${this.APP_ID}.hbs`,
-            popOut: true,
-            resizable: false,
-            minimizable: false,
-            width: SPOTLIGHT_WIDTH,
-            top: window.innerHeight / 4,
+    static get DEFAULT_OPTIONS() {
+        return mergeClone(super.DEFAULT_OPTIONS, {
             classes: getSetting("compactMode") ? ["compact"] : [],
-            title: game.i18n.localize(`${MODULE_ID}.${this.APP_ID}.title`),
+            window: {
+                title: `${MODULE_ID}.${this.APP_ID}.title`,
+            },
+            position: {
+                width: SPOTLIGHT_WIDTH,
+                height: "auto",
+            },
         });
     }
 
@@ -61,6 +49,10 @@ export class Spotlight extends Application {
         if (event.target.closest("#spotlight")) return;
         ui.spotlightOmnisearch?.close();
     }
+
+    // get classList() {
+    //     return super.classList.concat(getSetting("compactMode") ? ["compact"] : [])
+    // }
 
     indexActorItems() {
         const actors = canvas?.tokens?.controlled.map((token) => token.actor) ?? [];
@@ -96,7 +88,7 @@ export class Spotlight extends Application {
         }
     }
 
-    async getData() {
+    async _prepareContext(options) {
         const appData = getSetting("appData");
         const saveLastSearch = getSetting("saveLastSearch");
         if (!saveLastSearch) LAST_SEARCH = { query: "", filters: [] };
@@ -108,10 +100,10 @@ export class Spotlight extends Application {
         return { first: this.first, lastSearch: LAST_SEARCH.query };
     }
 
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
 
-        html = html[0] ?? html;
+        const html = this.element;
         const windowApp = html.closest("#spotlight");
         this._html = html;
         
@@ -148,7 +140,6 @@ export class Spotlight extends Application {
             //focus the input
             html.querySelector("input").focus();
         }, 50);
-        if (getSetting("darkMode")) html.closest("#spotlight").classList.add("dark");
 
         html.closest("#spotlight").classList.add("force-opacity");
         setTimeout(() => {
@@ -169,16 +160,16 @@ export class Spotlight extends Application {
     }
 
     setPosition(...args) {
-        if (!this.element[0]) return;
+        if (!this.element) return;
         super.setPosition(...args);
         //get max availeble vertical space
         const windowApp = this._html.closest("#spotlight");
         const top = windowApp.getBoundingClientRect().top;
         const searchHeight = 100;
         const maxHeight = window.innerHeight - top - searchHeight;
-        const prev = this._html.querySelector("section").style.maxHeight;
-        this._html.querySelector("section").style.maxHeight = `${maxHeight}px`;
-        if (prev !== this._html.querySelector("section").style.maxHeight) {
+        const prev = this._html.querySelector(".search-section").style.maxHeight;
+        this._html.querySelector(".search-section").style.maxHeight = `${maxHeight}px`;
+        if (prev !== this._html.querySelector(".search-section").style.maxHeight) {
             const hasTaskbar = windowApp.classList.contains("to-taskbar");
             windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3 || hasTaskbar);
             this.setPosition({ height: "auto" });
@@ -326,7 +317,12 @@ export class Spotlight extends Application {
         if (hasFilters) {
             const matchedFilters = FILTERS.filter((f) => f.startsWith(filters[0]));
             const suggestionText = `${matchedFilters.join(" / ")}`.replace(filters[0], "");
-            inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`;
+            const inputSpacer = document.createElement("span");
+            inputSpacer.classList.add("input-spacer");
+            inputSpacer.innerText = input.value;
+            inputSuggestion.appendChild(inputSpacer);
+            inputSuggestion.innerHTML += suggestionText;
+            // inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`;
         }
         if (hasFilters && hasSpace) {
             const filtersContainer = this._html.querySelector(".filters-container");
@@ -358,7 +354,7 @@ export class Spotlight extends Application {
             query,
             filters,
         };
-        const section = this._html.querySelector("section");
+        const section = this._html.querySelector(".search-section");
         const isActiveTimer = !!getSetting("appData").timer;
         section.classList.toggle("no-results", !query && !isActiveTimer && !hasFilters);
         if (!query && !isActiveTimer && !hasFilters) {
@@ -425,9 +421,21 @@ export class Spotlight extends Application {
                 sortedTypeResults.forEach((result) => {
                     if (!suggestionAdded) {
                         suggestionAdded = true;
-                        const tempSpan = document.createElement("div");
-                        tempSpan.innerHTML = result.name;
-                        inputSuggestion.innerHTML = !inputSuggestion.innerText ? `<span class="input-spacer">${input.value}</span>` + " " + tempSpan.innerText : inputSuggestion.innerText;
+                        if(inputSuggestion.innerText) {
+                            inputSuggestion.innerHTML = inputSuggestion.innerText;
+                        } else {
+                            // const tempSpan = document.createElement("div");
+                            // tempSpan.innerHTML = result.name;
+                            const inputSpacer = document.createElement("span");
+                            inputSpacer.classList.add("input-spacer");
+                            inputSpacer.innerText = input.value;
+                            inputSuggestion.appendChild(inputSpacer);
+                            inputSuggestion.innerHTML += " " + result.name;
+                        }
+
+                        // inputSuggestion.appendChild(inputSpacer);
+                        // inputSuggestion.innerHTML += " " + tempSpan.innerText;
+                        // inputSuggestion.innerHTML = !inputSuggestion.innerText ? `<span class="input-spacer">${input.value}</span>` + " " + tempSpan.innerText : inputSuggestion.innerText;
                     }
                     list.appendChild(result.element);
                 });

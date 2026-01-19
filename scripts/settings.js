@@ -11,15 +11,6 @@ export function registerSettings() {
             default: false,
             type: Boolean,
         },
-        darkMode: {
-            name: `${MODULE_ID}.settings.darkMode.name`,
-            hint: `${MODULE_ID}.settings.darkMode.hint`,
-            scope: "world",
-            config: true,
-            default: false,
-            type: Boolean,
-            onChange: (value) => ui.spotlightOmnisearch?._html.closest("#spotlight").classList.toggle("dark", value),
-        },
         compactMode: {
             name: `${MODULE_ID}.settings.compactMode.name`,
             hint: `${MODULE_ID}.settings.compactMode.hint`,
@@ -27,7 +18,7 @@ export function registerSettings() {
             config: true,
             default: false,
             type: Boolean,
-            onChange: (value) => ui.spotlightOmnisearch?._html.closest("#spotlight").classList.toggle("compact", value),
+            onChange: (value) => ui.spotlightOmnisearch?.classList.toggle("compact", value),
         },
         clickToDismiss: {
             name: `${MODULE_ID}.settings.clickToDismiss.name`,

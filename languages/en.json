@@ -11,10 +11,6 @@
                 "name": "GM Only",
                 "hint": "Only the GM can open the Spotlight Omnisearch"
             },
-            "darkMode": {
-                "name": "Dark Mode",
-                "hint": "Use a dark theme for the Spotlight Omnisearch"
-            },
             "compactMode": {
                 "name": "Compact Mode",
                 "hint": "Use a compact layout for the Spotlight Omnisearch. This will hide descriptions and reduce size of the search results"

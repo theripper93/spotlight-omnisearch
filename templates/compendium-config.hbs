@@ -1,4 +1,4 @@
-<form action="submit" style="display: flex; flex-direction: column;max-height: 100%;">
+<div style="display: flex; flex-direction: column;max-height: 100%;">
     <div class="compendium-grid"
         style="display: grid;grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));flex: 1;overflow-y: auto;">
 
@@ -6,7 +6,7 @@
 
         <fieldset>
             <legend>{{@key}}</legend>
-            <div class="flexrow">
+            <div class="flexrow form-footer">
                 <button type="button" class="check-all"><i class="fa-solid fa-check-square"></i> {{localize 'Select
                     All'}}</button>
                 <button type="button" class="uncheck-all"><i class="fa-solid fa-square"></i> {{localize 'Unselect
@@ -24,10 +24,4 @@
 
         {{/each}}
     </div>
-
-    <footer class="flexrow">
-        <button type="button" id="check-all"><i class="fa-solid fa-check-square"></i> {{localize 'Select All'}}</button>
-        <button type="button" id="uncheck-all"><i class="fa-solid fa-square"></i> {{localize 'Unselect All'}}</button>
-        <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize 'Save'}}</button>
-    </footer>
-</form>
+</div>

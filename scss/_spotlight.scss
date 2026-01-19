@@ -1,17 +1,25 @@
+.theme-light {
+    #spotlight {
+        --spotlight-list-highlight: #00000033;
+    }    
+}
+
 #spotlight {
     --spotlight-height: 50px;
+    --spotlight-list-highlight: var(--color-text-selection-bg);
 
-    --spotlight-text-color: var(--color-text-dark-primary);
-    --spotlight-background: rgb(255 255 255 / 40%);
-    --spotlight-border: grey;
-    --spotlight-button-bg: #0000001a;
-    --spotlight-button-hover: #00000029;
-    --spotlight-li-hover: #00000033;
-    --spotlight-border-hr: var(--color-border-dark-4);
-    --spotlight-scrollbar: var(--color-text-dark-4);
 
-    --spotlight-filter-bg: var(--spotlight-button-bg);
-    --spotlight-filter-border: var(--spotlight-border);
+    // --spotlight-text-color: var(--color-text-dark-primary);
+    // --spotlight-background: rgb(255 255 255 / 40%);
+    // --spotlight-border: grey;
+    // --spotlight-button-bg: #0000001a;
+    // --spotlight-button-hover: #00000029;
+    // --spotlight-li-hover: #00000033;
+    // --spotlight-border-hr: var(--color-border-dark-4);
+    // --spotlight-scrollbar: var(--color-text-dark-4);
+
+    // --spotlight-filter-bg: var(--spotlight-button-bg);
+    // --spotlight-filter-border: var(--spotlight-border);
 
 
     &.to-taskbar {
@@ -21,14 +29,14 @@
     }
 
     &.dark {
-        --spotlight-text-color: var(--color-text-light-4);
-        --spotlight-background: rgb(0 0 0 / 40%);
-        --spotlight-border: #2d2d2d;
-        --spotlight-button-bg: #ffffff1a;
-        --spotlight-button-hover: #ffffff29;
-        --spotlight-li-hover: #ffffff29;
-        --spotlight-border-hr: var(--color-border-light-4);
-        --spotlight-scrollbar: var(--color-text-light-4);
+        // --spotlight-text-color: var(--color-text-light-4);
+        // --spotlight-background: rgb(0 0 0 / 40%);
+        // --spotlight-border: #2d2d2d;
+        // --spotlight-button-bg: #ffffff1a;
+        // --spotlight-button-hover: #ffffff29;
+        // --spotlight-li-hover: #ffffff29;
+        // --spotlight-border-hr: var(--color-border-light-4);
+        // --spotlight-scrollbar: var(--color-text-light-4);
 
         .window-content::before {
             filter: none;
@@ -86,7 +94,7 @@
         flex: none;
         padding: 0 4px;
         min-width: 24px;
-        background: rgba(255, 255, 255, 0.25);
+        // background: rgba(255, 255, 255, 0.25);
         border: 1px solid var(--color-border-light-2);
         border-radius: 5px;
         box-shadow: 1px 1px #444;
@@ -96,12 +104,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-        background: var(--spotlight-scrollbar);
+        // background: var(--spotlight-scrollbar);
         border: none;
     }
 
     ::-webkit-scrollbar-track {
-        background: transparent;
+        // background: transparent;
         border: none;
     }
 
@@ -122,15 +130,17 @@
         z-index: 1;
 
         h4,
-        a {
+        a,
+        button {
             display: none;
         }
+
     }
 
     .window-content {
         margin: 0;
         padding: 0;
-        background: transparent;
+        // background: transparent;
         color: var(--spotlight-text-color);
         overflow: hidden;
 
@@ -141,9 +151,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--spotlight-background);
-            filter: brightness(3.0);
-            backdrop-filter: blur(10px);
+            // background: var(--spotlight-background);
+            // filter: brightness(3.0);
+            // backdrop-filter: blur(10px);
             z-index: -1;
         }
     }
@@ -189,7 +199,7 @@
             font-size: 1.2rem;
             padding: 0 0.3rem;
             border: 1px solid var(--spotlight-filter-border);
-            background: var(--spotlight-filter-bg);
+            // background: var(--spotlight-filter-bg);
             border-radius: 5px;
             text-transform: uppercase;
             font-weight: bold;
@@ -253,7 +263,9 @@
                 flex: 1;
                 border: none;
                 background: none;
-                color: var(--spotlight-text-color);
+                outline: none;
+                padding: 0 3px;
+                // color: var(--spotlight-text-color);
 
                 &.matched-filter {
                     color: var(--color-border-highlight);
@@ -276,7 +288,7 @@
             }
 
             #search-result {
-                list-style: none;
+                // list-style: none;
                 padding: 0;
                 margin: 0;
                 display: flex;
@@ -304,8 +316,10 @@
                     }
 
                     &:hover,
-                    &.selected {
-                        background: #00000033;
+                    &.selected {   
+                        // background: #00000033;
+                        background: var(--spotlight-list-highlight);
+                        // background: var(--color-shadow-primary);
                     }
 
                     img {
@@ -326,7 +340,7 @@
                             justify-content: center;
                             align-items: center;
                             width: auto;
-                            background: var(--spotlight-button-bg);
+                            // background: var(--spotlight-button-bg);
                             transition: all 0.2s ease-in-out;
                             border: none;
                             line-height: inherit;
@@ -345,7 +359,7 @@
                             &:hover,
                             &.selected {
                                 box-shadow: none;
-                                background: var(--spotlight-button-hover);
+                                // background: var(--spotlight-button-hover);
                             }
                         }
                     }
@@ -410,7 +424,7 @@
 
                     &.special-app {
                         border: 2px solid var(--color-border-dark-4);
-                        background: var(--spotlight-button-hover);
+                        // background: var(--spotlight-button-hover);
                         padding: 1rem;
                         border-radius: 10px;
                         margin-bottom: 1rem;

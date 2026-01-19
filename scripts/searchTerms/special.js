@@ -746,7 +746,7 @@ export async function initSpecialSearches() {
 
     SPECIAL_SEARCHES.push(
         new BaseSearchTerm({
-            name: game.i18n.localize(`SCENES.Darkness`),
+            name: game.i18n.localize(`SCENE.FIELDS.environment.darknessLevel.label`),
             description: "",
             keywords: [],
             actions: [
