@@ -20,7 +20,7 @@ Hooks.on("init", () => {
         rebuildIndex: () => buildIndex(true),
         prompt: async (options = {query : ""}) => {
             if (!game.user.isGM && getSetting("gmOnly")) return null;
-            const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+            const current = [...foundry.applications.instances.values()].find((w) => w instanceof Spotlight);
             if (current) {
                 current.close();
             }
@@ -54,7 +54,7 @@ Hooks.on("ready", () => {
         document.addEventListener("keydown", (e) => {
             if (e.ctrlKey && e.key === " ") {
                 if (!game.user.isGM && getSetting("gmOnly")) return;
-                const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+                const current = [...foundry.applications.instances.values()].find((w) => w instanceof Spotlight);
                 if (current) {
                     current.close();
                 } else {
@@ -74,7 +74,7 @@ Hooks.on("init", () => {
         precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
         onDown: (e) => {
             if (!game.user.isGM && getSetting("gmOnly")) return;
-            const current = Object.values(ui.windows).find((w) => w instanceof Spotlight);
+            const current = [...foundry.applications.instances.values()].find((w) => w instanceof Spotlight);
             if (current) {
                 current.close();
             } else {
