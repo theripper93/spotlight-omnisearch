@@ -26,6 +26,9 @@
         bottom: 50px !important;
         top: auto !important;
         max-height: 70vh !important;
+        .search-section {
+            max-height: 40vh;
+        }
     }
 
     &.dark {

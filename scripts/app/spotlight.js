@@ -19,6 +19,7 @@ export class Spotlight extends HandlebarsApplication {
         this.promise = new Promise((resolve) => {
             this._resolve = resolve;
         });
+        this.noTitleBar = true;
         this.first = first;
         this.toTaskbar = toTaskbar;
         this.isPrompt = isPrompt;
@@ -522,7 +523,7 @@ export class Spotlight extends HandlebarsApplication {
     }
 
     static toTaskbar({ left, bottom }) {
-        new Spotlight({ toTaskbar: left }).render(true, { left });
+        new Spotlight({ toTaskbar: left }).render({force: true, position: {left}});
     }
 }
 
