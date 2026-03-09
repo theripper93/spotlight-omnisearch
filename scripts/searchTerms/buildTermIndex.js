@@ -643,28 +643,6 @@ async function buildModuleIntegration() {
             }),
         );
     }
-
-    if (game.modules.get("mastercrafted")?.active) {
-        const recipeBooks = ui.RecipeApp._currentApp._recipeBooks;
-        for (const book of recipeBooks) {
-            for (const recipe of book.recipes) {
-                INDEX.push(
-                    new BaseSearchTerm({
-                        name: recipe.name,
-                        description: book.name,
-                        keywords: [],
-                        type: "mastercrafted recipe",
-                        data: {},
-                        img: recipe.img,
-                        icon: ["fas fa-book", "fas fa-hammer"],
-                        onClick: async function () {
-                            new ui.RecipeApp(null, null, recipe.name).render(true);
-                        },
-                    }),
-                );
-            }
-        }
-    }
 }
 
 async function buildWeatherEffects() {
