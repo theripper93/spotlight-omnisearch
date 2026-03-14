@@ -106,7 +106,7 @@ export class Spotlight extends HandlebarsApplication {
 
         const html = this.element;
         const windowApp = html.closest("#spotlight");
-        this._html = html;
+        // this.element = html;
         
         buildIndex().then((r) => {
             if (r) {
@@ -164,13 +164,13 @@ export class Spotlight extends HandlebarsApplication {
         if (!this.element) return;
         super.setPosition(...args);
         //get max availeble vertical space
-        const windowApp = this._html.closest("#spotlight");
+        const windowApp = this.element.closest("#spotlight");
         const top = windowApp.getBoundingClientRect().top;
         const searchHeight = 100;
         const maxHeight = window.innerHeight - top - searchHeight;
-        const prev = this._html.querySelector(".search-section").style.maxHeight;
-        this._html.querySelector(".search-section").style.maxHeight = `${maxHeight}px`;
-        if (prev !== this._html.querySelector(".search-section").style.maxHeight) {
+        const prev = this.element.querySelector(".search-section").style.maxHeight;
+        this.element.querySelector(".search-section").style.maxHeight = `${maxHeight}px`;
+        if (prev !== this.element.querySelector(".search-section").style.maxHeight) {
             const hasTaskbar = windowApp.classList.contains("to-taskbar");
             windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3 || hasTaskbar);
             this.setPosition({ height: "auto" });
@@ -197,7 +197,8 @@ export class Spotlight extends HandlebarsApplication {
     }
 
     _onKeyDown(event) {
-        const html = this._html;
+        const html = this.element;
+        if (!html) return;
         const inputTime = Date.now();
         const inputDelta = inputTime - LAST_INPUT_TIME;
         html.querySelector(".input-suggestion").innerText = "";
@@ -303,8 +304,9 @@ export class Spotlight extends HandlebarsApplication {
 
     _onSearch() {
         if (this.closing) return;
-        const input = this._html.querySelector("input");
-        const inputSuggestion = this._html.querySelector(".input-suggestion");
+        if (!this.element) return;
+        const input = this.element.querySelector("input");
+        const inputSuggestion = this.element.querySelector(".input-suggestion");
         let query = input.value.toLowerCase();
         query = convertFullWidthToRegular(query);
         const hasSpace = query.includes(" ");
@@ -326,7 +328,7 @@ export class Spotlight extends HandlebarsApplication {
             // inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`;
         }
         if (hasFilters && hasSpace) {
-            const filtersContainer = this._html.querySelector(".filters-container");
+            const filtersContainer = this.element.querySelector(".filters-container");
             filters.forEach((filter) => {
                 const filterElement = document.createElement("span");
                 const matchingFilters = FILTERS.filter((f) => f.startsWith(filter));
@@ -342,11 +344,11 @@ export class Spotlight extends HandlebarsApplication {
                 });
 
                 filtersContainer.appendChild(filterElement);
-                input.value = this._html.querySelector("input").value.replace(`!${filter}`, "").trim();
+                input.value = this.element.querySelector("input").value.replace(`!${filter}`, "").trim();
                 inputSuggestion.innerText = "";
             });
         }
-        const spanFilters = this._html.querySelectorAll(".filters-container .filter");
+        const spanFilters = this.element.querySelectorAll(".filters-container .filter");
         spanFilters.forEach((spanFilter) => {
             filters.push(spanFilter.dataset.filter);
         });
@@ -355,11 +357,11 @@ export class Spotlight extends HandlebarsApplication {
             query,
             filters,
         };
-        const section = this._html.querySelector(".search-section");
+        const section = this.element.querySelector(".search-section");
         const isActiveTimer = !!getSetting("appData").timer;
         section.classList.toggle("no-results", !query && !isActiveTimer && !hasFilters);
         if (!query && !isActiveTimer && !hasFilters) {
-            this._html.querySelector("#search-result").innerHTML = "";
+            this.element.querySelector("#search-result").innerHTML = "";
             this.setPosition({ height: "auto" });
             return;
         }
@@ -394,7 +396,7 @@ export class Spotlight extends HandlebarsApplication {
 
             let suggestionAdded = false;
 
-            const list = this._html.querySelector("#search-result");
+            const list = this.element.querySelector("#search-result");
             list.innerHTML = "";
             for (const [type, typeResults] of Object.entries(types)) {
                 if (!typeResults.length) continue;
@@ -511,7 +513,7 @@ export class Spotlight extends HandlebarsApplication {
 
     setDraggingState(toggle) {
         setTimeout(() => {
-            this._html.closest("#spotlight").classList.toggle("dragging", toggle);
+            this.element.closest("#spotlight").classList.toggle("dragging", toggle);
         }, 1);
     }
 

@@ -24,8 +24,8 @@ export async function buildIndex(force = false) {
     if (indexBuilt) return;
     indexBuilt = true;
 
-    if (ui.spotlightOmnisearch?._html) {
-        const faSearch = ui.spotlightOmnisearch._html.querySelector(".fa-search");
+    if (ui.spotlightOmnisearch?.element) {
+        const faSearch = ui.spotlightOmnisearch.element.querySelector(".fa-search");
         if (faSearch) {
             faSearch.classList.add("fa-spin");
             faSearch.classList.remove("fa-search");
@@ -62,8 +62,8 @@ export async function buildIndex(force = false) {
     filtersArray = Array.from(new Set(filtersArray));
     FILTERS.push(...filtersArray);
 
-    if (ui.spotlightOmnisearch?.rendered) {
-        const faSpinner = ui.spotlightOmnisearch._html.querySelector(".fa-spinner");
+    if (ui.spotlightOmnisearch?.element) {
+        const faSpinner = ui.spotlightOmnisearch.element.querySelector(".fa-spinner");
         if (faSpinner) {
             faSpinner.classList.remove("fa-spin");
             faSpinner.classList.remove("fa-spinner");
