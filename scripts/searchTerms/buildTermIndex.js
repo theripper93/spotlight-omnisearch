@@ -33,15 +33,69 @@ export async function buildIndex(force = false) {
         }
     }
 
-    await initSpecialSearches();
-    await buildModuleIntegration();
-    await buildWeatherEffects();
-    if (getSetting("searchSettings")) await buildSettings();
-    if (getSetting("searchUtils")) await buildSettingsTab();
-    if (getSetting("searchSidebar")) await buildCollections();
-    await buildStatusEffects();
-    if (getSetting("searchCompendium")) await buildCompendiumIndex();
-    if (getSetting("searchFiles")) await buildFiles();
+    try {
+        await initSpecialSearches();
+    } catch (e) {
+        console.error("Spotlight Omnisearch: Error building special searches:", e);
+    }
+
+    try {
+        await buildModuleIntegration();
+    } catch (e) {
+        console.error("Spotlight Omnisearch: Error building module integration:", e);
+    }
+
+    try {
+        await buildWeatherEffects();
+    } catch (e) {
+        console.error("Spotlight Omnisearch: Error building weather effects:", e);
+    }
+
+    if (getSetting("searchSettings")) {
+        try {
+            await buildSettings();
+        } catch (e) {
+            console.error("Spotlight Omnisearch: Error building settings:", e);
+        }
+    }
+
+    if (getSetting("searchUtils")) {
+        try {
+            await buildSettingsTab();
+        } catch (e) {
+            console.error("Spotlight Omnisearch: Error building settings tab:", e);
+        }
+    }
+
+    if (getSetting("searchSidebar")) {
+        try {
+            await buildCollections();
+        } catch (e) {
+            console.error("Spotlight Omnisearch: Error building collections:", e);
+        }
+    }
+
+    try {
+        await buildStatusEffects();
+    } catch (e) {
+        console.error("Spotlight Omnisearch: Error building status effects:", e);
+    }
+
+    if (getSetting("searchCompendium")) {
+        try {
+            await buildCompendiumIndex();
+        } catch (e) {
+            console.error("Spotlight Omnisearch: Error building compendium index:", e);
+        }
+    }
+
+    if (getSetting("searchFiles")) {
+        try {
+            await buildFiles();
+        } catch (e) {
+            console.error("Spotlight Omnisearch: Error building files:", e);
+        }
+    }
 
     const promises = [];
     Hooks.callAll("spotlightOmnisearch.indexBuilt", INDEX, promises);
@@ -573,7 +627,7 @@ function getFoldersRecursive(document, folders = []) {
 }
 
 async function buildStatusEffects() {
-    const effects = CONFIG.statusEffects;
+    const effects = Object.values(CONFIG.statusEffects);
     for (const effect of effects) {
         if (!effect.name) continue;
         INDEX.push(
