@@ -640,7 +640,7 @@ async function buildStatusEffects() {
                 icon: ["fas fa-earth-europe", "fas fa-bolt"],
                 onClick: async function () {
                     canvas.tokens.controlled.forEach((token) => {
-                        token.toggleEffect(effect);
+                        token.actor?.toggleStatusEffect(effect.id);
                     });
                 },
             }),
