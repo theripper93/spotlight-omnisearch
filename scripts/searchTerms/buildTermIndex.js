@@ -141,7 +141,7 @@ function createDocumentTypeTypeString(documentName, documentType) {
 
 async function buildCompendiumIndex() {
     const allowedCompendiums = getSetting("compendiumConfig");
-    const packs = Array.from(game.packs).filter((p) => (game.user.isGM || !p.private) && allowedCompendiums[p.metadata.id] !== false);
+    const packs = Array.from(game.packs).filter((p) => (game.user.isGM || p.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)) && allowedCompendiums[p.metadata.id] !== false);
     const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
     const fullCompendiumJournalIndex = getSetting("fullCompendiumJournalIndex");
     const index = [];
