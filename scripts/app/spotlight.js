@@ -12,6 +12,8 @@ let LAST_SEARCH = { query: "", filters: [] };
 
 let LAST_INPUT_TIME = 0;
 
+const MAX_RESULTS = 50;
+
 export class Spotlight extends HandlebarsApplication {
     constructor({ first, toTaskbar, isPrompt, promptOptions } = {}) {
         super();
@@ -27,6 +29,7 @@ export class Spotlight extends HandlebarsApplication {
         this.ACTOR_ITEMS_INDEX = [];
         ui.spotlightOmnisearch?.close();
         ui.spotlightOmnisearch = this;
+        this._searchNow = this._onSearch.bind(this);
         this._onSearch = foundry.utils.debounce(this._onSearch, 167);
         this.updateStoredPosition = foundry.utils.debounce(this.updateStoredPosition, 167);
         document.addEventListener("mousedown", Spotlight.onClickAway);
@@ -75,7 +78,7 @@ export class Spotlight extends HandlebarsApplication {
                 return new BaseSearchTerm({
                     name: item.name,
                     type: "Item owned",
-                    description: actor.name,
+                    description: foundry.utils.escapeHTML(actor.name),
                     img: item.img,
                     icon: ["fas fa-user-circle", "fas fa-suitcase"],
                     data: { uuid: item.uuid, documentName: "Item" },
@@ -131,7 +134,10 @@ export class Spotlight extends HandlebarsApplication {
             });
             filtersContainer.appendChild(filterElement);
         });
-        html.querySelector("input").addEventListener("input", this._onSearch.bind(this));
+        html.querySelector("input").addEventListener("input", () => {
+            this._searchPending = true;
+            this._onSearch();
+        });
         //if enter is pressed on the search input, click on the first result
         html.querySelector("input").addEventListener("keydown", this._onKeyDown.bind(this));
         //timeout for janky core behavior
@@ -154,15 +160,15 @@ export class Spotlight extends HandlebarsApplication {
                 this.setPosition({ left: storedPosition.left, top: storedPosition.top, width: SPOTLIGHT_WIDTH });
             }
         }
-        if (getSetting("alwaysOnTop")) html.closest("#spotlight").style.zIndex = "9999 !important";
+        html.closest("#spotlight").classList.toggle("always-on-top", getSetting("alwaysOnTop"));
         if (this.first) html.querySelector("input").value = "?";
         if (this.promptOptions?.query) html.querySelector("input").value = this.promptOptions.query;
         this._onSearch();
     }
 
-    setPosition(...args) {
+    setPosition(position = {}, ...args) {
         if (!this.element) return;
-        super.setPosition(...args);
+        super.setPosition(position, ...args);
         //get max availeble vertical space
         const windowApp = this.element.closest("#spotlight");
         const top = windowApp.getBoundingClientRect().top;
@@ -175,7 +181,7 @@ export class Spotlight extends HandlebarsApplication {
             windowApp.classList.toggle("inverted", maxHeight < window.innerHeight / 3 || hasTaskbar);
             this.setPosition({ height: "auto" });
         }
-        this.updateStoredPosition();
+        if (("left" in position || "top" in position) && getSetting("position") === "save") this.updateStoredPosition();
     }
 
     updateStoredPosition() {
@@ -205,6 +211,7 @@ export class Spotlight extends HandlebarsApplication {
         LAST_INPUT_TIME = inputTime;
         if (event.key === "Enter") {
             event.preventDefault();
+            if (this._searchPending) this._searchNow();
             const isShift = event.shiftKey;
             const isAlt = event.altKey;
             const selected = html.querySelector(".search-item:not(.type-header).selected");
@@ -258,11 +265,10 @@ export class Spotlight extends HandlebarsApplication {
                 if (next) {
                     next = next[event.key === "ArrowUp" ? "previousElementSibling" : "nextElementSibling"];
                     //if the key is arrow up, loop until there is a type header above
-                    if (event.key === "ArrowUp") {
-                        while (next && !next.classList.contains("type-header")) {
+                    if (event.key === "ArrowUp" && next) {
+                        while (next.previousElementSibling && !next.previousElementSibling.classList.contains("type-header")) {
                             next = next.previousElementSibling;
                         }
-                        next = next.nextElementSibling;
                     }
                 }
             } else {
@@ -303,8 +309,8 @@ export class Spotlight extends HandlebarsApplication {
     }
 
     _onSearch() {
-        if (this.closing) return;
-        if (!this.element) return;
+        if (!this.rendered) return;
+        this._searchPending = false;
         const input = this.element.querySelector("input");
         const inputSuggestion = this.element.querySelector(".input-suggestion");
         let query = input.value.toLowerCase();
@@ -324,7 +330,7 @@ export class Spotlight extends HandlebarsApplication {
             inputSpacer.classList.add("input-spacer");
             inputSpacer.innerText = input.value;
             inputSuggestion.appendChild(inputSpacer);
-            inputSuggestion.innerHTML += suggestionText;
+            inputSuggestion.append(suggestionText);
             // inputSuggestion.innerText = `<span class="input-spacer">${input.value}</span>${suggestionText}`;
         }
         if (hasFilters && hasSpace) {
@@ -400,18 +406,6 @@ export class Spotlight extends HandlebarsApplication {
             list.innerHTML = "";
             for (const [type, typeResults] of Object.entries(types)) {
                 if (!typeResults.length) continue;
-                //sort typeResults by name, then bring to the top the ones that start with the query
-                const sortedTypeResults = [];
-                const doesNotStartWithQuery = [];
-                typeResults.forEach((result) => {
-                    const lc = result.name.toLowerCase();
-                    if (splitQuery.some((q) => lc.startsWith(q))) sortedTypeResults.push(result);
-                    else doesNotStartWithQuery.push(result);
-                });
-                doesNotStartWithQuery.sort((a, b) => a.name.localeCompare(b.name));
-                sortedTypeResults.sort((a, b) => a.name.localeCompare(b.name));
-                sortedTypeResults.push(...doesNotStartWithQuery);
-
                 let typeHeader = document.createElement("li");
                 typeHeader.innerText = type
                     .replaceAll("-", " ")
@@ -421,11 +415,11 @@ export class Spotlight extends HandlebarsApplication {
                 typeHeader.classList.add("type-header");
                 if (type === "recent-searches") typeHeader = recentHeader;
                 if (!type.includes("special-app")) list.appendChild(typeHeader);
-                sortedTypeResults.forEach((result) => {
+                typeResults.forEach((result) => {
                     if (!suggestionAdded) {
                         suggestionAdded = true;
                         if(inputSuggestion.innerText) {
-                            inputSuggestion.innerHTML = inputSuggestion.innerText;
+                            inputSuggestion.textContent = inputSuggestion.innerText;
                         } else {
                             // const tempSpan = document.createElement("div");
                             // tempSpan.innerHTML = result.name;
@@ -433,7 +427,7 @@ export class Spotlight extends HandlebarsApplication {
                             inputSpacer.classList.add("input-spacer");
                             inputSpacer.innerText = input.value;
                             inputSuggestion.appendChild(inputSpacer);
-                            inputSuggestion.innerHTML += " " + result.name;
+                            inputSuggestion.append(" " + result.element.querySelector(".search-entry-name").textContent);
                         }
 
                         // inputSuggestion.appendChild(inputSpacer);
@@ -454,6 +448,7 @@ export class Spotlight extends HandlebarsApplication {
         //match special searches
         for (const search of SPECIAL_SEARCHES) {
             search.query = query;
+            search.rawQuery = input.value.trim();
             if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
             if (isActiveTimer && search.type.includes("timer")) {
                 results.push(new SearchItem(search));
@@ -474,38 +469,21 @@ export class Spotlight extends HandlebarsApplication {
             return completeSearch();
         }
 
-        //match actor items
-        for (let i = 0; i < this.ACTOR_ITEMS_INDEX.length; i++) {
-            if (results.length > 50) break;
-            const search = this.ACTOR_ITEMS_INDEX[i];
-            search.query = query;
-            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
-            if (splitQuery.every((q) => search.match(q))) {
-                results.push(new SearchItem(search));
+        const matches = [];
+        const collectMatches = (index, filterMode) => {
+            for (const search of index) {
+                search.query = query;
+                if (hasFilters && !filters[filterMode]((filter) => search.type.toLowerCase().includes(filter))) continue;
+                if (splitQuery.every((q) => search.match(q))) {
+                    matches.push({ search, name: search.cleanName, score: scoreMatch(search, query, splitQuery) });
+                }
             }
-        }
-
-        //match index
-        for (let i = 0; i < INDEX.length; i++) {
-            if (results.length > 50) break;
-            const search = INDEX[i];
-            search.query = query;
-            if (hasFilters && !filters.every((filter) => search.type.toLowerCase().includes(filter))) continue;
-            if (splitQuery.every((q) => search.match(q))) {
-                results.push(new SearchItem(search));
-            }
-        }
-
-        //match file index
-        for (let i = 0; i < FILE_INDEX.length; i++) {
-            if (results.length > 50) break;
-            const search = FILE_INDEX[i];
-            search.query = query;
-            if (hasFilters && !filters.some((filter) => search.type.toLowerCase().includes(filter))) continue;
-            if (splitQuery.every((q) => search.match(q))) {
-                results.push(new SearchItem(search));
-            }
-        }
+        };
+        collectMatches(this.ACTOR_ITEMS_INDEX, "every");
+        collectMatches(INDEX, "every");
+        collectMatches(FILE_INDEX, "some");
+        matches.sort((a, b) => a.score - b.score || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+        results.push(...matches.slice(0, MAX_RESULTS).map((match) => new SearchItem(match.search)));
 
         //set the list to the results
         completeSearch();
@@ -527,6 +505,17 @@ export class Spotlight extends HandlebarsApplication {
     static toTaskbar({ left, bottom }) {
         new Spotlight({ toTaskbar: left }).render({force: true, position: {left}});
     }
+}
+
+function scoreMatch(search, query, splitQuery) {
+    const name = search.cleanName;
+    const compendiumPenalty = search.data?.uuid?.startsWith?.("Compendium.") ? 0.5 : 0;
+    if (name === query) return compendiumPenalty;
+    if (name.startsWith(query)) return 1 + compendiumPenalty;
+    const words = name.split(/[^\p{L}\p{N}]+/u);
+    if (splitQuery.every((q) => words.some((word) => word.startsWith(q)))) return 2 + compendiumPenalty;
+    if (splitQuery.every((q) => name.includes(q))) return 3 + compendiumPenalty;
+    return 4 + compendiumPenalty;
 }
 
 function convertFullWidthToRegular(text) {
@@ -601,7 +590,18 @@ class SearchItem {
 
     render() {
         const icons = this.icon.map((icon) => `<i class="${icon}"></i>`).join("");
-        this.element.innerHTML = `${this.img ? `<img src="${this.img}" alt="${this.name}">` : ""} ${icons} <div class="search-info"><span class="search-entry-name">${this.name + this.nameExtra}</span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
+        this.element.innerHTML = `${this.img ? `<img>` : ""} ${icons} <div class="search-info"><span class="search-entry-name"></span>${this.description ? `<p>${this.description}</p>` : ""}</div>`;
+        const nameElement = this.element.querySelector(".search-entry-name");
+        if (this.isSpecialApp) nameElement.innerHTML = this.name + this.nameExtra;
+        else {
+            nameElement.textContent = this.name;
+            nameElement.insertAdjacentHTML("beforeend", this.nameExtra);
+        }
+        const img = this.element.querySelector("img");
+        if (img) {
+            img.src = this.img;
+            img.alt = this.name;
+        }
         const actions = this.getActions();
         if (actions) {
             const isJournalOrPage = this.data?.documentName?.includes("Journal");
@@ -708,7 +708,8 @@ class SearchItem {
         actionsContainer.classList.add("search-item-actions");
         actions.forEach((action) => {
             const button = document.createElement("button");
-            button.innerHTML = action.icon + " " + game.i18n.localize(action.name);
+            button.innerHTML = action.icon;
+            button.append(" " + game.i18n.localize(action.name));
             button.addEventListener("click", (e) => {
                 if (!this.isSpecialApp) updateRecent(this.name);
                 e.preventDefault();

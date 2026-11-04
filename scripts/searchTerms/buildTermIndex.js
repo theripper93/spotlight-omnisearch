@@ -12,17 +12,45 @@ export const FILTERS = [];
 
 export let FILE_INDEX = [];
 
-let indexBuilt = false;
+const INDEXED_DOCUMENTS = ["Actor", "Cards", "Folder", "Item", "JournalEntry", "JournalEntryPage", "Macro", "Playlist", "RollTable", "Scene", "User"];
+const INDEXED_FIELDS = ["name", "img", "folder", "ownership", "text", "flags"];
 
-export async function buildIndex(force = false) {
-    if (force) {
-        indexBuilt = false;
-        INDEX.length = 0;
-        FILTERS.length = 0;
-        FILE_INDEX.length = 0;
+let buildPromise = null;
+let indexDirty = false;
+
+export function buildIndex(force = false) {
+    if (buildPromise && !force && !indexDirty) return buildPromise;
+    indexDirty = false;
+    buildPromise = (buildPromise ?? Promise.resolve()).catch(() => {}).then(rebuildIndex);
+    return buildPromise;
+}
+
+const refreshOpenSpotlight = foundry.utils.debounce(async () => {
+    if (!ui.spotlightOmnisearch?.rendered) return;
+    await buildIndex();
+    ui.spotlightOmnisearch?._onSearch();
+}, 500);
+
+function invalidateIndex(document) {
+    if (document.parent && document.documentName !== "JournalEntryPage") return;
+    indexDirty = true;
+    refreshOpenSpotlight();
+}
+
+export function registerIndexHooks() {
+    for (const documentName of INDEXED_DOCUMENTS) {
+        Hooks.on(`create${documentName}`, invalidateIndex);
+        Hooks.on(`delete${documentName}`, invalidateIndex);
+        Hooks.on(`update${documentName}`, (document, changes) => {
+            if (INDEXED_FIELDS.some((field) => field in changes)) invalidateIndex(document);
+        });
     }
-    if (indexBuilt) return;
-    indexBuilt = true;
+}
+
+async function rebuildIndex() {
+    INDEX.length = 0;
+    FILTERS.length = 0;
+    FILE_INDEX.length = 0;
 
     if (ui.spotlightOmnisearch?.element) {
         const faSearch = ui.spotlightOmnisearch.element.querySelector(".fa-search");
@@ -146,10 +174,16 @@ async function buildCompendiumIndex() {
     const fullCompendiumJournalIndex = getSetting("fullCompendiumJournalIndex");
     const index = [];
     await Promise.all(packs.map((p) => p.getIndex()));
+    const journalDocuments = new Map();
+    if (fullCompendiumJournalIndex) {
+        const journalPacks = packs.filter((p) => p.documentName === "JournalEntry");
+        const documents = await Promise.all(journalPacks.map((p) => p.getDocuments()));
+        documents.flat().forEach((document) => journalDocuments.set(document.uuid, document));
+    }
     const localizedCompendiumName = game.i18n.localize("PACKAGE.TagCompendium");
     for (const pack of packs) {
         const packPackageName = (pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title) ?? game.i18n.localize("PACKAGE.Type.world");
-        const packIndex = Array.from(await pack.getIndex());
+        const packIndex = Array.from(pack.index);
         const localizedDocumentName = game.i18n.localize(`DOCUMENT.${pack.documentName}`);
 
         index.push(
@@ -169,7 +203,7 @@ async function buildCompendiumIndex() {
 
         for (const entry of packIndex) {
             if (pack.documentName === "JournalEntry" && fullCompendiumJournalIndex) {
-                const document = await pack.getDocument(entry._id);
+                const document = journalDocuments.get(entry.uuid) ?? (await pack.getDocument(entry._id));
                 const actions = [];
                 document.pages.forEach((page) => {
                     actions.push({
@@ -177,7 +211,7 @@ async function buildCompendiumIndex() {
                         icon: `<i class="fa-solid fa-file-lines"></i>`,
                         callback: async function () {
                             const entity = await fromUuid(document.uuid);
-                            entity.sheet.render(true, { pageId: page.id, anchor: null });
+                            entity?.sheet.render(true, { pageId: page.id, anchor: null });
                         },
                     });
 
@@ -189,7 +223,7 @@ async function buildCompendiumIndex() {
                             name: game.i18n.localize("JOURNAL.ActionShow"),
                             icon: `<i class="fa-solid fa-image"></i>`,
                             callback: async function () {
-                                new ImagePopout(page.src, {}).render(true);
+                                new foundry.applications.apps.ImagePopout({ src: page.src }).render(true);
                             },
                         });
 
@@ -201,7 +235,7 @@ async function buildCompendiumIndex() {
                             callback: async function () {
                                 if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid, toc.slug);
                                 const entity = await fromUuid(document.uuid);
-                                entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
+                                entity?.sheet.render(true, { pageId: page.id, anchor: toc.slug });
                             },
                         });
                     });
@@ -213,13 +247,13 @@ async function buildCompendiumIndex() {
                             keywords: tocKeywords,
                             description: packPackageName,
                             type: pageLocalized,
-                            data: { ...page, documentName: page.documentName, uuid: page.uuid },
+                            data: { _id: page.id, name: page.name, type: page.type, documentName: page.documentName, uuid: page.uuid },
                             img: page.img,
                             icon: ["fas fa-atlas", "fas fa-file-lines"],
                             onClick: async function () {
                                 if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid);
                                 const entity = await fromUuid(document.uuid);
-                                entity.sheet.render(true, { pageId: page.id, anchor: null });
+                                entity?.sheet.render(true, { pageId: page.id, anchor: null });
                             },
                         }),
                     );
@@ -231,13 +265,13 @@ async function buildCompendiumIndex() {
                         description: pack.title + " - " + packPackageName,
                         keywords: [pack.title],
                         actions: actions,
-                        type: localizedDocumentName + " " + localizedCompendiumName + createDocumentTypeTypeString(pack.documentName, entry.type),
+                        type: [localizedDocumentName, localizedCompendiumName, createDocumentTypeTypeString(pack.documentName, entry.type)].filterJoin(" "),
                         data: { ...entry, documentName: pack.documentName },
                         img: entry.img,
                         icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
                         onClick: async function () {
                             const entity = await fromUuid(entry.uuid);
-                            entity.sheet.render(true);
+                            entity?.sheet.render(true);
                         },
                     }),
                 );
@@ -247,13 +281,13 @@ async function buildCompendiumIndex() {
                         name: entry.name,
                         description: pack.title + " - " + packPackageName,
                         keywords: [pack.title],
-                        type: localizedDocumentName + " " + localizedCompendiumName + createDocumentTypeTypeString(pack.documentName, entry.type),
+                        type: [localizedDocumentName, localizedCompendiumName, createDocumentTypeTypeString(pack.documentName, entry.type)].filterJoin(" "),
                         data: { ...entry, documentName: pack.documentName },
                         img: entry.img,
                         icon: ["fas fa-atlas", CONFIG[pack.documentName].sidebarIcon],
                         onClick: async function () {
                             const entity = await fromUuid(entry.uuid);
-                            entity.sheet.render(true);
+                            entity?.sheet.render(true);
                         },
                     }),
                 );
@@ -285,7 +319,7 @@ async function buildCollections() {
             const keywords = [];
             let description = "";
             let extraType = "";
-            if (document.folder) description = "<i style='display: inline; opacity: 0.3;' class='fas fa-folder'></i> " + getFoldersRecursive(document).join(" / ");
+            if (document.folder) description = "<i style='display: inline; opacity: 0.3;' class='fas fa-folder'></i> " + foundry.utils.escapeHTML(getFoldersRecursive(document).join(" / "));
             const actions = [];
             if (collection.documentName === "JournalEntry") {
                 document.pages.forEach((page) => {
@@ -295,7 +329,7 @@ async function buildCollections() {
                         icon: `<i class="fa-solid fa-file-lines"></i>`,
                         callback: async function () {
                             const entity = await fromUuid(document.uuid);
-                            entity.sheet.render(true, { pageId: page.id, anchor: null });
+                            entity?.sheet.render(true, { pageId: page.id, anchor: null });
                         },
                     });
 
@@ -307,7 +341,7 @@ async function buildCollections() {
                             name: game.i18n.localize("JOURNAL.ActionShow"),
                             icon: `<i class="fa-solid fa-image"></i>`,
                             callback: async function () {
-                                new ImagePopout(page.src, {}).render(true);
+                                new foundry.applications.apps.ImagePopout({ src: page.src }).render(true);
                             },
                         });
 
@@ -319,7 +353,7 @@ async function buildCollections() {
                             callback: async function () {
                                 if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid, toc.slug);
                                 const entity = await fromUuid(document.uuid);
-                                entity.sheet.render(true, { pageId: page.id, anchor: toc.slug });
+                                entity?.sheet.render(true, { pageId: page.id, anchor: toc.slug });
                             },
                         });
                     });
@@ -331,13 +365,13 @@ async function buildCollections() {
                             keywords: tocKeywords,
                             description: description,
                             type: pageLocalized,
-                            data: { ...page, documentName: page.documentName, uuid: page.uuid },
+                            data: { _id: page.id, name: page.name, type: page.type, documentName: page.documentName, uuid: page.uuid },
                             img: page.img,
                             icon: ["fas fa-earth-europe", "fas fa-file-lines"],
                             onClick: async function () {
                                 if (ui.simpleQuest && ui.simpleQuest.isSimpleQuestPage(page.uuid)) return ui.simpleQuest.openToPage(page.uuid);
                                 const entity = await fromUuid(document.uuid);
-                                entity.sheet.render(true, { pageId: page.id, anchor: null });
+                                entity?.sheet.render(true, { pageId: page.id, anchor: null });
                             },
                         }),
                     );
@@ -358,12 +392,12 @@ async function buildCollections() {
                     keywords: keywords,
                     actions: actions,
                     type: localizedCollectionName + extraType,
-                    data: { ...document, documentName: collection.documentName, uuid: document.uuid },
+                    data: { _id: document.id, name: document.name, type: document.type, img: document.img, documentName: collection.documentName, uuid: document.uuid },
                     img: document.img,
                     icon: ["fas fa-earth-europe", CONFIG[collection.documentName].sidebarIcon],
                     onClick: async function () {
                         const entity = await fromUuid(document.uuid);
-                        entity.sheet.render(true);
+                        entity?.sheet.render(true);
                     },
                 }),
             );
@@ -416,17 +450,8 @@ async function buildSettings() {
                     }
                     game.settings.sheet.render(true);
                     Hooks.once("renderSettingsConfig", (app, html) => {
-                        html = html[0];
-                        const settNamespace = setting.namespace === game.system.id ? "system" : setting.namespace;
-                        const settingTab = html.querySelector(`.category-tab[data-tab="${settNamespace}"]`);
-                        if (settingTab) settingTab.click();
-                        const settingFG = html.querySelector(`[data-setting-id="${setting.namespace + "." + setting.key}"]`);
-                        if (settingFG) {
-                            setTimeout(() => {
-                                settingFG.scrollIntoView({ behavior: "smooth" });
-                            }, 100);
-                            settingFG.style.backgroundColor = "#0000ff29";
-                        }
+                        const settingFG = html.querySelector(`[name="${setting.namespace}.${setting.key}"]`)?.closest(".form-group");
+                        highlightInApp(app, settingFG);
                     });
                 },
             }),
@@ -454,23 +479,25 @@ async function buildSettings() {
                 img: null,
                 icon: ["fas fa-keyboard"],
                 onClick: async function () {
-                    new KeybindingsConfig().render(true);
-                    Hooks.once("renderKeybindingsConfig", (app, html) => {
-                        html = html[0];
-                        const tab = html.querySelector(`.tab[data-tab="${binding.namespace}"]`);
-                        const bindingFG = tab.querySelector(`[data-action-id="${key}"]`);
-                        if (bindingFG) {
-                            setTimeout(() => {
-                                bindingFG.scrollIntoView({ behavior: "smooth" });
-                            }, 100);
-                            bindingFG.style.backgroundColor = "#0000ff29";
-                        }
+                    Hooks.once("renderControlsConfig", (app, html) => {
+                        highlightInApp(app, html.querySelector(`[data-action-id="${key}"]`));
                     });
+                    new foundry.applications.sidebar.apps.ControlsConfig().render(true);
                 },
             }),
         );
     });
     INDEX.push(...index);
+}
+
+function highlightInApp(app, element) {
+    if (!element) return;
+    const tab = element.closest(".tab[data-group]");
+    if (tab) app.changeTab(tab.dataset.tab, tab.dataset.group);
+    setTimeout(() => {
+        element.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    element.style.backgroundColor = "#0000ff29";
 }
 
 async function buildSettingsTab() {
@@ -602,7 +629,7 @@ async function buildFiles() {
                     onDragEnd: onDrop,
                     onClick: async function () {
                         if (isImageOrVideo) {
-                            new ImagePopout(file, {}).render(true);
+                            new foundry.applications.apps.ImagePopout({ src: file }).render(true);
                         }
                         if (isAudio) {
                             if (previewAudio) previewAudio.stop();
@@ -636,7 +663,7 @@ async function buildStatusEffects() {
                 keywords: [],
                 type: "statusEffect",
                 data: { ...effect },
-                img: effect.icon,
+                img: effect.img,
                 icon: ["fas fa-earth-europe", "fas fa-bolt"],
                 onClick: async function () {
                     canvas.tokens.controlled.forEach((token) => {

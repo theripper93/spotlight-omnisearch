@@ -22,6 +22,7 @@ export class BaseSearchTerm {
 
     constructor({ name, nameExtra = "", description = "", keywords = [], actions = [], dragData, type, data = {}, img, icon, onClick = null, onDragStart = null, onDragEnd = null, match = null, activateListeners = null }) {
         this._name = typeof name === "function" ? name.bind(this) : () => name;
+        this._isStaticName = typeof name !== "function";
         this._description = typeof description === "function" ? description.bind(this) : () => description;
         this._actions = typeof actions === "function" ? actions.bind(this) : () => actions;
         this.dragData = dragData;
@@ -58,8 +59,7 @@ export class BaseSearchTerm {
 
     match(query) {
         try {
-            const cleanQuery = foundry.applications.ux.SearchFilter.cleanQuery(this.name);
-            return cleanQuery.toLowerCase().includes(query) || this.keywords.some((keyword) => keyword.includes(query));
+            return this.cleanName.includes(query) || this.keywords.some((keyword) => keyword.includes(query));
         } catch (error) {
             console.error(`Error matching search term:`, this);
             console.error(error);
@@ -69,6 +69,13 @@ export class BaseSearchTerm {
 
     get name() {
         return this._name(this);
+    }
+
+    get cleanName() {
+        if (this._cleanName !== undefined) return this._cleanName;
+        const cleanName = foundry.applications.ux.SearchFilter.cleanQuery(String(this.name ?? "")).toLowerCase();
+        if (this._isStaticName) this._cleanName = cleanName;
+        return cleanName;
     }
 
     get nameExtra() {

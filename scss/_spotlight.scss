@@ -22,6 +22,10 @@
     // --spotlight-filter-border: var(--spotlight-border);
 
 
+    &.always-on-top {
+        z-index: 9999 !important;
+    }
+
     &.to-taskbar {
         bottom: 50px !important;
         top: auto !important;

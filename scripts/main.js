@@ -2,7 +2,7 @@ import { CompendiumConfig } from "./app/CompendiumConfig.js";
 import { Spotlight } from "./app/spotlight.js";
 import { initConfig } from "./config.js";
 import { BaseSearchTerm } from "./searchTerms/baseSearchTerm.js";
-import { INDEX, buildIndex } from "./searchTerms/buildTermIndex.js";
+import { INDEX, buildIndex, registerIndexHooks } from "./searchTerms/buildTermIndex.js";
 import { getSetting, registerSettings, setSetting } from "./settings.js";
 import { updateTimerInterval } from "./timer.js";
 import "../scss/module.scss";
@@ -13,6 +13,7 @@ Hooks.on("init", () => {
     initConfig();
     registerSettings();
     CompendiumConfig.register();
+    registerIndexHooks();
     CONFIG.SpotlightOmnisearch = {
         app: Spotlight,
         INDEX: INDEX,
@@ -64,6 +65,7 @@ Hooks.on("ready", () => {
         });
     }
     updateTimerInterval();
+    Hooks.on("userConnected", () => updateTimerInterval());
 });
 
 Hooks.on("init", () => {

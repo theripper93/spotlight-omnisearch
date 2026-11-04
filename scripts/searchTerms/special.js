@@ -13,8 +13,8 @@ export async function initSpecialSearches() {
     const NOTE_MATCHING = ["notes", "note:", "notes:", "n:", "n ", game.i18n.localize(`${MODULE_ID}.special.note.local-keyword`)];
     const ROLL_MATCHING = ["!roll", "roll:", "r:", "r ", game.i18n.localize(`${MODULE_ID}.special.roll.local-keyword`)];
     const TIMER_MATCHING = ["timer:", "time", "time:", "t:", "t ", game.i18n.localize(`${MODULE_ID}.special.timer.local-keyword`)];
-    const TRACKER_MATCHING = ["tracker:", "t:", "t ", "track", "track:", "s:", "s ", "f:", "f ", game.i18n.localize(`${MODULE_ID}.special.tracker.local-keyword`)];
-    const COUNTER_MATCHING = ["counter:", "c:", "c ", "count", "count:", "c:", "c ", game.i18n.localize(`${MODULE_ID}.special.counter.local-keyword`)];
+    const TRACKER_MATCHING = ["tracker:", "track", "track:", "s:", "s ", "f:", "f ", game.i18n.localize(`${MODULE_ID}.special.tracker.local-keyword`)];
+    const COUNTER_MATCHING = ["counter:", "c:", "c ", "count", "count:", game.i18n.localize(`${MODULE_ID}.special.counter.local-keyword`)];
 
     const UNITS_MAPPING = {
         ft: (value) => value * 0.3048 + "m",
@@ -30,8 +30,8 @@ export async function initSpecialSearches() {
         tbsp: (value) => value * 14.7868 + "ml",
         f: (value) => ((value - 32) * 5) / 9 + "c",
         "°": (value) => (value * 9) / 5 + 32 + "f",
-        "°C": (value) => (value * 9) / 5 + 32 + "°F",
-        "°F": (value) => ((value - 32) * 5) / 9 + "°C",
+        "°c": (value) => (value * 9) / 5 + 32 + "°F",
+        "°f": (value) => ((value - 32) * 5) / 9 + "°C",
         c: (value) => (value * 9) / 5 + 32 + "f",
         m: (value) => value * 3.28084 + "ft",
         cm: (value) => value * 0.393701 + "in",
@@ -42,7 +42,11 @@ export async function initSpecialSearches() {
         ml: (value) => value * 0.00211338 + "pt",
     };
 
-    const UNITS = Object.keys(UNITS_MAPPING);
+    const parseUnitQuery = (query) => {
+        const match = query.trim().match(/^([+-]?\d*\.?\d+)\s*([a-z°]+(?:\s[a-z]+)?)$/);
+        if (!match || !UNITS_MAPPING[match[2]]) return null;
+        return { value: parseFloat(match[1]), unit: match[2] };
+    };
 
     const LIGHT_LOCALIZATION = game.i18n.localize(`Light`);
 
@@ -80,16 +84,9 @@ export async function initSpecialSearches() {
         //unit converter
         new BaseSearchTerm({
             name: function (search) {
-                //remove all spaces
-                let query = search.query.replaceAll(" ", "");
-                //check if the query contains a number and a unit, the number should be matched for plus and minus signs as well
-                const numberPart = query.match(/[\d+-.]+/)?.[0];
-                //alpha part should also include the ° symbol
-                const alphaPart = query.match(/[a-zA-Z°]+/)?.[0];
-                const closestUnit = UNITS.find((unit) => alphaPart === unit) ?? UNITS.find((unit) => alphaPart.includes(unit));
-                if (numberPart && closestUnit) {
-                    const value = parseFloat(numberPart);
-                    const unit = closestUnit;
+                const parsed = parseUnitQuery(search.query);
+                if (parsed) {
+                    const { value, unit } = parsed;
                     const converted = UNITS_MAPPING[unit](value);
                     let convertedValue = converted.match(/[\d+-.]+/)?.[0];
                     const convertedUnit = converted.match(/[a-zA-Z°]+/)?.[0];
@@ -103,15 +100,7 @@ export async function initSpecialSearches() {
             data: {},
             img: "",
             icon: "fad fa-calculator",
-            match: (query) => {
-                //remove all spaces
-                query = query.replaceAll(" ", "");
-                //check if the query contains a number and a unit
-                const numberPart = query.match(/[\d.]+/)?.[0];
-                //alpha part should also include the ° symbol
-                const alphaPart = query.match(/[a-zA-Z°]+/)?.[0];
-                return numberPart && UNITS.includes(alphaPart);
-            },
+            match: (query) => !!parseUnitQuery(query),
             onClick: function (event, search) {
                 const convertedEl = document.createElement("div");
                 convertedEl.innerHTML = search.name;
@@ -124,15 +113,14 @@ export async function initSpecialSearches() {
         new BaseSearchTerm({
             name: () => game.i18n.localize(`${MODULE_ID}.special.note.name`),
             description: (search) => {
-                const noteText = search.query.replace(/(note|notes|!note|!notes|note:|notes:|!n|n:)/i, "").trim();
-                return noteText;
+                return stripKeyword(search.rawQuery ?? search.query, NOTE_MATCHING);
             },
             type: "special-app",
             data: {},
             img: "",
             icon: "fad fa-sticky-note",
             match: (query) => {
-                return NOTE_MATCHING.some((keyword) => query.startsWith(keyword));
+                return !!findKeyword(query, NOTE_MATCHING);
             },
             onClick: async function (search) {
                 const noteText = this.description;
@@ -167,15 +155,14 @@ export async function initSpecialSearches() {
         new BaseSearchTerm({
             name: () => game.i18n.localize(`${MODULE_ID}.special.roll.name`),
             description: (search) => {
-                const rollText = search.query.replace(/(roll|!roll|roll:|!r|r:|r )/i, "").trim();
-                return rollText;
+                return stripKeyword(search.rawQuery ?? search.query, ROLL_MATCHING);
             },
             type: "special-app",
             data: {},
             img: "",
             icon: "fad fa-dice-d20",
             match: (query) => {
-                return ROLL_MATCHING.some((keyword) => query.startsWith(keyword));
+                return !!findKeyword(query, ROLL_MATCHING);
             },
             onClick: async function (search) {
                 new Roll(this.description).toMessage();
@@ -187,7 +174,7 @@ export async function initSpecialSearches() {
             description: (search) => {
                 const listElements = game.i18n.translations["spotlight-omnisearch"].special.help.list;
                 const baseDescription = `<ul>${listElements.map((element) => `<li style="pointer-events:none">${element}</li>`).join("")}</ul>`;
-                const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${filter}">${filter}</span>`).join("");
+                const filterSpans = FILTERS.map((filter) => `<span class="filter" data-filter="${foundry.utils.escapeHTML(filter)}">${foundry.utils.escapeHTML(filter)}</span>`).join("");
                 return `${baseDescription} <div class="filters-help">${filterSpans}</div>`;
             },
             type: "special-app help",
@@ -223,7 +210,7 @@ export async function initSpecialSearches() {
                 return label;
             },
             description: (search) => {
-                const noteText = search.query.replace(/(timer|timer:|time|time:|t:|t )/i, "").trim();
+                const noteText = stripKeyword(search.query, TIMER_MATCHING);
                 const { hours, minutes, seconds } = parseTime(noteText);
                 const textOutput = `${hours ? `${hours}h ` : ""}${minutes ? `${minutes}m ` : ""}${seconds ? `${seconds}s` : ""}`;
                 return textOutput;
@@ -233,11 +220,11 @@ export async function initSpecialSearches() {
             img: "",
             icon: "fad fa-stopwatch",
             match: (query) => {
-                return TIMER_MATCHING.some((keyword) => query.startsWith(keyword));
+                return !!findKeyword(query, TIMER_MATCHING);
             },
             onClick: async function (search) {
                 if (!game.user.isGM) return ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.timer-gm`));
-                const noteText = this.query.replace(/(timer|timer:|time|time:|t:|t )/i, "").trim();
+                const noteText = stripKeyword(this.query, TIMER_MATCHING);
                 const { hours, minutes, seconds } = parseTime(noteText);
                 const totalSeconds = hours * 3600 + minutes * 60 + seconds;
                 if (totalSeconds <= 0) return;
@@ -257,7 +244,7 @@ export async function initSpecialSearches() {
             img: "",
             icon: "fad fa-check-circle",
             match: (query) => {
-                return TRACKER_MATCHING.some((keyword) => query.startsWith(keyword));
+                return !!findKeyword(query, TRACKER_MATCHING);
             },
             onClick: async function (search) {},
             activateListeners: function (html) {
@@ -338,7 +325,7 @@ export async function initSpecialSearches() {
             img: "",
             icon: "fad fa-plus-circle",
             match: (query) => {
-                return COUNTER_MATCHING.some((keyword) => query.startsWith(keyword));
+                return !!findKeyword(query, COUNTER_MATCHING);
             },
             onClick: async function (search) {},
             activateListeners: function (html) {
@@ -395,11 +382,11 @@ export async function initSpecialSearches() {
         //attribute
         new BaseSearchTerm({
             name: (search) => {
-                const attribute = search.query.replace(/(attr:|@)/i, "").trim();
+                const attribute = (search.rawQuery ?? search.query).replace(/(attr:|@)/i, "").trim();
                 return game.i18n.localize(`${MODULE_ID}.special.attribute.name`) + ": " + attribute;
             },
             description: (search) => {
-                const query = search.query.replace(/(attr:|@)/i, "").trim();
+                const query = (search.rawQuery ?? search.query).replace(/(attr:|@)/i, "").trim();
                 const actors = Array.from(
                     new Set(
                         game.users
@@ -426,7 +413,7 @@ export async function initSpecialSearches() {
                     } else {
                         value = `<strong>${value}</strong>`;
                     }
-                    li.innerHTML = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;width: 100%"><span>${actor.name}</span><span>${value}</span></div>`;
+                    li.innerHTML = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;width: 100%"><span>${foundry.utils.escapeHTML(actor.name)}</span><span>${value}</span></div>`;
                     ul.appendChild(li);
                 });
                 return container.innerHTML;
@@ -754,7 +741,7 @@ export async function initSpecialSearches() {
                     name: game.i18n.localize(`${MODULE_ID}.special.darkness.night`),
                     icon: `<i class="fas fa-moon"></i>`,
                     callback: async function () {
-                        canvas.scene.update({ darkness: 1 }, { animateDarkness: 10000 });
+                        canvas.scene.update({ "environment.darknessLevel": 1 }, { animateDarkness: 10000 });
                     },
                 },
                 //dawn
@@ -762,7 +749,7 @@ export async function initSpecialSearches() {
                     name: game.i18n.localize(`${MODULE_ID}.special.darkness.dawn`),
                     icon: `<i class="fas fa-sunrise"></i>`,
                     callback: async function () {
-                        canvas.scene.update({ darkness: 0.3 }, { animateDarkness: 10000 });
+                        canvas.scene.update({ "environment.darknessLevel": 0.3 }, { animateDarkness: 10000 });
                     },
                 },
                 //day
@@ -770,7 +757,7 @@ export async function initSpecialSearches() {
                     name: game.i18n.localize(`${MODULE_ID}.special.darkness.day`),
                     icon: `<i class="fas fa-sun"></i>`,
                     callback: async function () {
-                        canvas.scene.update({ darkness: 0 }, { animateDarkness: 10000 });
+                        canvas.scene.update({ "environment.darknessLevel": 0 }, { animateDarkness: 10000 });
                     },
                 },
                 //dusk
@@ -778,7 +765,7 @@ export async function initSpecialSearches() {
                     name: game.i18n.localize(`${MODULE_ID}.special.darkness.dusk`),
                     icon: `<i class="fas fa-sunset"></i>`,
                     callback: async function () {
-                        canvas.scene.update({ darkness: 0.7 }, { animateDarkness: 10000 });
+                        canvas.scene.update({ "environment.darknessLevel": 0.7 }, { animateDarkness: 10000 });
                     },
                 },
             ],
@@ -924,8 +911,21 @@ export async function initSpecialSearches() {
             img: null,
             icon: ["fas fa-search"],
             onClick: async function () {
-                CONFIG.SpotlightOmniseach.rebuildIndex();
+                CONFIG.SpotlightOmnisearch.rebuildIndex();
             },
         }),
     );
+}
+
+function findKeyword(query, keywords) {
+    const lowerQuery = query.toLowerCase();
+    return keywords
+        .map((keyword) => keyword.toLowerCase())
+        .filter((keyword) => lowerQuery.startsWith(keyword) && (/[\s:]$/.test(keyword) || lowerQuery.length === keyword.length || /[\s:]/.test(lowerQuery[keyword.length])))
+        .sort((a, b) => b.length - a.length)[0];
+}
+
+function stripKeyword(query, keywords) {
+    const keyword = findKeyword(query, keywords) ?? "";
+    return query.slice(keyword.length).replace(/^:/, "").trim();
 }
