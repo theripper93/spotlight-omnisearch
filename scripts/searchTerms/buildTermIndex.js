@@ -169,16 +169,26 @@ function createDocumentTypeTypeString(documentName, documentType) {
 
 async function buildCompendiumIndex() {
     const allowedCompendiums = getSetting("compendiumConfig");
-    const packs = Array.from(game.packs).filter((p) => (game.user.isGM || p.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)) && allowedCompendiums[p.metadata.id] !== false);
+    const allowedPacks = Array.from(game.packs).filter((p) => (game.user.isGM || p.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)) && allowedCompendiums[p.metadata.id] !== false);
     const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
     const fullCompendiumJournalIndex = getSetting("fullCompendiumJournalIndex");
     const index = [];
-    await Promise.all(packs.map((p) => p.getIndex()));
+    const indexResults = await Promise.allSettled(allowedPacks.map((p) => p.getIndex()));
+    const packs = allowedPacks.filter((p, i) => {
+        if (indexResults[i].status === "fulfilled") return true;
+        console.error(`Spotlight Omnisearch: Error indexing compendium ${p.metadata.id}, skipping:`, indexResults[i].reason);
+        return false;
+    });
     const journalDocuments = new Map();
+    const failedJournalPacks = new Set();
     if (fullCompendiumJournalIndex) {
         const journalPacks = packs.filter((p) => p.documentName === "JournalEntry");
-        const documents = await Promise.all(journalPacks.map((p) => p.getDocuments()));
-        documents.flat().forEach((document) => journalDocuments.set(document.uuid, document));
+        const documentResults = await Promise.allSettled(journalPacks.map((p) => p.getDocuments()));
+        documentResults.forEach((result, i) => {
+            if (result.status === "fulfilled") return result.value.forEach((document) => journalDocuments.set(document.uuid, document));
+            failedJournalPacks.add(journalPacks[i]);
+            console.error(`Spotlight Omnisearch: Error loading journals from compendium ${journalPacks[i].metadata.id}, falling back to basic index:`, result.reason);
+        });
     }
     const localizedCompendiumName = game.i18n.localize("PACKAGE.TagCompendium");
     for (const pack of packs) {
@@ -202,8 +212,8 @@ async function buildCompendiumIndex() {
         );
 
         for (const entry of packIndex) {
-            if (pack.documentName === "JournalEntry" && fullCompendiumJournalIndex) {
-                const document = journalDocuments.get(entry.uuid) ?? (await pack.getDocument(entry._id));
+            const document = pack.documentName === "JournalEntry" && fullCompendiumJournalIndex && !failedJournalPacks.has(pack) ? (journalDocuments.get(entry.uuid) ?? (await pack.getDocument(entry._id).catch(() => null))) : null;
+            if (document) {
                 const actions = [];
                 document.pages.forEach((page) => {
                     actions.push({
