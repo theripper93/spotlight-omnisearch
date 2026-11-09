@@ -167,29 +167,37 @@ function createDocumentTypeTypeString(documentName, documentType) {
     return capitalizedType;
 }
 
+const INVALID_PACKS = new Set();
+const INVALID_JOURNAL_PACKS = new Set();
+
+function markPackInvalid(set, pack, message, error) {
+    set.add(pack.collection);
+    console.error(`Spotlight Omnisearch: ${message}: ${pack.collection}`, error);
+}
+
 async function buildCompendiumIndex() {
     const allowedCompendiums = getSetting("compendiumConfig");
     const allowedPacks = Array.from(game.packs).filter((p) => (game.user.isGM || p.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER)) && allowedCompendiums[p.metadata.id] !== false);
     const pageLocalized = game.i18n.localize("DOCUMENT.JournalEntryPage");
     const fullCompendiumJournalIndex = getSetting("fullCompendiumJournalIndex");
     const index = [];
-    const indexResults = await Promise.allSettled(allowedPacks.map((p) => p.getIndex()));
-    const packs = allowedPacks.filter((p, i) => {
+    const packsToIndex = allowedPacks.filter((p) => !INVALID_PACKS.has(p.collection));
+    const indexResults = await Promise.allSettled(packsToIndex.map((p) => p.getIndex()));
+    const packs = packsToIndex.filter((p, i) => {
         if (indexResults[i].status === "fulfilled") return true;
-        console.error(`Spotlight Omnisearch: Error indexing compendium ${p.metadata.id}, skipping:`, indexResults[i].reason);
+        markPackInvalid(INVALID_PACKS, p, "Error indexing compendium, skipping it", indexResults[i].reason);
         return false;
     });
     const journalDocuments = new Map();
-    const failedJournalPacks = new Set();
     if (fullCompendiumJournalIndex) {
-        const journalPacks = packs.filter((p) => p.documentName === "JournalEntry");
+        const journalPacks = packs.filter((p) => p.documentName === "JournalEntry" && !INVALID_JOURNAL_PACKS.has(p.collection));
         const documentResults = await Promise.allSettled(journalPacks.map((p) => p.getDocuments()));
         documentResults.forEach((result, i) => {
             if (result.status === "fulfilled") return result.value.forEach((document) => journalDocuments.set(document.uuid, document));
-            failedJournalPacks.add(journalPacks[i]);
-            console.error(`Spotlight Omnisearch: Error loading journals from compendium ${journalPacks[i].metadata.id}, falling back to basic index:`, result.reason);
+            markPackInvalid(INVALID_JOURNAL_PACKS, journalPacks[i], "Error loading journals from compendium, falling back to basic index", result.reason);
         });
     }
+    const failedJournalPacks = new Set(packs.filter((p) => INVALID_JOURNAL_PACKS.has(p.collection)));
     const localizedCompendiumName = game.i18n.localize("PACKAGE.TagCompendium");
     for (const pack of packs) {
         const packPackageName = (pack.metadata.packageType === "system" ? game.system.title : game.modules.get(pack.metadata.packageName)?.title) ?? game.i18n.localize("PACKAGE.Type.world");
