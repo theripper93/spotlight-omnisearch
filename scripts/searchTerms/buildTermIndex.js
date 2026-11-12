@@ -552,8 +552,10 @@ let previewAudio = null;
 
 async function buildFiles() {
     if (!game.user.isGM) return;
-    const fileCache = canvas.deepSearchCache?._fileIndexCache;
-    if (!fileCache) return;
+    const indexedFiles = game.modules.get("fuzzy-foundry")?.api?.fileIndex?.files;
+    if (!indexedFiles?.length) return;
+    const fileCache = {};
+    for (const { path } of indexedFiles) (fileCache[path.split("/").pop()] ??= []).push(path);
     const index = [];
     for (const [fileName, files] of Object.entries(fileCache)) {
         const ext = fileName.split(".").pop().toLowerCase();
